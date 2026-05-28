@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aiuta Matteo! 🇮🇹🇰🇿</title>
+    <style>
+        :root {
+            --primary: #009246;
+            --secondary: #cf2b36;
+            --bg: #f8f9fa;
+            --text: #2d3748;
+            --correct: #28a745;
+            --wrong: #dc3545;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 750px;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            font-size: 2rem;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-style: italic;
+            color: #718096;
+            margin-bottom: 35px;
+            font-size: 0.95rem;
+        }
+
+        .slide {
+            display: none;
+            min-height: 150px;
+            font-size: 1.25rem;
+            text-align: justify;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Input Neutrale all'inizio */
+        .cloze-input {
+            border: none;
+            border-bottom: 2px dashed #cbd5e0;
+            background-color: #f7fafc;
+            padding: 2px 8px;
+            font-size: 1.2rem;
+            color: var(--text); /* Neutrale nero/grigio */
+            font-weight: bold;
+            width: 130px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .cloze-input:focus {
+            outline: none;
+            border-bottom: 2px solid var(--primary);
+            background-color: #e6fffa;
+        }
+
+        /* Classi dinamiche per la verifica */
+        .cloze-input.correct {
+            color: var(--correct) !important;
+            border-bottom: 2px solid var(--correct) !important;
+            background-color: #e6ffed !important;
+        }
+
+        .cloze-input.wrong {
+            color: var(--wrong) !important;
+            border-bottom: 2px solid var(--wrong) !important;
+            background-color: #ffeef0 !important;
+        }
+
+        .hint {
+            font-size: 0.85rem;
+            color: #a0aec0;
+            font-weight: normal;
+            display: inline-block;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #edf2f7;
+            gap: 10px;
+        }
+
+        .btn {
+            background-color: #4a5568;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            user-select: none;
+        }
+
+        .btn:hover {
+            background-color: #2d3748;
+        }
+
+        .btn:disabled {
+            background-color: #cbd5e0;
+            cursor: not-allowed;
+        }
+
+        #check-btn {
+            background-color: #e6a23c; /* Arancione/Giallo per "Verifica" */
+        }
+        #check-btn:hover {
+            background-color: #cf8f24;
+        }
+
+        .counter {
+            font-weight: bold;
+            color: #4a5568;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Помоги Маттео рассказать о себе! 🍝</h1>
+    <p class="subtitle">Completa l'esercizio e verifica le risposte in tempo reale.</p>
+
+    <!-- SCHEDA 1 -->
+    <div class="slide active" data-slide="0">
+        Mi chiamo Matteo, <span class="hint">(io/essere)</span> 
+        <input type="text" class="cloze-input" data-key="v1" data-answer="sono"> italiano; 
+        <span class="hint">(io/essere)</span> 
+        <input type="text" class="cloze-input" data-key="v2" data-answer="sono"> di Genova, ma 
+        <span class="hint">(io/vivere)</span> 
+        <input type="text" class="cloze-input" data-key="v3" data-answer="vivo"> a Milano con la mia famiglia. 
+        <span class="hint">(io/avere)</span> 
+        <input type="text" class="cloze-input" data-key="v4" data-answer="ho"> quarantatré anni.
+    </div>
+
+    <!-- SCHEDA 2 -->
+    <div class="slide" data-slide="1">
+        Io <span class="hint">(io/abitare)</span> 
+        <input type="text" class="cloze-input" data-key="v5" data-answer="abito"> a Milano, ma adesso 
+        <span class="hint">(io/essere)</span> 
+        <input type="text" class="cloze-input" data-key="v6" data-answer="sono"> ad Almaty per affari. 
+        <span class="hint">(io/viaggiare)</span> 
+        <input type="text" class="cloze-input" data-key="v7" data-answer="viaggio"> spesso per lavoro; 
+        <span class="hint">(io/essere)</span> 
+        <input type="text" class="cloze-input" data-key="v8" data-answer="sono"> un commerciante di spaghetti al pesto.
+    </div>
+
+    <!-- SCHEDA 3 -->
+    <div class="slide" data-slide="2">
+        Di solito <span class="hint">(io/viaggiare)</span> 
+        <input type="text" class="cloze-input" data-key="v9" data-answer="viaggio"> in macchina o in aereo, ma se 
+        <span class="hint">(io/avere)</span> 
+        <input type="text" class="cloze-input" data-key="v10" data-answer="ho"> fretta, 
+        <span class="hint">(io/prendere)</span> 
+        <input type="text" class="cloze-input" data-key="v11" data-answer="prendo"> sempre l'aereo... non il cammello!
+    </div>
+
+    <!-- SCHEDA 4 -->
+    <div class="slide" data-slide="3">
+        <span class="hint">(io/conoscere)</span> 
+        <input type="text" class="cloze-input" data-key="v12" data-answer="conosco"> bene Almaty: 
+        <span class="hint">(io/conoscere)</span> 
+        <input type="text" class="cloze-input" data-key="v13" data-answer="conosco"> Medeo e il Mercato Zelyony Bazar. 
+        <span class="hint">(io/conoscere)</span> 
+        <input type="text" class="cloze-input" data-key="v14" data-answer="conosco"> molti negozi e ristoranti. 
+        <span class="hint">(io/conoscere)</span> 
+        <input type="text" class="cloze-input" data-key="v15" data-answer="conosco"> anche molte persone ad Almaty.
+    </div>
+
+    <!-- SCHEDA 5 -->
+    <div class="slide" data-slide="4">
+        Ancora non <span class="hint">(io/parlare)</span> 
+        <input type="text" class="cloze-input" data-key="v16" data-answer="parlo"> kazako; 
+        <span class="hint">(io/parlare)</span> 
+        <input type="text" class="cloze-input" data-key="v17" data-answer="parlo"> solo italiano e un po' di russo. Per comunicare, come tutti gli italiani, 
+        <span class="hint">(io/usare)</span> 
+        <input type="text" class="cloze-input" data-key="v18" data-answer="uso"> le mani e 
+        <span class="hint">(io/fare)</span> 
+        <input type="text" class="cloze-input" data-key="v19" data-answer="faccio"> i gesti.
+    </div>
+
+    <!-- SCHEDA 6 -->
+    <div class="slide" data-slide="5">
+        Quando <span class="hint">(io/essere)</span> 
+        <input type="text" class="cloze-input" data-key="v20" data-answer="sono"> ad Almaty, 
+        <span class="hint">(io/abitare)</span> 
+        <input type="text" class="cloze-input" data-key="v21" data-answer="abito"> in albergo. La sera, dopo il lavoro, se 
+        <span class="hint">(io/avere)</span> 
+        <input type="text" class="cloze-input" data-key="v22" data-answer="ho"> fame, 
+        <span class="hint">(io/mangiare)</span> 
+        <input type="text" class="cloze-input" data-key="v23" data-answer="mangio"> il beshbarmak. Se 
+        <span class="hint">(io/avere)</span> 
+        <input type="text" class="cloze-input" data-key="v24" data-answer="ho"> sete, 
+        <span class="hint">(io/bere)</span> 
+        <input type="text" class="cloze-input" data-key="v25" data-answer="bevo"> il kumys.
+    </div>
+
+    <!-- SCHEDA 7 -->
+    <div class="slide" data-slide="6">
+        Almaty <span class="hint">(lei/essere)</span> 
+        <input type="text" class="cloze-input" data-key="v26" data-answer="è"> una bella città. Le strade 
+        <span class="hint">(loro/essere)</span> 
+        <input type="text" class="cloze-input" data-key="v27" data-answer="sono"> piene di gente, soprattutto famiglie con bambini! Gli almatesi 
+        <span class="hint">(loro/essere)</span> 
+        <input type="text" class="cloze-input" data-key="v28" data-answer="sono"> molto amichevoli e gentili.
+        <br><br>
+        Adesso <span class="hint">(io/essere)</span> 
+        <input type="text" class="cloze-input" data-key="v29" data-answer="sono"> ad Almaty, ma domani 
+        <span class="hint">(io/tornare)</span> 
+        <input type="text" class="cloze-input" data-key="v30" data-answer="torno"> a Milano, dove 
+        <span class="hint">(io/avere)</span> 
+        <input type="text" class="cloze-input" data-key="v31" data-answer="ho"> molte cose da fare per presentare il mio nuovo piatto: il beshbarmak al pesto. 😊
+    </div>
+
+    <!-- NAVIGAZIONE -->
+    <div class="navigation">
+        <button class="btn" id="prev-btn" disabled>Indietro</button>
+        <button class="btn" id="check-btn">Verifica</button>
+        <span class="counter" id="slide-counter">Scheda 1 di 7</span>
+        <button class="btn" id="next-btn">Avanti</button>
+    </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+  const firebaseConfig = {
+    databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app/"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  
+  const textRef = ref(db, 'esercizio_matteo/testi');
+  const navRef = ref(db, 'esercizio_matteo/navigazione');
+  const checkRef = ref(db, 'esercizio_matteo/verifica');
+
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.slide');
+  const totalSlides = slides.length;
+
+  const prevBtn = document.getElementById('prev-btn');
+  const nextBtn = document.getElementById('next-btn');
+  const checkBtn = document.getElementById('check-btn');
+  const counter = document.getElementById('slide-counter');
+
+  function showSlide(index) {
+      slides.forEach(s => s.classList.remove('active'));
+      document.querySelector(`[data-slide="${index}"]`).classList.add('active');
+      counter.textContent = `Scheda ${index + 1} di ${totalSlides}`;
+      prevBtn.disabled = index === 0;
+      nextBtn.disabled = index === totalSlides - 1;
+      currentSlide = index;
+  }
+
+  // Funzione locale per colorare gli input in base alla correttezza
+  function checkAnswersLocally() {
+      const activeSlide = document.querySelector(`.slide[data-slide="${currentSlide}"]`);
+      const inputs = activeSlide.querySelectorAll('.cloze-input');
+      
+      inputs.forEach(input => {
+          const correctAnswer = input.getAttribute('data-answer').toLowerCase().trim();
+          const studentAnswer = input.value.toLowerCase().trim();
+          
+          if (studentAnswer === "") {
+              input.classList.remove('correct', 'wrong'); // lascia neutra se vuota
+          } else if (studentAnswer === correctAnswer) {
+              input.classList.remove('wrong');
+              input.classList.add('correct');
+          } else {
+              input.classList.remove('correct');
+              input.classList.add('wrong');
+          }
+      });
+  }
+
+  // Al cambio di scheda, ripulisce lo stato dei colori per la nuova scheda (o mantiene se già controllata)
+  function clearColorsForSlide() {
+      const activeSlide = document.querySelector(`.slide[data-slide="${currentSlide}"]`);
+      activeSlide.querySelectorAll('.cloze-input').forEach(input => {
+          input.classList.remove('correct', 'wrong');
+      });
+  }
+
+  // --- CONTROLLI DI NAVIGAZIONE ---
+  nextBtn.addEventListener('click', () => {
+      if (currentSlide < totalSlides - 1) {
+          set(navRef, currentSlide + 1);
+          set(checkRef, Date.now()); // Resetta/Innesca un evento neutro per la verifica al cambio scheda
+      }
+  });
+
+  prevBtn.addEventListener('click', () => {
+      if (currentSlide > 0) {
+          set(navRef, currentSlide - 1);
+          set(checkRef, Date.now());
+      }
+  });
+
+  onValue(navRef, (snapshot) => {
+      const slideIndex = snapshot.val();
+      if (slideIndex !== null) {
+          showSlide(Number(slideIndex));
+      }
+  });
+
+  // --- CONTROLLO VERIFICA (SINCRONIZZATO) ---
+  checkBtn.addEventListener('click', () => {
+      // Invia un timestamp sul db per dire a tutti i client di attivare la verifica sulla scheda corrente
+      set(checkRef, Date.now());
+  });
+
+  onValue(checkRef, (snapshot) => {
+      if (snapshot.val() !== null) {
+          checkAnswersLocally();
+      }
+  });
+
+  // --- INPUT TESTO ---
+  document.querySelectorAll('.cloze-input').forEach(input => {
+      input.addEventListener('input', (e) => {
+          // Se lo studente ricomincia a scrivere, togliamo il rosso/verde per rimetterlo neutro
+          e.target.classList.remove('correct', 'wrong');
+          
+          const key = e.target.getAttribute('data-key');
+          const val = e.target.value;
+          set(ref(db, 'esercizio_matteo/testi/' + key), val);
+      });
+  });
+
+  onValue(textRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+          for (const key in data) {
+              const input = document.querySelector(`[data-key="${key}"]`);
+              if (input && input !== document.activeElement) {
+                  input.value = data[key];
+              }
+          }
+      }
+  });
+</script>
+
+</body>
+</html>
