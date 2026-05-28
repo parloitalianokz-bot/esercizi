@@ -40,7 +40,8 @@
 
  .header-actions {
  display: flex;
- justify-content: flex-end;
+ justify-content: space-between;
+ align-items: center;
  margin-bottom: 15px;
  }
 
@@ -58,6 +59,22 @@
 
  .btn-reset:hover {
  background-color: #c53030;
+ }
+
+ .btn-help {
+ background-color: #3182ce;
+ color: white;
+ border: none;
+ padding: 6px 15px;
+ font-size: 0.85rem;
+ font-weight: bold;
+ border-radius: 6px;
+ cursor: pointer;
+ transition: background 0.2s;
+ }
+
+ .btn-help:hover {
+ background-color: #2b6cb0;
  }
 
  h1 {
@@ -183,6 +200,98 @@
  font-weight: bold;
  color: #4a5568;
  }
+
+ /* --- STILI PER IL POP-UP (MODAL) --- */
+ .modal-overlay {
+ position: fixed;
+ top: 0;
+ left: 0;
+ width: 100%;
+ height: 100%;
+ background: rgba(0, 0, 0, 0.5);
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ z-index: 1000;
+ opacity: 0;
+ pointer-events: none;
+ transition: opacity 0.3s ease;
+ }
+
+ .modal-overlay.open {
+ opacity: 1;
+ pointer-events: auto;
+ }
+
+ .modal-content {
+ background: white;
+ padding: 30px;
+ border-radius: 12px;
+ width: 90%;
+ max-width: 650px;
+ max-height: 85vh;
+ overflow-y: auto;
+ box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+ position: relative;
+ animation: slideUp 0.3s ease;
+ }
+
+ @keyframes slideUp {
+ from { transform: translateY(20px); }
+ to { transform: translateY(0); }
+ }
+
+ .modal-close {
+ position: absolute;
+ top: 15px;
+ right: 15px;
+ background: #edf2f7;
+ border: none;
+ border-radius: 50%;
+ width: 30px;
+ height: 30px;
+ font-weight: bold;
+ cursor: pointer;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ }
+
+ .modal-close:hover {
+ background: #cbd5e0;
+ }
+
+ .grammar-title {
+ color: #2b6cb0;
+ border-bottom: 2px solid #ebf8ff;
+ padding-bottom: 5px;
+ margin-top: 20px;
+ margin-bottom: 10px;
+ font-size: 1.3rem;
+ }
+
+ .grammar-table {
+ width: 100%;
+ border-collapse: collapse;
+ margin-bottom: 15px;
+ font-size: 0.95rem;
+ }
+
+ .grammar-table th, .grammar-table td {
+ border: 1px solid #e2e8f0;
+ padding: 8px 12px;
+ text-align: center;
+ }
+
+ .grammar-table th {
+ background-color: #f7fafc;
+ color: #4a5568;
+ }
+
+ .highlight-end {
+ color: #db2777;
+ font-weight: bold;
+ }
  </style>
 </head>
 <body>
@@ -190,6 +299,7 @@
 <div class="container">
  <div class="header-actions">
  <button class="btn-reset" id="reset-btn">🔄 Resetta Esercizio</button>
+ <button class="btn-help" id="open-modal-btn">💡 Grammatica / Грамматика</button>
  </div>
 
  <h1>Расскажи о Маттео! 👨‍💼💼</h1>
@@ -267,6 +377,118 @@
  </div>
 </div>
 
+<!-- --- POP-UP DI CONSULTAZIONE (MODAL) --- -->
+<div class="modal-overlay" id="grammar-modal">
+ <div class="modal-content">
+ <button class="modal-close" id="close-modal-btn">×</button>
+ 
+ <h2 style="text-align: center; color: #2b6cb0; margin-top: 0;">Spiegazione dei verbi 📋</h2>
+ <p style="font-size: 0.9rem; color: #4a5568; font-style: italic; text-align: center; margin-bottom: 20px;">
+ Возьмите основу глагола (PARLARE = PARL + ARE) и добавьте нужное окончание.
+ </p>
+
+ <div class="grammar-title">Глаголы регулярные (Verbi regolari)</div>
+ <table class="grammar-table">
+ <thead>
+ <tr>
+ <th>Persona</th>
+ <th>-ARE</th>
+ <th>-ERE</th>
+ <th>-IRE</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>IO</strong></td>
+ <td class="highlight-end">-O</td>
+ <td class="highlight-end">-O</td>
+ <td class="highlight-end">-O</td>
+ </tr>
+ <tr>
+ <td><strong>TU</strong></td>
+ <td class="highlight-end">-I</td>
+ <td class="highlight-end">-I</td>
+ <td class="highlight-end">-I</td>
+ </tr>
+ <tr>
+ <td><strong>LUI / LEI</strong></td>
+ <td class="highlight-end">-A</td>
+ <td class="highlight-end">-E</td>
+ <td class="highlight-end">-E</td>
+ </tr>
+ <tr>
+ <td><strong>NOI</strong></td>
+ <td class="highlight-end">-IAMO</td>
+ <td class="highlight-end">-IAMO</td>
+ <td class="highlight-end">-IAMO</td>
+ </tr>
+ <tr>
+ <td><strong>VOI</strong></td>
+ <td class="highlight-end">-ATE</td>
+ <td class="highlight-end">-ETE</td>
+ <td class="highlight-end">-ITE</td>
+ </tr>
+ <tr>
+ <td><strong>LORO</strong></td>
+ <td class="highlight-end">-ANO</td>
+ <td class="highlight-end">-ONO</td>
+ <td class="highlight-end">-ONO</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <div class="grammar-title">Глаголы нерегулярные (Verbi irregolari)</div>
+ <table class="grammar-table">
+ <thead>
+ <tr>
+ <th>Persona</th>
+ <th>ESSERE</th>
+ <th>AVERE</th>
+ <th>BERE</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>IO</strong></td>
+ <td>sono</td>
+ <td>ho</td>
+ <td>bevo</td>
+ </tr>
+ <tr>
+ <td><strong>TU</strong></td>
+ <td>sei</td>
+ <td>hai</td>
+ <td>bevi</td>
+ </tr>
+ <tr>
+ <td><strong>LUI / LEI</strong></td>
+ <td style="background-color: #fef3c7; font-weight: bold;">è</td>
+ <td style="background-color: #fef3c7; font-weight: bold;">ha</td>
+ <td style="background-color: #fef3c7; font-weight: bold;">beve</td>
+ </tr>
+ <tr>
+ <td><strong>NOI</strong></td>
+ <td>siamo</td>
+ <td>abbiamo</td>
+ <td>beviamo</td>
+ </tr>
+ <tr>
+ <td><strong>VOI</strong></td>
+ <td>siete</td>
+ <td>avete</td>
+ <td>bevente</td>
+ </tr>
+ <tr>
+ <td><strong>LORO</strong></td>
+ <td style="background-color: #e0f2fe; font-weight: bold;">sono</td>
+ <td style="background-color: #e0f2fe; font-weight: bold;">hanno</td>
+ <td style="background-color: #e0f2fe; font-weight: bold;">bevono</td>
+ </tr>
+ </tbody>
+ </table>
+ </div>
+</div>
+
 <script type="module">
  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
  import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -278,7 +500,6 @@
  const app = initializeApp(firebaseConfig);
  const db = getDatabase(app);
  
- // STANZA SPECIFICA PER QUESTO ESERCIZIO (u3_esC)
  const roomPath = 'u3_esC';
  const textRef = ref(db, roomPath + '/testi');
  const navRef = ref(db, roomPath + '/navigazione');
@@ -293,6 +514,17 @@
  const checkBtn = document.getElementById('check-btn');
  const resetBtn = document.getElementById('reset-btn');
  const counter = document.getElementById('slide-counter');
+
+ // --- GESTIONE POP-UP ---
+ const modal = document.getElementById('grammar-modal');
+ const openModalBtn = document.getElementById('open-modal-btn');
+ const closeModalBtn = document.getElementById('close-modal-btn');
+
+ openModalBtn.addEventListener('click', () => modal.classList.add('open'));
+ closeModalBtn.addEventListener('click', () => modal.classList.remove('open'));
+ modal.addEventListener('click', (e) => {
+ if(e.target === modal) modal.classList.remove('open');
+ });
 
  function showSlide(index) {
  slides.forEach(s => s.classList.remove('active'));
