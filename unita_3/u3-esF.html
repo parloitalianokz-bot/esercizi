@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Esercizio Interattivo Preposizioni 🇮🇹</title>
+ <style>
+ :root {
+ --primary: #009246;
+ --secondary: #cf2b36;
+ --bg: #f8f9fa;
+ --text: #2d3748;
+ --correct: #28a745;
+ --wrong: #dc3545;
+ }
+
+ body {
+ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+ background-color: var(--bg);
+ color: var(--text);
+ line-height: 1.8;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ min-height: 100vh;
+ margin: 0;
+ padding: 20px;
+ box-sizing: border-box;
+ }
+
+ .container {
+ width: 100%;
+ max-width: 750px;
+ background: white;
+ padding: 40px;
+ border-radius: 15px;
+ box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+ position: relative;
+ }
+
+ .header-actions {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ margin-bottom: 15px;
+ }
+
+ .btn-reset {
+ background-color: #e53e3e;
+ color: white;
+ border: none;
+ padding: 6px 15px;
+ font-size: 0.85rem;
+ font-weight: bold;
+ border-radius: 6px;
+ cursor: pointer;
+ transition: background 0.2s;
+ }
+
+ .btn-reset:hover {
+ background-color: #c53030;
+ }
+
+ .btn-help {
+ background-color: #3182ce;
+ color: white;
+ border: none;
+ padding: 6px 15px;
+ font-size: 0.85rem;
+ font-weight: bold;
+ border-radius: 6px;
+ cursor: pointer;
+ transition: background 0.2s;
+ }
+
+ .btn-help:hover {
+ background-color: #2b6cb0;
+ }
+
+ h1 {
+ text-align: center;
+ color: var(--primary);
+ font-size: 2rem;
+ margin-top: 0;
+ margin-bottom: 5px;
+ }
+
+ .subtitle {
+ text-align: center;
+ font-style: italic;
+ color: #718096;
+ margin-bottom: 35px;
+ font-size: 0.95rem;
+ }
+
+ .slide {
+ display: none;
+ min-height: 150px;
+ font-size: 1.25rem;
+ text-align: center;
+ animation: fadeIn 0.3s ease;
+ }
+
+ .slide.active {
+ display: block;
+ }
+
+ @keyframes fadeIn {
+ from { opacity: 0; transform: translateY(5px); }
+ to { opacity: 1; transform: translateY(0); }
+ }
+
+ .exercise-image {
+ display: block;
+ max-width: 100%;
+ max-height: 280px;
+ height: auto;
+ border-radius: 8px;
+ margin: 0 auto 25px auto;
+ box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+ object-fit: contain;
+ }
+
+ .exercise-text {
+ text-align: justify;
+ line-height: 2;
+ font-size: 1.25rem;
+ margin-top: 15px;
+ }
+
+ .cloze-input {
+ border: none;
+ border-bottom: 2px dashed #cbd5e0;
+ background-color: #f7fafc;
+ padding: 2px 4px;
+ font-size: 1.2rem;
+ color: var(--text);
+ font-weight: bold;
+ width: 85px;
+ text-align: center;
+ transition: all 0.3s ease;
+ border-radius: 4px;
+ display: inline-block;
+ }
+
+ .cloze-input:focus {
+ outline: none;
+ border-bottom: 2px solid var(--primary);
+ background-color: #e6fffa;
+ }
+
+ .cloze-input.correct {
+ color: var(--correct) !important;
+ border-bottom: 2px solid var(--correct) !important;
+ background-color: #e6ffed !important;
+ }
+
+ .cloze-input.wrong {
+ color: var(--wrong) !important;
+ border-bottom: 2px solid var(--wrong) !important;
+ background-color: #ffeef0 !important;
+ }
+
+ .navigation {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ margin-top: 40px;
+ padding-top: 20px;
+ border-top: 1px solid #edf2f7;
+ gap: 10px;
+ }
+
+ .btn {
+ background-color: #4a5568;
+ color: white;
+ border: none;
+ padding: 10px 20px;
+ font-size: 1rem;
+ font-weight: bold;
+ border-radius: 8px;
+ cursor: pointer;
+ transition: background 0.2s;
+ user-select: none;
+ }
+
+ .btn:hover {
+ background-color: #2d3748;
+ }
+
+ .btn:disabled {
+ background-color: #cbd5e0;
+ cursor: not-allowed;
+ opacity: 0.6;
+ }
+
+ #next-btn {
+ background-color: var(--primary);
+ }
+ #next-btn:hover {
+ background-color: #007a3a;
+ }
+
+ #check-btn {
+ background-color: #e6a23c;
+ }
+ #check-btn:hover {
+ background-color: #cf8f24;
+ }
+
+ .counter {
+ font-weight: bold;
+ color: #4a5568;
+ }
+
+ .modal-overlay {
+ position: fixed;
+ top: 0;
+ left: 0;
+ width: 100%;
+ height: 100%;
+ background: rgba(0, 0, 0, 0.5);
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ z-index: 1000;
+ opacity: 0;
+ pointer-events: none;
+ transition: opacity 0.3s ease;
+ }
+
+ .modal-overlay.open {
+ opacity: 1;
+ pointer-events: auto;
+ }
+
+ .modal-content {
+ background: white;
+ padding: 30px;
+ border-radius: 12px;
+ width: 90%;
+ max-width: 500px;
+ box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+ position: relative;
+ text-align: center;
+ }
+
+ .modal-close {
+ position: absolute;
+ top: 15px;
+ right: 15px;
+ background: #edf2f7;
+ border: none;
+ border-radius: 50%;
+ width: 30px;
+ height: 30px;
+ font-weight: bold;
+ cursor: pointer;
+ }
+
+ .preposizioni-list {
+ display: flex;
+ flex-wrap: wrap;
+ justify-content: center;
+ gap: 10px;
+ margin-top: 20px;
+ }
+
+ .prep-badge {
+ background-color: #ebf8ff;
+ color: #2b6cb0;
+ font-weight: bold;
+ font-size: 1.2rem;
+ padding: 8px 16px;
+ border-radius: 6px;
+ border: 1px solid #bee3f8;
+ }
+ </style>
+</head>
+<body>
+
+<div class="container">
+ <div class="header-actions">
+ <button class="btn-reset" id="reset-btn">🔄 Resetta Esercizio</button>
+ <button class="btn-help" id="open-modal-btn">💡 Spia (Предлоги)</button>
+ </div>
+
+ <h1>Предлоги: маленькие, но важные! 🇮🇹</h1>
+ <p class="subtitle">Guarda l'immagine e completa le frasi inserendo le preposizioni corrette.</p>
+
+ <div class="slide active" data-slide="0">
+ <img src="esF/1.jpg" alt="Esercizio 1" class="exercise-image">
+ <div class="exercise-text">
+ L'Università La Sapienza si trova <input type="text" class="cloze-input" data-key="p1" data-answer="a"> Roma, <input type="text" class="cloze-input" data-key="p2" data-answer="in"> Italia. È un'università grande, <input type="text" class="cloze-input" data-key="p3" data-answer="con"> molte facoltà; è comoda <input type="text" class="cloze-input" data-key="p4" data-answer="per"> gli studenti, perché è <input type="text" class="cloze-input" data-key="p5" data-answer="in"> centro.
+ </div>
+ </div>
+
+ <div class="slide" data-slide="1">
+ <img src="esF/2.jpg" alt="Esercizio 2" class="exercise-image">
+ <div class="exercise-text">
+ La Signora Rossi è italiana, è <input type="text" class="cloze-input" data-key="p6" data-answer="di|a"> Milano; è una insegnante <input type="text" class="cloze-input" data-key="p7" data-answer="di"> pianoforte.
+ </div>
+ </div>
+
+ <div class="slide" data-slide="2">
+ <img src="esF/3.jpg" alt="Esercizio 3" class="exercise-image">
+ <div class="exercise-text">
+ Di solito vado <input type="text" class="cloze-input" data-key="p8" data-answer="al|a"> lavoro <input type="text" class="cloze-input" data-key="p9" data-answer="in"> macchina, ma a volte vado <input type="text" class="cloze-input" data-key="p10" data-answer="a"> piedi.
+ </div>
+ </div>
+
+ <div class="slide" data-slide="3">
+ <img src="esF/4.jpg" alt="Esercizio 4" class="exercise-image">
+ <div class="exercise-text">
+ Quando sono <input type="text" class="cloze-input" data-key="p11" data-answer="ad|a"> Almaty, abito <input type="text" class="cloze-input" data-key="p12" data-answer="in"> albergo e mangio <input type="text" class="cloze-input" data-key="p13" data-answer="al"> restaurante.
+ </div>
+ </div>
+
+ <div class="slide" data-slide="4">
+ <img src="esF/5.jpg" alt="Esercizio 5" class="exercise-image">
+ <div class="exercise-text">
+ Il gatto è <input type="text" class="cloze-input" data-key="p14" data-answer="in"> camera <input type="text" class="cloze-input" data-key="p15" data-answer="da|sul"> letto, il cane è <input type="text" class="cloze-input" data-key="p16" data-answer="in"> soggiorno <input type="text" class="cloze-input" data-key="p17" data-answer="sul"> divano.
+ </div>
+ </div>
+
+ <div class="slide" data-slide="5">
+ <img src="esF/6.jpg" alt="Esercizio 6" class="exercise-image">
+ <div class="exercise-text">
+ <input type="text" class="cloze-input" data-key="p18" data-answer="al"> ristorante di solito mangio un piatto <input type="text" class="cloze-input" data-key="p19" data-answer="di|con"> spaghetti <input type="text" class="cloze-input" data-key="p20" data-answer="al|con"> pesto e bevo una bottiglia <input type="text" class="cloze-input" data-key="p21" data-answer="di|con"> vino rosso.
+ </div>
+ </div>
+
+ <div class="slide" data-slide="6">
+ <img src="esF/7.jpg" alt="Esercizio 7" class="exercise-image">
+ <div class="exercise-text">
+ La mia amica Maria è spagnola, è <input type="text" class="cloze-input" data-key="p22" data-answer="di|a"> Madrid, ma abita <input type="text" class="cloze-input" data-key="p23" data-answer="a"> Barcellona. È una studentessa <input type="text" class="cloze-input" data-key="p24" data-answer="di|in"> medicina.
+ </div>
+ </div>
+
+ <div class="slide" data-slide="7">
+ <img src="esF/8.jpg" alt="Esercizio 8" class="exercise-image">
+ <div class="exercise-text">
+ Preferisco andare al lavoro <input type="text" class="cloze-input" data-key="p25" data-answer="in"> bicicletta, ma a volte vado <input type="text" class="cloze-input" data-key="p26" data-answer="in|con l'"> autobus.
+ </div>
+ </div>
+
+ <div class="slide" data-slide="8">
+ <img src="esF/9.jpg" alt="Esercizio 9" class="exercise-image">
+ <div class="exercise-text">
+ Oggi vado <input type="text" class="cloze-input" data-key="p27" data-answer="a|in"> casa <input type="text" class="cloze-input" data-key="p28" data-answer="di|da"> Marco <input type="text" class="cloze-input" data-key="p29" data-answer="per|a"> giocare <input type="text" class="cloze-input" data-key="p30" data-answer="con"> lui.
+ </div>
+ </div>
+
+ <div class="slide" data-slide="9">
+ <img src="esF/10.jpg" alt="Esercizio 10" class="exercise-image">
+ <div class="exercise-text">
+ <input type="text" class="cloze-input" data-key="p31" data-answer="al"> bar, prendo una tazzina <input type="text" class="cloze-input" data-key="p32" data-answer="di"> caffè e una fetta <input type="text" class="cloze-input" data-key="p33" data-answer="di"> torta. ☕🍰
+ </div>
+ </div>
+
+ <div class="navigation">
+ <button class="btn" id="prev-btn" disabled>Indietro</button>
+ <button class="btn" id="check-btn">Verifica</button>
+ <span class="counter" id="slide-counter">Scheda 1 di 10</span>
+ <button class="btn" id="next-btn" disabled>Avanti</button>
+ </div>
+</div>
+
+<div class="modal-overlay" id="grammar-modal">
+ <div class="modal-content">
+ <button class="modal-close" id="close-modal-btn">×</button>
+ <h3 style="color: #2b6cb0; margin-top:0;">Preposizioni Semplici 📝</h3>
+ <p style="font-size:0.9rem; color:#4a5568;">Ecco la lista dei blocchi base. Attenzione alle forme articolate (al, sul, del...) se richieste dalla frase!</p>
+ <div class="preposizioni-list">
+ <div class="prep-badge">DI</div>
+ <div class="prep-badge">A / AD</div>
+ <div class="prep-badge">DA</div>
+ <div class="prep-badge">IN</div>
+ <div class="prep-badge">CON</div>
+ <div class="prep-badge">SU</div>
+ <div class="prep-badge">PER</div>
+ <div class="prep-badge">TRA</div>
+ <div class="prep-badge">FRA</div>
+ </div>
+ </div>
+</div>
+
+<script type="module">
+ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+ import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+ const firebaseConfig = {
+ databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app/"
+ };
+
+ const app = initializeApp(firebaseConfig);
+ const db = getDatabase(app);
+ 
+ const roomPath = 'u3_esF';
+ const textRef = ref(db, roomPath + '/testi');
+ const navRef = ref(db, roomPath + '/navigazione');
+ const checkRef = ref(db, roomPath + '/verifica');
+
+ let currentSlide = 0;
+ const slides = document.querySelectorAll('.slide');
+ const totalSlides = slides.length;
+
+ const prevBtn = document.getElementById('prev-btn');
+ const nextBtn = document.getElementById('next-btn');
+ const checkBtn = document.getElementById('check-btn');
+ const resetBtn = document.getElementById('reset-btn');
+ const counter = document.getElementById('slide-counter');
+
+ const modal = document.getElementById('grammar-modal');
+ const openModalBtn = document.getElementById('open-modal-btn');
+ const closeModalBtn = document.getElementById('close-modal-btn');
+
+ openModalBtn.addEventListener('click', () => modal.classList.add('open'));
+ closeModalBtn.addEventListener('click', () => modal.classList.remove('open'));
+ modal.addEventListener('click', (e) => { if(e.target === modal) modal.classList.remove('open'); });
+
+ function showSlide(index) {
+ slides.forEach(s => s.classList.remove('active'));
+ document.querySelector(`[data-slide="${index}"]`).classList.add('active');
+ counter.textContent = `Scheda ${index + 1} di ${totalSlides}`;
+ prevBtn.disabled = index === 0;
+ nextBtn.disabled = true;
+ currentSlide = index;
+ }
+
+ function checkAnswersLocally() {
+ const activeSlide = document.querySelector(`.slide[data-slide="${currentSlide}"]`);
+ const inputs = activeSlide.querySelectorAll('.cloze-input');
+ let allCorrect = true;
+ 
+ inputs.forEach(input => {
+ const correctAnswers = input.getAttribute('data-answer').toLowerCase().split('|').map(ans => ans.trim());
+ const studentAnswer = input.value.toLowerCase().trim();
+ 
+ if (studentAnswer === "") {
+ input.classList.remove('correct', 'wrong');
+ allCorrect = false;
+ } else if (correctAnswers.includes(studentAnswer)) {
+ input.classList.remove('wrong');
+ input.classList.add('correct');
+ } else {
+ input.classList.remove('correct');
+ input.classList.add('wrong');
+ allCorrect = false;
+ }
+ });
+
+ if (allCorrect && currentSlide < totalSlides - 1) {
+ nextBtn.disabled = false;
+ } else {
+ nextBtn.disabled = true;
+ }
+ }
+
+ nextBtn.addEventListener('click', () => {
+ if (currentSlide < totalSlides - 1) {
+ set(navRef, currentSlide + 1);
+ set(checkRef, null);
+ }
+ });
+
+ prevBtn.addEventListener('click', () => {
+ if (currentSlide > 0) {
+ set(navRef, currentSlide - 1);
+ set(checkRef, null);
+ }
+ });
+
+ onValue(navRef, (snapshot) => {
+ const slideIndex = snapshot.val();
+ if (slideIndex !== null) {
+ showSlide(Number(slideIndex));
+ } else {
+ showSlide(0);
+ }
+ });
+
+ checkBtn.addEventListener('click', () => {
+ set(checkRef, Date.now());
+ });
+
+ onValue(checkRef, (snapshot) => {
+ if (snapshot.val() !== null) {
+ checkAnswersLocally();
+ } else {
+ const activeSlide = document.querySelector(`.slide[data-slide="${currentSlide}"]`);
+ if(activeSlide) {
+ activeSlide.querySelectorAll('.cloze-input').forEach(i => i.classList.remove('correct', 'wrong'));
+ }
+ }
+ });
+
+ resetBtn.addEventListener('click', () => {
+ if (confirm("Vuoi davvero svuotare tutti i campi e ricominciare da capo per questo esercizio?")) {
+ remove(ref(db, roomPath)).then(() => {
+ document.querySelectorAll('.cloze-input').forEach(i => {
+ i.value = "";
+ i.classList.remove('correct', 'wrong');
+ });
+ alert("Esercizio azzerato con successo!");
+ });
+ }
+ });
+
+ document.querySelectorAll('.cloze-input').forEach(input => {
+ input.addEventListener('input', (e) => {
+ e.target.classList.remove('correct', 'wrong');
+ nextBtn.disabled = true;
+ 
+ const key = e.target.getAttribute('data-key');
+ const val = e.target.value;
+ set(ref(db, roomPath + '/testi/' + key), val);
+ });
+ });
+
+ onValue(textRef, (snapshot) => {
+ const data = snapshot.val();
+ if (data) {
+ for (const key in data) {
+ const input = document.querySelector(`[data-key="${key}"]`);
+ if (input) {
+ input.value = data[key];
+ }
+ }
+ } else {
+ document.querySelectorAll('.cloze-input').forEach(i => i.value = "");
+ }
+ });
+</script>
+
+</body>
+</html>
