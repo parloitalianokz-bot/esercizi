@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Esercizio Interattivo 🇮🇹</title>
+ <style>
+ :root {
+ --primary: #009246;
+ --secondary: #cf2b36;
+ --bg: #f8f9fa;
+ --text: #2d3748;
+ --correct: #28a745;
+ --wrong: #dc3545;
+ }
+
+ body {
+ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+ background-color: var(--bg);
+ color: var(--text);
+ line-height: 1.8;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ min-height: 100vh;
+ margin: 0;
+ padding: 20px;
+ box-sizing: border-box;
+ }
+
+ .container {
+ width: 100%;
+ max-width: 750px;
+ background: white;
+ padding: 40px;
+ border-radius: 15px;
+ box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+ position: relative;
+ }
+
+ .header-actions {
+ display: flex;
+ justify-content: flex-end;
+ margin-bottom: 15px;
+ }
+
+ .btn-reset {
+ background-color: #e53e3e;
+ color: white;
+ border: none;
+ padding: 6px 15px;
+ font-size: 0.85rem;
+ font-weight: bold;
+ border-radius: 6px;
+ cursor: pointer;
+ transition: background 0.2s;
+ }
+
+ .btn-reset:hover {
+ background-color: #c53030;
+ }
+
+ h1 {
+ text-align: center;
+ color: var(--primary);
+ font-size: 2rem;
+ margin-top: 0;
+ margin-bottom: 5px;
+ }
+
+ .subtitle {
+ text-align: center;
+ font-style: italic;
+ color: #718096;
+ margin-bottom: 35px;
+ font-size: 0.95rem;
+ }
+
+ .slide {
+ display: none;
+ min-height: 150px;
+ font-size: 1.25rem;
+ text-align: justify;
+ animation: fadeIn 0.3s ease;
+ }
+
+ .slide.active {
+ display: block;
+ }
+
+ @keyframes fadeIn {
+ from { opacity: 0; transform: translateY(5px); }
+ to { opacity: 1; transform: translateY(0); }
+ }
+
+ .cloze-input {
+ border: none;
+ border-bottom: 2px dashed #cbd5e0;
+ background-color: #f7fafc;
+ padding: 2px 8px;
+ font-size: 1.2rem;
+ color: var(--text);
+ font-weight: bold;
+ width: 130px;
+ text-align: center;
+ transition: all 0.3s ease;
+ border-radius: 4px;
+ }
+
+ .cloze-input:focus {
+ outline: none;
+ border-bottom: 2px solid var(--primary);
+ background-color: #e6fffa;
+ }
+
+ .cloze-input.correct {
+ color: var(--correct) !important;
+ border-bottom: 2px solid var(--correct) !important;
+ background-color: #e6ffed !important;
+ }
+
+ .cloze-input.wrong {
+ color: var(--wrong) !important;
+ border-bottom: 2px solid var(--wrong) !important;
+ background-color: #ffeef0 !important;
+ }
+
+ .hint {
+ font-size: 0.85rem;
+ color: #a0aec0;
+ font-weight: normal;
+ display: inline-block;
+ }
+
+ .navigation {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ margin-top: 40px;
+ padding-top: 20px;
+ border-top: 1px solid #edf2f7;
+ gap: 10px;
+ }
+
+ .btn {
+ background-color: #4a5568;
+ color: white;
+ border: none;
+ padding: 10px 20px;
+ font-size: 1rem;
+ font-weight: bold;
+ border-radius: 8px;
+ cursor: pointer;
+ transition: background 0.2s;
+ user-select: none;
+ }
+
+ .btn:hover {
+ background-color: #2d3748;
+ }
+
+ .btn:disabled {
+ background-color: #cbd5e0;
+ cursor: not-allowed;
+ opacity: 0.6;
+ }
+
+ #next-btn {
+ background-color: var(--primary);
+ }
+ #next-btn:hover {
+ background-color: #007a3a;
+ }
+
+ #check-btn {
+ background-color: #e6a23c;
+ }
+ #check-btn:hover {
+ background-color: #cf8f24;
+ }
+
+ .counter {
+ font-weight: bold;
+ color: #4a5568;
+ }
+ </style>
+</head>
+<body>
+
+<div class="container">
+ <div class="header-actions">
+ <button class="btn-reset" id="reset-btn">🔄 Resetta Esercizio</button>
+ </div>
+
+ <h1>Расскажи о Маттео! 👨‍💼💼</h1>
+ <p class="subtitle">Completa l'esercizio inserendo i verbi corretti alla terza persona singolare o plurale.</p>
+
+ <!-- SCHEDA 1 -->
+ <div class="slide active" data-slide="0">
+ Si chiama Matteo, <span class="hint">(lui/avere)</span> 
+<input type="text" class="cloze-input" data-key="v1" data-answer="ha"> quarantatré anni, e <span class="hint">(lui/essere)</span> 
+<input type="text" class="cloze-input" data-key="v2" data-answer="è"> italiano. <span class="hint">(lui/essere)</span> 
+<input type="text" class="cloze-input" data-key="v3" data-answer="è"> di Genova, ma da 10 anni <span class="hint">(lui/abitare)</span> 
+<input type="text" class="cloze-input" data-key="v4" data-answer="abita"> a Milano con la sua famiglia.
+ </div>
+
+ <!-- SCHEDA 2 -->
+ <div class="slide" data-slide="1">
+ Lui <span class="hint">(lui/abitare)</span> 
+<input type="text" class="cloze-input" data-key="v5" data-answer="abita"> a Milano, ma adesso <span class="hint">(lui/essere)</span> 
+<input type="text" class="cloze-input" data-key="v6" data-answer="è"> ad Almaty per affari. <span class="hint">(lui/viaggiare)</span> 
+<input type="text" class="cloze-input" data-key="v7" data-answer="viaggia"> spesso per lavoro; <span class="hint">(lui/essere)</span> 
+<input type="text" class="cloze-input" data-key="v8" data-answer="è"> commerciante di spaghetti al pesto.
+ </div>
+
+ <!-- SCHEDA 3 -->
+ <div class="slide" data-slide="2">
+ Di solito <span class="hint">(lui/viaggiare)</span> 
+<input type="text" class="cloze-input" data-key="v9" data-answer="viaggia"> in macchina o in aereo. <span class="hint">(lui/conoscere)</span> 
+<input type="text" class="cloze-input" data-key="v10" data-answer="conosce"> bene Almaty: <span class="hint">(lui/conoscere)</span> 
+<input type="text" class="cloze-input" data-key="v11" data-answer="conosce"> Medeo e il Mercato Zelyony Bazar.
+ </div>
+
+ <!-- SCHEDA 4 -->
+ <div class="slide" data-slide="3">
+ <span class="hint">(lui/conoscere)</span> 
+<input type="text" class="cloze-input" data-key="v12" data-answer="conosce"> molti negozi e ristoranti. <span class="hint">(lui/conoscere)</span> 
+<input type="text" class="cloze-input" data-key="v13" data-answer="conosce"> anche molte persone ad Almaty. Ancora non <span class="hint">(lui/parlare)</span> 
+<input type="text" class="cloze-input" data-key="v14" data-answer="parla"> kazako.
+ </div>
+
+ <!-- SCHEDA 5 -->
+ <div class="slide" data-slide="4">
+ <span class="hint">(lui/parlare)</span> 
+<input type="text" class="cloze-input" data-key="v15" data-answer="parla"> solo italiano e un po' di russo. Per comunicare, come tutti gli italiani, <span class="hint">(lui/usare)</span> 
+<input type="text" class="cloze-input" data-key="v16" data-answer="usa"> le mani e <span class="hint">(lui/fare)</span> 
+<input type="text" class="cloze-input" data-key="v17" data-answer="fa"> i gesti.
+ </div>
+
+ <!-- SCHEDA 6 -->
+ <div class="slide" data-slide="5">
+ Quando <span class="hint">(lui/essere)</span> 
+<input type="text" class="cloze-input" data-key="v18" data-answer="è"> ad Almaty, <span class="hint">(lui/abitare)</span> 
+<input type="text" class="cloze-input" data-key="v19" data-answer="abita"> in albergo. La sera, dopo il lavoro, se <span class="hint">(lui/avere)</span> 
+<input type="text" class="cloze-input" data-key="v20" data-answer="ha"> fame, <span class="hint">(lui/mangiare)</span> 
+<input type="text" class="cloze-input" data-key="v21" data-answer="mangia"> il beshbarmak; se <span class="hint">(lui/avere)</span> 
+<input type="text" class="cloze-input" data-key="v22" data-answer="ha"> sete, <span class="hint">(lui/bere)</span> 
+<input type="text" class="cloze-input" data-key="v23" data-answer="beve"> il kumys.
+ </div>
+
+ <!-- SCHEDA 7 -->
+ <div class="slide" data-slide="6">
+ Almaty <span class="hint">(lei/essere)</span> 
+<input type="text" class="cloze-input" data-key="v24" data-answer="è"> una bella città e gli abitanti di Almaty <span class="hint">(loro/essere)</span> 
+<input type="text" class="cloze-input" data-key="v25" data-answer="sono"> molto amichevoli. Adesso <span class="hint">(lui/essere)</span> 
+<input type="text" class="cloze-input" data-key="v26" data-answer="è"> ad Almaty, ma domani <span class="hint">(lui/tornare)</span> 
+<input type="text" class="cloze-input" data-key="v27" data-answer="torna"> a Milano, dove <span class="hint">(lui/avere)</span> 
+<input type="text" class="cloze-input" data-key="v28" data-answer="ha"> molte cose da fare per presentare il suo nuovo piatto: il beshbarmak al pesto. 🍝😊
+ </div>
+
+ <!-- NAVIGAZIONE -->
+ <div class="navigation">
+ <button class="btn" id="prev-btn" disabled>Indietro</button>
+ <button class="btn" id="check-btn">Verifica</button>
+ <span class="counter" id="slide-counter">Scheda 1 di 7</span>
+ <button class="btn" id="next-btn" disabled>Avanti</button>
+ </div>
+</div>
+
+<script type="module">
+ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+ import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+ const firebaseConfig = {
+ databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app/"
+ };
+
+ const app = initializeApp(firebaseConfig);
+ const db = getDatabase(app);
+ 
+ // STANZA SPECIFICA PER QUESTO ESERCIZIO (u3_esC)
+ const roomPath = 'u3_esC';
+ const textRef = ref(db, roomPath + '/testi');
+ const navRef = ref(db, roomPath + '/navigazione');
+ const checkRef = ref(db, roomPath + '/verifica');
+
+ let currentSlide = 0;
+ const slides = document.querySelectorAll('.slide');
+ const totalSlides = slides.length;
+
+ const prevBtn = document.getElementById('prev-btn');
+ const nextBtn = document.getElementById('next-btn');
+ const checkBtn = document.getElementById('check-btn');
+ const resetBtn = document.getElementById('reset-btn');
+ const counter = document.getElementById('slide-counter');
+
+ function showSlide(index) {
+ slides.forEach(s => s.classList.remove('active'));
+ document.querySelector(`[data-slide="${index}"]`).classList.add('active');
+ counter.textContent = `Scheda ${index + 1} di ${totalSlides}`;
+ prevBtn.disabled = index === 0;
+ nextBtn.disabled = true;
+ currentSlide = index;
+ }
+
+ function checkAnswersLocally() {
+ const activeSlide = document.querySelector(`.slide[data-slide="${currentSlide}"]`);
+ const inputs = activeSlide.querySelectorAll('.cloze-input');
+ let allCorrect = true;
+ 
+ inputs.forEach(input => {
+ const correctAnswer = input.getAttribute('data-answer').toLowerCase().trim();
+ const studentAnswer = input.value.toLowerCase().trim();
+ 
+ if (studentAnswer === "") {
+ input.classList.remove('correct', 'wrong');
+ allCorrect = false;
+ } else if (studentAnswer === correctAnswer) {
+ input.classList.remove('wrong');
+ input.classList.add('correct');
+ } else {
+ input.classList.remove('correct');
+ input.classList.add('wrong');
+ allCorrect = false;
+ }
+ });
+
+ if (allCorrect && currentSlide < totalSlides - 1) {
+ nextBtn.disabled = false;
+ } else {
+ nextBtn.disabled = true;
+ }
+ }
+
+ nextBtn.addEventListener('click', () => {
+ if (currentSlide < totalSlides - 1) {
+ set(navRef, currentSlide + 1);
+ set(checkRef, null);
+ }
+ });
+
+ prevBtn.addEventListener('click', () => {
+ if (currentSlide > 0) {
+ set(navRef, currentSlide - 1);
+ set(checkRef, null);
+ }
+ });
+
+ onValue(navRef, (snapshot) => {
+ const slideIndex = snapshot.val();
+ if (slideIndex !== null) {
+ showSlide(Number(slideIndex));
+ } else {
+ showSlide(0);
+ }
+ });
+
+ checkBtn.addEventListener('click', () => {
+ set(checkRef, Date.now());
+ });
+
+ onValue(checkRef, (snapshot) => {
+ if (snapshot.val() !== null) {
+ checkAnswersLocally();
+ } else {
+ const activeSlide = document.querySelector(`.slide[data-slide="${currentSlide}"]`);
+ if(activeSlide) {
+ activeSlide.querySelectorAll('.cloze-input').forEach(i => i.classList.remove('correct', 'wrong'));
+ }
+ }
+ });
+
+ resetBtn.addEventListener('click', () => {
+ if (confirm("Vuoi davvero svuotare tutti i campi e ricominciare da capo per il prossimo gruppo?")) {
+ remove(ref(db, roomPath)).then(() => {
+ document.querySelectorAll('.cloze-input').forEach(i => {
+ i.value = "";
+ i.classList.remove('correct', 'wrong');
+ });
+ alert("Esercizio azzerato con successo per tutti!");
+ });
+ }
+ });
+
+ document.querySelectorAll('.cloze-input').forEach(input => {
+ input.addEventListener('input', (e) => {
+ e.target.classList.remove('correct', 'wrong');
+ nextBtn.disabled = true;
+ 
+ const key = e.target.getAttribute('data-key');
+ const val = e.target.value;
+ set(ref(db, roomPath + '/testi/' + key), val);
+ });
+ });
+
+ onValue(textRef, (snapshot) => {
+ const data = snapshot.val();
+ if (data) {
+ for (const key in data) {
+ const input = document.querySelector(`[data-key="${key}"]`);
+ if (input) {
+ input.value = data[key];
+ }
+ }
+ } else {
+ document.querySelectorAll('.cloze-input').forEach(i => i.value = "");
+ }
+ });
+</script>
+
+</body>
+</html>
