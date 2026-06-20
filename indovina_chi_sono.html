@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indovina Chi Sono - Online Live</title>
+    <style>
+        :root {
+            --primary: #4CAF50;
+            --accent: #FF5722;
+            --bg: #f4f4f9;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 20px; text-align: center; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+        .setup-section, .game-section { margin-bottom: 30px; padding: 15px; border-radius: 8px; }
+        input, button { padding: 10px; margin: 5px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; }
+        button { background: var(--primary); color: white; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { opacity: 0.9; }
+        .btn-accent { background: var(--accent); }
+        .student-list { list-style: none; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+        .student-badge { background: #e0e0e0; padding: 8px 15px; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; user-select: none; color: #333; }
+        .student-badge:hover { background: #d0d0d0; }
+        .student-badge.selected-identity { background: #2196F3; color: white; font-weight: bold; }
+        .token { font-size: 20px; display: none; }
+        .active-turn { border: 2px solid var(--accent); background: #ffe0b2 !important; color: #333 !important; animation: pulse 1.5s infinite; font-weight: bold; }
+        .active-turn .token { display: inline; }
+        
+        .card-view { border: 2px dashed var(--accent); padding: 20px; margin-top: 20px; border-radius: 8px; background: #fffde7; animation: slideDown 0.3s ease; }
+        .grid-scheda { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; text-align: left; margin-top: 15px; }
+        .grid-scheda div { background: white; padding: 10px; border-radius: 6px; border: 1px solid #ddd; display: flex; flex-direction: column; }
+        .grid-scheda label { font-size: 0.85rem; color: #666; font-weight: bold; margin-bottom: 4px; }
+        .grid-scheda input { padding: 6px; margin: 0; font-size: 1rem; border: none; border-bottom: 1px solid #ccc; background: #fafafa; border-radius: 0; }
+        .grid-scheda input:focus { outline: none; border-bottom: 2px solid var(--accent); background: #fff; }
+        
+        .waiting-msg { font-style: italic; color: #718096; margin-top: 20px; font-size: 1.1rem; }
+
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>1. Indovina Chi Sono 🎲</h1>
+    
+    <div id="setup" class="setup-section" style="background: #e8f5e9;">
+        <h3>Pannello di Controllo Corso</h3>
+        <input type="text" id="studentName" placeholder="Nome studente">
+        <button onclick="addStudent()">Aggiungi Studente</button>
+        <br><br>
+        <button class="btn-accent" onclick="assignCards()">Mescola e Inizia Gioco 🚀</button>
+        <button onclick="nextTurn()">Prossimo Turno ⏩</button>
+        <button class="btn-accent" style="background:#f44336;" onclick="resetGame()">Resetta Tutto</button>
+    </div>
+
+    <p id="identity-hint" style="color: #2196F3; font-weight: bold;">👉 Prima di iniziare, clicca sul tuo nome per selezionare la tua identità!</p>
+
+    <div>
+        <h3>Studenti in Aula</h3>
+        <ul id="studentsContainer" class="student-list"></ul>
+    </div>
+
+    <div id="gameArea" class="game-section" style="display:none;">
+        <div id="turnManager">
+            <div id="waitingMessage" class="waiting-msg">
+                Ascolta l'intervista dei tuoi compagni... Presto tocca a te! 🎧
+            </div>
+
+            <div id="cardDisplay" class="card-view" style="display:none;">
+                <h2>🤔 È il tuo turno! Indovina i dettagli di: <span id="targetName" style="color:var(--accent);"></span></h2>
+                <p>Compila la scheda basandoti sulle tue ipotesi, poi intervista il compagno per verificare!</p>
+                
+                <div class="grid-scheda">
+                    <div><label>Personalità:</label><input type="text" data-field="personalita" placeholder="Scrivi qui..." oninput="saveField(this)"></div>
+                    <div><label>Lavoro:</label><input type="text" data-field="lavoro" placeholder="Scrivi qui..." oninput="saveField(this)"></div>
+                    <div><label>Hobby:</label><input type="text" data-field="hobby" placeholder="Scrivi qui..." oninput="saveField(this)"></div>
+                    <div><label>Musica preferita:</label><input type="text" data-field="musica" placeholder="Scrivi qui..." oninput="saveField(this)"></div>
+                    <div><label>Colore preferito:</label><input type="text" data-field="colore" placeholder="Scrivi qui..." oninput="saveField(this)"></div>
+                    <div><label>Bevanda preferita:</label><input type="text" data-field="bevanda" placeholder="Scrivi qui..." oninput="saveField(this)"></div>
+                    <div><label>Piatto preferito:</label><input type="text" data-field="piatto" placeholder="Scrivi qui..." oninput="saveField(this)"></div>
+                    <div><label>Sport:</label><input type="text" data-field="sport" placeholder="Scrivi qui..." oninput="saveField(this)"></div>
+                    <div><label>Lingue conosciute:</label><input type="text" data-field="lingue" placeholder="Scrivi qui..." oninput="saveField(this)"></div>
+                    <div><label>Stato civile:</label><input type="text" data-field="stato" placeholder="Scrivi qui..." oninput="saveField(this)"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+        databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app/"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const gameRef = ref(db, "ricette_parlare/indovina_chi_sono");
+
+    let gameState = { students: [], currentTurnIndex: 0, assignments: {} };
+    let myIdentity = localStorage.getItem('game_identity') || ''; 
+    let currentTarget = ''; // Salva il compagno attualmente visualizzato
+
+    // Ascolto Firebase
+    onValue(gameRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            gameState.students = data.students || [];
+            gameState.currentTurnIndex = data.currentTurnIndex ?? 0;
+            gameState.assignments = data.assignments || {};
+        } else {
+            gameState = { students: [], currentTurnIndex: 0, assignments: {} };
+        }
+        renderGame();
+    });
+
+    window.selectIdentity = function(name) {
+        myIdentity = name;
+        localStorage.setItem('game_identity', name);
+        renderGame();
+    };
+
+    window.addStudent = function() {
+        const nameInput = document.getElementById('studentName');
+        const name = nameInput.value.trim();
+        if (name) {
+            if (!gameState.students) gameState.students = [];
+            if (!gameState.students.includes(name)) {
+                gameState.students.push(name);
+                nameInput.value = '';
+                set(gameRef, gameState);
+            }
+        }
+    };
+
+    window.assignCards = function() {
+        let list = gameState.students ? [...gameState.students] : [];
+        if (list.length < 2) {
+            alert("Servono almeno 2 studenti per giocare!");
+            return;
+        }
+        
+        let assigned = {};
+        let valid = false;
+        let tentativi = 0;
+
+        while (!valid && tentativi < 100) {
+            tentativi++;
+            valid = true;
+            let pool = [...list];
+            for (let i = pool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [pool[i], pool[j]] = [pool[j], pool[i]];
+            }
+            for (let i = 0; i < list.length; i++) {
+                if (list[i] === pool[i]) { valid = false; break; }
+                assigned[list[i]] = pool[i];
+            }
+        }
+
+        if (!valid) { alert("Errore nel mescolamento. Riprova."); return; }
+
+        gameState.assignments = assigned;
+        gameState.currentTurnIndex = 0;
+        set(gameRef, gameState);
+    };
+
+    window.nextTurn = function() {
+        if (gameState.students && gameState.students.length > 0) {
+            gameState.currentTurnIndex = (gameState.currentTurnIndex + 1) % gameState.students.length;
+            set(gameRef, gameState);
+        }
+    };
+
+    window.resetGame = function() {
+        if (confirm("Vuoi azzerare la sessione attuale?")) {
+            remove(gameRef).then(() => {
+                myIdentity = '';
+                localStorage.removeItem('game_identity');
+                // Pulisce tutti i salvataggi locali delle schede per non lasciare tracce al prossimo gioco
+                Object.keys(localStorage).forEach(key => {
+                    if (key.startsWith('input_')) localStorage.removeItem(key);
+                });
+                loadSavedFields();
+            });
+        }
+    };
+
+    function renderGame() {
+        const container = document.getElementById('studentsContainer');
+        container.innerHTML = '';
+
+        const studentsList = gameState.students || [];
+        const activeStudentName = studentsList[gameState.currentTurnIndex] || '';
+
+        document.getElementById('identity-hint').style.display = myIdentity ? 'none' : 'block';
+
+        studentsList.forEach((student, index) => {
+            const isMyTurn = index === gameState.currentTurnIndex;
+            const li = document.createElement('li');
+            
+            let classes = 'student-badge';
+            if (isMyTurn) classes += ' active-turn';
+            if (student === myIdentity) classes += ' selected-identity';
+            
+            li.className = classes;
+            li.innerHTML = `<span class="token">🟢 🗣️</span> <strong>${student}</strong> ${student === myIdentity ? ' (Tu)' : ''}`;
+            
+            li.onclick = () => selectIdentity(student);
+            container.appendChild(li);
+        });
+
+        const hasAssignments = gameState.assignments && Object.keys(gameState.assignments).length > 0;
+        const gameArea = document.getElementById('gameArea');
+        
+        if (hasAssignments && myIdentity) {
+            gameArea.style.display = 'block';
+            
+            const waitingMessage = document.getElementById('waitingMessage');
+            const cardDisplay = document.getElementById('cardDisplay');
+            const targetSpan = document.getElementById('targetName');
+
+            if (myIdentity === activeStudentName) {
+                currentTarget = gameState.assignments[myIdentity] || '';
+                targetSpan.innerText = currentTarget;
+                cardDisplay.style.display = 'block';
+                waitingMessage.style.display = 'none';
+                
+                // Aggiorna i campi di testo caricando i dati associati a questo specifico compagno
+                loadSavedFields();
+            } else {
+                cardDisplay.style.display = 'none';
+                waitingMessage.style.display = 'block';
+            }
+        } else {
+            gameArea.style.display = 'none';
+        }
+    }
+
+    // Funzione globale per salvare il testo agganciandolo al compagno (currentTarget)
+    window.saveField = function(element) {
+        if (!currentTarget) return;
+        const fieldName = element.getAttribute('data-field');
+        // Esempio chiave: input_Matteo_personalita
+        const key = `input_${currentTarget}_${fieldName}`;
+        localStorage.setItem(key, element.value);
+    };
+
+    // Funzione per caricare i testi salvati per lo specifico compagno
+    function loadSavedFields() {
+        document.querySelectorAll('.grid-scheda input').forEach(input => {
+            const fieldName = input.getAttribute('data-field');
+            if (currentTarget) {
+                const key = `input_${currentTarget}_${fieldName}`;
+                input.value = localStorage.getItem(key) || '';
+            } else {
+                input.value = '';
+            }
+        });
+    }
+</script>
+</body>
+</html>
