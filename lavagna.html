@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Testo Condiviso Live 📝</title>
+    <title>Lavagna di Testo Condivisa a Turni 📝</title>
     <style>
         :root {
             --primary: #4CAF50;
-            --accent: #f44336;
+            --accent: #FF5722;
             --bg: #2d3748;
             --panel-bg: #1a202c;
         }
@@ -21,7 +21,8 @@
             flex-direction: column;
             height: 100vh;
         }
-        /* Barra superiore */
+        
+        /* Barra di controllo superiore */
         .toolbar {
             background: var(--panel-bg);
             padding: 15px 20px;
@@ -31,103 +32,193 @@
             color: white;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
             z-index: 10;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .toolbar h1 {
             font-size: 1.2rem;
             margin: 0;
             color: #e2e8f0;
         }
-        button {
-            padding: 8px 16px;
-            font-size: 14px;
-            border-radius: 6px;
-            border: 1px solid var(--accent);
-            background: var(--accent);
-            color: white;
-            cursor: pointer;
+        
+        .status-badge {
+            padding: 8px 15px;
+            border-radius: 20px;
             font-weight: bold;
-            transition: background 0.2s;
+            font-size: 0.9rem;
+            background: #4a5568;
         }
-        button:hover {
-            background: #d32f2f;
+        .status-writing { background: #cbd5e0; color: #1a202c; }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
         }
         
-        /* Contenitore per la casella di testo */
+        button {
+            padding: 10px 18px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        .btn-write { background: var(--primary); color: white; }
+        .btn-spectate { background: #2196F3; color: white; }
+        .btn-clear { background: var(--accent); color: white; }
+        button:hover { opacity: 0.9; }
+        button:disabled { background: #4a5568; color: #718096; cursor: not-allowed; }
+        
+        /* Contenitore Lavagna Unica */
         .text-container {
             flex: 1;
-            padding: 20px;
+            padding: 25px;
             display: flex;
             box-sizing: border-box;
+            background: #3a475d;
         }
-        /* Casella di testo a tutto schermo */
+        
         textarea {
             width: 100%;
             height: 100%;
-            padding: 20px;
-            font-size: 18px;
-            line-height: 1.5;
+            padding: 25px;
+            font-size: 20px;
+            line-height: 1.6;
             border-radius: 8px;
-            border: 1px solid #4a5568;
+            border: 2px solid #4a5568;
             background: #ffffff;
             color: #2d3748;
             font-family: inherit;
             resize: none;
             box-sizing: border-box;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
         textarea:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+        }
+        textarea:disabled {
+            background: #f0f2f5;
+            color: #4a5568;
+            cursor: not-allowed;
         }
     </style>
 </head>
 <body>
 
 <div class="toolbar">
-    <h1>📝 Spazio di Scrittura Condiviso Live</h1>
-    <button onclick="clearText()">Cancella Tutto 🧹</button>
+    <h1>📝 Lavagna Unica di Classe Live</h1>
+    
+    <div id="statusIndicator" class="status-badge">
+        Stato: Nessuno sta scrivendo (Lavagna Libera) 🟢
+    </div>
+    
+    <div class="action-buttons">
+        <button id="btnWrite" class="btn-write" onclick="takeMarker()">Prendi il Pennarello ✍️</button>
+        <button id="btnSpectate" class="btn-spectate" onclick="releaseMarker()" style="display:none;">Lascia il Pennarello (Fatto!) 👁️</button>
+        
+        <button class="btn-clear" onclick="clearBoard()">Cancella Lavagna 🧹</button>
+    </div>
 </div>
 
 <div class="text-container">
-    <textarea id="sharedNotes" placeholder="Digita qui... Tutti gli studenti connessi vedranno quello che scrivi in tempo reale!"></textarea>
+    <textarea id="sharedMainText" placeholder="Usa i pulsanti in alto per prendere il controllo della lavagna e iniziare a scrivere..."></textarea>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Configurazione del tuo Firebase Realtime Database
     const firebaseConfig = {
         databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app/"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const textRef = ref(db, "ricette_parlare/lavagna_testo");
+    const sessionRef = ref(db, "ricette_parlare/lavagna_singola_turni");
 
-    const sharedNotes = document.getElementById('sharedNotes');
+    const sharedMainText = document.getElementById('sharedMainText');
+    const statusIndicator = document.getElementById('statusIndicator');
+    const btnWrite = document.getElementById('btnWrite');
+    const btnSpectate = document.getElementById('btnSpectate');
 
-    // --- ASCOLTO DEL TESTO IN TEMPO REALE DA FIREBASE ---
-    onValue(textRef, (snapshot) => {
-        const text = snapshot.val();
-        // Aggiorna il testo solo se l'utente attuale non sta digitando attivamente,
-        // per evitare che il cursore "salti" all'indietro durante la scrittura.
-        if (document.activeElement !== sharedNotes) {
-            sharedNotes.value = text || '';
+    // Generiamo un ID casuale univoco temporaneo per questa scheda del browser
+    const mySessionId = "user_" + Math.random().toString(36).substr(2, 9);
+
+    let currentWriter = ""; // Chi ha il pennarello in questo momento?
+    let currentText = "";
+
+    // Sincronizzazione in tempo reale da Firebase
+    onValue(sessionRef, (snapshot) => {
+        const data = snapshot.val() || {};
+        currentWriter = data.writer || "";
+        currentText = data.text || "";
+
+        // 1. Gestione del Testo (aggiorna solo se non sono io a digitare)
+        if (currentWriter !== mySessionId) {
+            sharedMainText.value = currentText;
+        }
+
+        // 2. Gestione dell'interfaccia e dei Blocchi Cursore
+        if (currentWriter === "") {
+            // Lavagna libera
+            statusIndicator.innerHTML = "Stato: Lavagna Libera 🟢";
+            statusIndicator.className = "status-badge";
+            sharedMainText.disabled = true;
+            btnWrite.style.display = "inline-block";
+            btnWrite.disabled = false;
+            btnSpectate.style.display = "none";
+        } else if (currentWriter === mySessionId) {
+            // Sto scrivendo io
+            statusIndicator.innerHTML = "Stato: Stai scrivendo tu! ✍️ 🔥";
+            statusIndicator.className = "status-badge status-writing";
+            sharedMainText.disabled = false;
+            btnWrite.style.display = "none";
+            btnSpectate.style.display = "inline-block";
+            // Mantiene il focus nella casella di testo
+            sharedMainText.focus();
+        } else {
+            // Sta scrivendo un altro studente
+            statusIndicator.innerHTML = "Stato: Un compagno sta scrivendo... ⏳ 👁️";
+            statusIndicator.className = "status-badge";
+            sharedMainText.disabled = true;
+            btnWrite.style.display = "inline-block";
+            btnWrite.disabled = true; // Impedisce di rubare il controllo
+            btnSpectate.style.display = "none";
         }
     });
 
-    // --- INVIO DEL TESTO AD OGNI PRESSIONE DI TASTO ---
-    sharedNotes.addEventListener('input', (e) => {
-        set(textRef, e.target.value);
+    // Quando chi ha il controllo digita, invia il testo lettera per lettera
+    sharedMainText.addEventListener('input', (e) => {
+        if (currentWriter === mySessionId) {
+            set(ref(db, "ricette_parlare/lavagna_singola_turni/text"), e.target.value);
+        }
     });
 
-    // --- FUNZIONE PER CANCELLARE IL TESTO A TUTTI ---
-    window.clearText = function() {
-        if (confirm("Vuoi davvero svuotare la casella di testo per tutta la classe?")) {
-            remove(textRef).then(() => {
-                sharedNotes.value = '';
+    // Funzione per prendere il pennarello
+    window.takeMarker = function() {
+        if (currentWriter === "") {
+            set(ref(db, "ricette_parlare/lavagna_singola_turni/writer"), mySessionId);
+        }
+    };
+
+    // Funzione per lasciare il pennarello (togliere il cursore e diventare spettatore)
+    window.releaseMarker = function() {
+        if (currentWriter === mySessionId) {
+            // Togliamo il cursore fisicamente dalla casella
+            sharedMainText.blur();
+            // Liberiamo il database
+            set(ref(db, "ricette_parlare/lavagna_singola_turni/writer"), "");
+        }
+    };
+
+    // Funzione di pulizia (Docente o svuotamento totale)
+    window.clearBoard = function() {
+        if (confirm("Vuoi davvero svuotare l'intera lavagna per tutti?")) {
+            const emptySession = { writer: "", text: "" };
+            set(sessionRef, emptySession).then(() => {
+                sharedMainText.value = "";
             });
         }
     };
