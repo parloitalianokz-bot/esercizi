@@ -28,6 +28,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-wrap: wrap;
             gap: 15px;
             color: white;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
@@ -81,6 +82,36 @@
         .btn-clear:hover {
             background: #d32f2f;
         }
+        
+        /* Area di testo condivisa */
+        .text-panel {
+            background: #2d3748;
+            padding: 10px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 9;
+            border-bottom: 2px solid #4a5568;
+        }
+        /* Casella di testo reale (textarea) */
+        textarea {
+            width: 100%;
+            height: 60px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: 1px solid #4a5568;
+            background: #1a202c;
+            color: #fff;
+            font-family: inherit;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
         /* Contenitore Lavagna */
         .canvas-container {
             flex: 1;
@@ -104,7 +135,7 @@
     <h1>🎨 Lavagna di Classe Live</h1>
     
     <div class="tool-group">
-        <label for="colorPicker">Colore:</label>
+        <label for="colorPicker">Colore Penna:</label>
         <input type="color" id="colorPicker" value="#4CAF50">
     </div>
 
@@ -123,6 +154,11 @@
     </div>
 </div>
 
+<div class="text-panel">
+    <label for="sharedNotes" style="font-weight: bold; margin-bottom: 2px;">📝 Appunti e Testo Condiviso (Tutti possono scrivere qui):</label>
+    <textarea id="sharedNotes" placeholder="Scrivi una frase, una correzione o una nota qui..."></textarea>
+</div>
+
 <div class="canvas-container" id="canvasContainer">
     <canvas id="paintCanvas"></canvas>
 </div>
@@ -131,28 +167,148 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Configurazione del tuo Firebase Realtime Database
     const firebaseConfig = {
         databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app/"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    
+    // Riferimenti separati per i disegni e per il testo
     const boardRef = ref(db, "ricette_parlare/lavagna_condivisa");
+    const textRef = ref(db, "ricette_parlare/lavagna_testo");
 
     const canvas = document.getElementById('paintCanvas');
     const ctx = canvas.getContext('2d');
     const container = document.getElementById('canvasContainer');
+    const sharedNotes = document.getElementById('sharedNotes');
 
     let isDrawing = false;
     let lastX = 0;
     let lastY = 0;
 
-    // Impostazioni iniziali degli strumenti locali
     const colorPicker = document.getElementById('colorPicker');
     const sizePicker = document.getElementById('sizePicker');
 
-    // Funzione per ridimensionare il canvas in base alla finestra del browser
     function resizeCanvas() {
         canvas.width = container.clientWidth;
-        canvas.height =
+        canvas.height = container.clientHeight;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+    }
+    
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // --- ASCOLTO DISEGNI IN TEMPO REALE ---
+    onValue(boardRef, (snapshot) => {
+        const data = snapshot.val();
+        if (!data) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            return;
+        }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        Object.values(data).forEach(line => {
+            const startX = line.x0 * canvas.width;
+            const startY = line.y0 * canvas.height;
+            const endX = line.x1 * canvas.width;
+            const endY = line.y1 * canvas.height;
+
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.strokeStyle = line.color;
+            ctx.lineWidth = line.size;
+            ctx.stroke();
+        });
+    });
+
+    // --- ASCOLTO TESTO IN TEMPO REALE ---
+    onValue(textRef, (snapshot) => {
+        const text = snapshot.val();
+        // Aggiorna la textarea solo se il testo è diverso per evitare che il cursore salti mentre si digita
+        if (document.activeElement !== sharedNotes) {
+            sharedNotes.value = text || '';
+        }
+    });
+
+    // Invia il testo su Firebase ogni volta che qualcuno digita nella casella
+    sharedNotes.addEventListener('input', (e) => {
+        set(textRef, e.target.value);
+    });
+
+    // --- LOGICA DI DISEGNO ---
+    canvas.addEventListener('mousedown', (e) => {
+        isDrawing = true;
+        [lastX, lastY] = [e.offsetX, e.offsetY];
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+        if (!isDrawing) return;
+        const currentX = e.offsetX;
+        const currentY = e.offsetY;
+
+        const lineSegment = {
+            x0: lastX / canvas.width,
+            y0: lastY / canvas.height,
+            x1: currentX / canvas.width,
+            y1: currentY / canvas.height,
+            color: colorPicker.value,
+            size: parseInt(sizePicker.value)
+        };
+
+        const newLineRef = push(boardRef);
+        set(newLineRef, lineSegment);
+
+        [lastX, lastY] = [currentX, currentY];
+    });
+
+    canvas.addEventListener('mouseup', () => isDrawing = false);
+    canvas.addEventListener('mouseout', () => isDrawing = false);
+
+    // TOUCH SUPPORT
+    canvas.addEventListener('touchstart', (e) => {
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        isDrawing = true;
+        lastX = touch.clientX - rect.left;
+        lastY = touch.clientY - rect.top;
+        e.preventDefault();
+    });
+
+    canvas.addEventListener('touchmove', (e) => {
+        if (!isDrawing) return;
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        const currentX = touch.clientX - rect.left;
+        const currentY = touch.clientY - rect.top;
+
+        const lineSegment = {
+            x0: lastX / canvas.width,
+            y0: lastY / canvas.height,
+            x1: currentX / canvas.width,
+            y1: currentY / canvas.height,
+            color: colorPicker.value,
+            size: parseInt(sizePicker.value)
+        };
+
+        const newLineRef = push(boardRef);
+        set(newLineRef, lineSegment);
+
+        [lastX, lastY] = [currentX, currentY];
+        e.preventDefault();
+    });
+
+    canvas.addEventListener('touchend', () => isDrawing = false);
+
+    // --- FUNZIONE PER SVUOTARE TUTTO ---
+    window.clearBoard = function() {
+        if (confirm("Vuoi davvero cancellare i disegni e il testo per tutta la classe?")) {
+            remove(boardRef);
+            remove(textRef);
+            sharedNotes.value = '';
+        }
+    };
+</script>
+</body>
+</html>
