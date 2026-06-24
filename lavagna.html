@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lavagna di Testo Condivisa a Turni 📝</title>
+    <title>Lavagna di Testo Condivisa 📝</title>
     <style>
         :root {
             --primary: #4CAF50;
@@ -36,7 +36,7 @@
         }
         .toolbar h1 { font-size: 1.2rem; margin: 0; color: #e2e8f0; }
         
-        .status-badge { padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; background: #4a5568; }
+        .status-badge { padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; background: #4a5568; user-select: none; }
         .status-writing { background: #cbd5e0; color: #1a202c; }
         
         .action-buttons { display: flex; gap: 10px; }
@@ -44,7 +44,8 @@
         button { padding: 10px 18px; font-size: 14px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; transition: all 0.2s; }
         .btn-write { background: var(--primary); color: white; }
         .btn-spectate { background: #2196F3; color: white; }
-        .btn-print { background: #9c27b0; color: white; } /* Colore viola per il tasto stampa */
+        .btn-print { background: #9c27b0; color: white; }
+        .btn-unlock { background: #00bcd4; color: white; } /* Un bel colore ciano per liberare la lavagna */
         .btn-clear { background: var(--accent); color: white; }
         button:hover { opacity: 0.9; }
         button:disabled { background: #4a5568; color: #718096; cursor: not-allowed; }
@@ -85,9 +86,7 @@
             font-style: italic;
         }
 
-        /* ==========================================
-           🖨️ REGOLE DI STAMPA PERFETTE MULTIPAGINA
-           ========================================== */
+        /* Regole di stampa multipagina */
         @media print {
             html, body { height: auto !important; overflow: visible !important; background: white; color: black; }
             body { display: block; }
@@ -98,10 +97,12 @@
                 box-shadow: none !important; 
                 width: 100% !important; 
                 height: auto !important; 
+                min-height: 0 !important;
                 overflow: visible !important; 
                 background: transparent !important; 
                 padding: 0 !important;
                 font-size: 14pt !important;
+                display: block !important;
             }
         }
     </style>
@@ -110,14 +111,15 @@
 
 <div class="toolbar">
     <h1>📝 Lavagna Unica di Classe Live</h1>
-    <div id="statusIndicator" class="status-badge">Stato: Nessuno sta scrivendo (Lavagna Libera) 🟢</div>
+    <div id="statusIndicator" class="status-badge">Stato: Caricamento... ⏳</div>
     <div class="action-buttons">
         <button id="btnWrite" class="btn-write" onclick="takeMarker()">Prendi il Pennarello ✍️</button>
         <button id="btnSpectate" class="btn-spectate" onclick="releaseMarker()" style="display:none;">Lascia il Pennarello (Fatto!) 👁️</button>
         
-        <button class="btn-print" onclick="window.print()">Stampa in PDF 🖨️</button>
+        <button class="btn-unlock" onclick="forceUnlock()">Libera Lavagna 🔓</button>
         
-        <button class="btn-clear" onclick="clearBoard()">Cancella Lavagna 🧹</button>
+        <button class="btn-print" onclick="window.print()">Stampa in PDF 🖨️</button>
+        <button class="btn-clear" onclick="clearBoard()">Cancella Tutto 🧹</button>
     </div>
 </div>
 
@@ -127,7 +129,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
         databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app/"
@@ -143,6 +145,7 @@
     const btnSpectate = document.getElementById('btnSpectate');
 
     const mySessionId = "user_" + Math.random().toString(36).substr(2, 9);
+    
     let currentWriter = ""; 
     let currentText = "";
 
@@ -155,6 +158,10 @@
             sharedMainText.innerText = currentText;
         }
 
+        updateUI();
+    });
+
+    function updateUI() {
         if (currentWriter === "") {
             statusIndicator.innerHTML = "Stato: Lavagna Libera 🟢";
             statusIndicator.className = "status-badge";
@@ -168,7 +175,6 @@
             sharedMainText.setAttribute("contenteditable", "true");
             btnWrite.style.display = "none";
             btnSpectate.style.display = "inline-block";
-            sharedMainText.focus();
         } else {
             statusIndicator.innerHTML = "Stato: Un compagno sta scrivendo... ⏳ 👁️";
             statusIndicator.className = "status-badge";
@@ -177,31 +183,34 @@
             btnWrite.disabled = true; 
             btnSpectate.style.display = "none";
         }
-    });
+    }
 
     sharedMainText.addEventListener('input', () => {
         if (currentWriter === mySessionId) {
-            set(ref(db, "ricette_parlare/lavagna_singola_turni/text"), sharedMainText.innerText);
+            update(sessionRef, { text: sharedMainText.innerText });
         }
     });
 
     window.takeMarker = function() {
         if (currentWriter === "") {
-            set(ref(db, "ricette_parlare/lavagna_singola_turni/writer"), mySessionId);
+            update(sessionRef, { writer: mySessionId });
         }
     };
 
     window.releaseMarker = function() {
         if (currentWriter === mySessionId) {
             sharedMainText.blur();
-            set(ref(db, "ricette_parlare/lavagna_singola_turni/writer"), "");
+            update(sessionRef, { writer: "" });
         }
+    };
+
+    window.forceUnlock = function() {
+        update(sessionRef, { writer: "" });
     };
 
     window.clearBoard = function() {
         if (confirm("Vuoi davvero svuotare l'intera lavagna per tutti?")) {
-            const emptySession = { writer: "", text: "" };
-            set(sessionRef, emptySession).then(() => {
+            set(sessionRef, { writer: "", text: "" }).then(() => {
                 sharedMainText.innerText = "";
             });
         }
