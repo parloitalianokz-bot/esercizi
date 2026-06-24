@@ -22,7 +22,6 @@
             height: 100vh;
         }
         
-        /* Barra di controllo superiore */
         .toolbar {
             background: var(--panel-bg);
             padding: 15px 20px;
@@ -35,53 +34,32 @@
             flex-wrap: wrap;
             gap: 10px;
         }
-        .toolbar h1 {
-            font-size: 1.2rem;
-            margin: 0;
-            color: #e2e8f0;
-        }
+        .toolbar h1 { font-size: 1.2rem; margin: 0; color: #e2e8f0; }
         
-        .status-badge {
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            background: #4a5568;
-        }
+        .status-badge { padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; background: #4a5568; }
         .status-writing { background: #cbd5e0; color: #1a202c; }
         
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-        }
+        .action-buttons { display: flex; gap: 10px; }
         
-        button {
-            padding: 10px 18px;
-            font-size: 14px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.2s;
-        }
+        button { padding: 10px 18px; font-size: 14px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; transition: all 0.2s; }
         .btn-write { background: var(--primary); color: white; }
         .btn-spectate { background: #2196F3; color: white; }
+        .btn-print { background: #9c27b0; color: white; } /* Colore viola per il tasto stampa */
         .btn-clear { background: var(--accent); color: white; }
         button:hover { opacity: 0.9; }
         button:disabled { background: #4a5568; color: #718096; cursor: not-allowed; }
         
-        /* Contenitore Lavagna Unica */
-        .text-container {
-            flex: 1;
-            padding: 25px;
-            display: flex;
-            box-sizing: border-box;
-            background: #3a475d;
+        .text-container { 
+            flex: 1; 
+            padding: 25px; 
+            box-sizing: border-box; 
+            background: #3a475d; 
+            overflow-y: auto; 
         }
         
-        textarea {
+        .editable-board {
             width: 100%;
-            height: 100%;
+            min-height: 100%;
             padding: 25px;
             font-size: 20px;
             line-height: 1.6;
@@ -89,19 +67,42 @@
             border: 2px solid #4a5568;
             background: #ffffff;
             color: #2d3748;
-            font-family: inherit;
-            resize: none;
             box-sizing: border-box;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            white-space: pre-wrap; 
+            word-wrap: break-word;
         }
-        textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-        textarea:disabled {
+        .editable-board:focus { outline: none; border-color: var(--primary); }
+        .editable-board[contenteditable="false"] {
             background: #f0f2f5;
             color: #4a5568;
             cursor: not-allowed;
+        }
+
+        .editable-board:empty:before {
+            content: attr(data-placeholder);
+            color: #718096;
+            font-style: italic;
+        }
+
+        /* ==========================================
+           🖨️ REGOLE DI STAMPA PERFETTE MULTIPAGINA
+           ========================================== */
+        @media print {
+            html, body { height: auto !important; overflow: visible !important; background: white; color: black; }
+            body { display: block; }
+            .toolbar { display: none !important; }
+            .text-container { padding: 0 !important; background: white !important; height: auto !important; overflow: visible !important; }
+            .editable-board { 
+                border: none !important; 
+                box-shadow: none !important; 
+                width: 100% !important; 
+                height: auto !important; 
+                overflow: visible !important; 
+                background: transparent !important; 
+                padding: 0 !important;
+                font-size: 14pt !important;
+            }
         }
     </style>
 </head>
@@ -109,21 +110,19 @@
 
 <div class="toolbar">
     <h1>📝 Lavagna Unica di Classe Live</h1>
-    
-    <div id="statusIndicator" class="status-badge">
-        Stato: Nessuno sta scrivendo (Lavagna Libera) 🟢
-    </div>
-    
+    <div id="statusIndicator" class="status-badge">Stato: Nessuno sta scrivendo (Lavagna Libera) 🟢</div>
     <div class="action-buttons">
         <button id="btnWrite" class="btn-write" onclick="takeMarker()">Prendi il Pennarello ✍️</button>
         <button id="btnSpectate" class="btn-spectate" onclick="releaseMarker()" style="display:none;">Lascia il Pennarello (Fatto!) 👁️</button>
+        
+        <button class="btn-print" onclick="window.print()">Stampa in PDF 🖨️</button>
         
         <button class="btn-clear" onclick="clearBoard()">Cancella Lavagna 🧹</button>
     </div>
 </div>
 
 <div class="text-container">
-    <textarea id="sharedMainText" placeholder="Usa i pulsanti in alto per prendere il controllo della lavagna e iniziare a scrivere..."></textarea>
+    <div id="sharedMainText" class="editable-board" contenteditable="false" data-placeholder="Usa i pulsanti in alto per prendere il controllo della lavagna e iniziare a scrivere..."></div>
 </div>
 
 <script type="module">
@@ -143,82 +142,67 @@
     const btnWrite = document.getElementById('btnWrite');
     const btnSpectate = document.getElementById('btnSpectate');
 
-    // Generiamo un ID casuale univoco temporaneo per questa scheda del browser
     const mySessionId = "user_" + Math.random().toString(36).substr(2, 9);
-
-    let currentWriter = ""; // Chi ha il pennarello in questo momento?
+    let currentWriter = ""; 
     let currentText = "";
 
-    // Sincronizzazione in tempo reale da Firebase
     onValue(sessionRef, (snapshot) => {
         const data = snapshot.val() || {};
         currentWriter = data.writer || "";
         currentText = data.text || "";
 
-        // 1. Gestione del Testo (aggiorna solo se non sono io a digitare)
         if (currentWriter !== mySessionId) {
-            sharedMainText.value = currentText;
+            sharedMainText.innerText = currentText;
         }
 
-        // 2. Gestione dell'interfaccia e dei Blocchi Cursore
         if (currentWriter === "") {
-            // Lavagna libera
             statusIndicator.innerHTML = "Stato: Lavagna Libera 🟢";
             statusIndicator.className = "status-badge";
-            sharedMainText.disabled = true;
+            sharedMainText.setAttribute("contenteditable", "false");
             btnWrite.style.display = "inline-block";
             btnWrite.disabled = false;
             btnSpectate.style.display = "none";
         } else if (currentWriter === mySessionId) {
-            // Sto scrivendo io
             statusIndicator.innerHTML = "Stato: Stai scrivendo tu! ✍️ 🔥";
             statusIndicator.className = "status-badge status-writing";
-            sharedMainText.disabled = false;
+            sharedMainText.setAttribute("contenteditable", "true");
             btnWrite.style.display = "none";
             btnSpectate.style.display = "inline-block";
-            // Mantiene il focus nella casella di testo
             sharedMainText.focus();
         } else {
-            // Sta scrivendo un altro studente
             statusIndicator.innerHTML = "Stato: Un compagno sta scrivendo... ⏳ 👁️";
             statusIndicator.className = "status-badge";
-            sharedMainText.disabled = true;
+            sharedMainText.setAttribute("contenteditable", "false");
             btnWrite.style.display = "inline-block";
-            btnWrite.disabled = true; // Impedisce di rubare il controllo
+            btnWrite.disabled = true; 
             btnSpectate.style.display = "none";
         }
     });
 
-    // Quando chi ha il controllo digita, invia il testo lettera per lettera
-    sharedMainText.addEventListener('input', (e) => {
+    sharedMainText.addEventListener('input', () => {
         if (currentWriter === mySessionId) {
-            set(ref(db, "ricette_parlare/lavagna_singola_turni/text"), e.target.value);
+            set(ref(db, "ricette_parlare/lavagna_singola_turni/text"), sharedMainText.innerText);
         }
     });
 
-    // Funzione per prendere il pennarello
     window.takeMarker = function() {
         if (currentWriter === "") {
             set(ref(db, "ricette_parlare/lavagna_singola_turni/writer"), mySessionId);
         }
     };
 
-    // Funzione per lasciare il pennarello (togliere il cursore e diventare spettatore)
     window.releaseMarker = function() {
         if (currentWriter === mySessionId) {
-            // Togliamo il cursore fisicamente dalla casella
             sharedMainText.blur();
-            // Liberiamo il database
             set(ref(db, "ricette_parlare/lavagna_singola_turni/writer"), "");
         }
     };
 
-    // Funzione di pulizia (Docente o svuotamento totale)
     window.clearBoard = function() {
         if (confirm("Vuoi davvero svuotare l'intera lavagna per tutti?")) {
             const emptySession = { writer: "", text: "" };
             set(sessionRef, emptySession).then(() => {
-                sharedMainText.value = "";
+                sharedMainText.innerText = "";
             });
         }
     };
