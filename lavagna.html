@@ -167,13 +167,13 @@
             <audio id="audioPlayer" controls></audio>
         </div>
         
-        <!-- Palette Evidenziatori Metodo Balboni -->
+        <!-- Palette Evidenziatori Metodo Balboni Corretta -->
         <div class="marker-palette">
             <span>Evidenziatori Correzione:</span>
-            <div class="marker m-green" title="Frase ben strutturata 🟢" onclick="applyHighlight('hl-green')"></div>
-            <div class="marker m-yellow" title="Imprecisione comunicativa 🟡" onclick="applyHighlight('hl-yellow')"></div>
-            <div class="marker m-red" title="Errore da correggere 🔴" onclick="applyHighlight('hl-red')"></div>
-            <div class="marker m-clear" title="Rimuovi evidenziatore ⚪" onclick="applyHighlight('remove')">🧹</div>
+            <div class="marker m-green" title="Frase ben strutturata 🟢" onmousedown="event.preventDefault(); applyHighlight('hl-green')"></div>
+            <div class="marker m-yellow" title="Imprecisione comunicativa 🟡" onmousedown="event.preventDefault(); applyHighlight('hl-yellow')"></div>
+            <div class="marker m-red" title="Errore da correggere 🔴" onmousedown="event.preventDefault(); applyHighlight('hl-red')"></div>
+            <div class="marker m-clear" title="Rimuovi evidenziatore ⚪" onmousedown="event.preventDefault(); applyHighlight('remove')">🧹</div>
         </div>
     </div>
 </div>
@@ -272,36 +272,39 @@
 
     sharedMainText.addEventListener('input', saveContent);
 
-    // Gestione Evidenziatori Glottodidattici
-    window.applyHighlight = function(className) {
-        if (currentWriter !== mySessionId) {
-            alert("Devi prima prendere il pennarello per poter evidenziare o correggere!");
-            return;
-        }
+    // Gestione Evidenziatori Glottodidattici Ottimizzata
+window.applyHighlight = function(className) {
+    if (currentWriter !== mySessionId) {
+        alert("Devi prima prendere il pennarello per poter evidenziare o correggere!");
+        return;
+    }
 
-        const selection = window.getSelection();
-        if (!selection.rangeCount || selection.isCollapsed) {
-            alert("Seleziona prima una parola o una frase del testo con il mouse per applicare l'evidenziatore.");
-            return;
-        }
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0 || selection.isCollapsed) {
+        alert("Seleziona prima una parola o una frase del testo con il mouse per applicare l'evidenziatore.");
+        return;
+    }
 
-        const range = selection.getRangeAt(0);
+    const range = selection.getRangeAt(0);
 
-        if (className === 'remove') {
-            // Rimuove l'evidenziazione ripristinando il testo puro
-            const extracted = range.extractContents();
-            const textNode = document.createTextNode(extracted.textContent);
-            range.insertNode(textNode);
-        } else {
-            // Crea lo span colorato attorno alla selezione
-            const span = document.createElement('span');
-            span.className = className;
-            range.surroundContents(span);
-        }
-        
-        selection.removeAllRanges();
-        saveContent();
-    };
+    if (className === 'remove') {
+        // Rimuove l'evidenziazione ripristinando il testo pulito
+        const extracted = range.extractContents();
+        const textNode = document.createTextNode(extracted.textContent);
+        range.insertNode(textNode);
+    } else {
+        // Se la selezione contiene già un'evidenziazione, estraiamo solo il testo per non nidificare i tag
+        const extracted = range.extractContents();
+        const span = document.createElement('span');
+        span.className = className;
+        span.textContent = extracted.textContent;
+        range.insertNode(span);
+    }
+    
+    // Rimuove la selezione visiva dopo aver applicato il colore
+    selection.removeAllRanges();
+    saveContent();
+};
 
     // Funzione per convertire il file locale del PC in stringa dati leggibile dagli studenti
     window.loadLocalAudio = function(event) {
