@@ -220,24 +220,34 @@
         updateUI();
     });
 
-    // Ascolto variazioni Audio (Sincronizzazione Live dei controlli)
-    onValue(audioRef, (snapshot) => {
-        if (isSuppressingAudioUpdates) return;
-        const data = snapshot.val();
-        if (data) {
-            if (data.src && audioPlayer.src !== data.src) {
-                audioPlayer.src = data.src;
-            }
-            if (Math.abs(audioPlayer.currentTime - data.currentTime) > 1.5) {
-                audioPlayer.currentTime = data.currentTime;
-            }
-            if (data.playing && audioPlayer.paused) {
-                audioPlayer.play().catch(() => {});
-            } else if (!data.playing && !audioPlayer.paused) {
-                audioPlayer.pause();
-            }
+    // Ascolto variazioni Audio (Sincronizzazione Live dei controlli) con gestione reset
+onValue(audioRef, (snapshot) => {
+    if (isSuppressingAudioUpdates) return;
+    const data = snapshot.val();
+    
+    if (data) {
+        // Se l'insegnante ha resettato l'audio (src vuoto)
+        if (data.src === "") {
+            audioPlayer.src = "";
+            return;
         }
-    });
+
+        if (data.src && audioPlayer.src !== data.src) {
+            audioPlayer.src = data.src;
+        }
+        if (Math.abs(audioPlayer.currentTime - data.currentTime) > 1.5) {
+            audioPlayer.currentTime = data.currentTime;
+        }
+        if (data.playing && audioPlayer.paused) {
+            audioPlayer.play().catch(() => {});
+        } else if (!data.playing && !audioPlayer.paused) {
+            audioPlayer.pause();
+        }
+    } else {
+        // Se il nodo Firebase è completamente vuoto
+        audioPlayer.src = "";
+    }
+});
 
     function updateUI() {
         if (currentWriter === "") {
@@ -354,12 +364,19 @@ window.applyHighlight = function(className) {
     };
 
     window.clearBoard = function() {
-        if (confirm("Vuoi davvero svuotare l'intera lavagna per tutti?")) {
-            set(sessionRef, { writer: "", html: "" }).then(() => {
-                sharedMainText.innerHTML = "";
-            });
-        }
-    };
+    if (confirm("Vuoi davvero svuotare l'intera lavagna e rimuovere l'audio per tutti?")) {
+        // 1. Svuota il testo e libera il pennarello su Firebase
+        set(sessionRef, { writer: "", html: "" }).then(() => {
+            sharedMainText.innerHTML = "";
+        });
+
+        // 2. Resetta lo stato dell'audio su Firebase e sul player locale
+        set(audioRef, { src: "", currentTime: 0, playing: false }).then(() => {
+            audioPlayer.src = "";
+            document.getElementById('audioUpload').value = ""; // Resetta anche il selettore di file HTML
+        });
+    }
+};
 </script>
 </body>
 </html>
