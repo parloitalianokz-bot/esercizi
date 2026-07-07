@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il viale del tramonto - Elicitazione e Comprensione</title>
+<!-- LOGICA DI SINCRONIZZAZIONE E TRANSIZIONE DELLE FASI DIDATTICHE -->
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --bg-color: #fcf8f2;
+            --text-color: #34495e;
+            
+            /* Colori evidenziatori metodo Balboni */
+            --mark-green: #c6f6d5;
+            --mark-yellow: #fefcbf;
+            --mark-red: #fed7d7;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            margin: 0;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h1 { color: var(--primary-color); margin-bottom: 5px; }
+        .subtitle { font-style: italic; color: #7f8c8d; }
+        
+        .intro-box {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+            border-left: 5px solid var(--accent-color);
+        }
+        .elicit-question {
+            margin-bottom: 20px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        /* STRUTTURA LAYOUT LAYOUT SPLIT-SCREEN (DUE COLONNE) */
+        .split-layout {
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .left-column {
+            flex: 1; /* Colonna dei contenuti e degli esercizi (scorre) */
+            min-width: 0;
+        }
+        .right-column {
+            width: 450px; /* Colonna della lavagna fissa */
+            position: -webkit-sticky;
+            position: sticky;
+            top: 20px; /* Rimane bloccata in alto durante lo scrolling */
+            max-height: calc(100vh - 40px);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* STILI DELLA LAVAGNA CONDIVISA FISSA */
+        .toolbar {
+            background: #1a202c;
+            padding: 15px;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+        .toolbar-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .toolbar h1 { font-size: 1.1rem; margin: 0; color: #e2e8f0; }
+        .status-badge { padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; background: #4a5568; user-select: none; }
+        .status-writing { background: #cbd5e0; color: #1a202c; }
+        .action-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 5px; }
+        
+        button { padding: 8px 14px; font-size: 13px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; transition: all 0.2s; }
+        .btn-write { background: #4CAF50; color: white; }
+        .btn-spectate { background: #2196F3; color: white; }
+        .btn-unlock { background: #00bcd4; color: white; } 
+        .btn-clear { background: var(--accent-color); color: white; }
+        button:hover { opacity: 0.9; }
+        button:disabled { background: #4a5568; color: #718096; cursor: not-allowed; }
+        
+        .tools-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #2d3748;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        .marker-palette { display: flex; gap: 8px; align-items: center; font-size: 0.9rem; }
+        .marker { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #ffffff; cursor: pointer; transition: transform 0.1s; }
+        .marker:hover { transform: scale(1.1); }
+        .m-green { background: var(--mark-green); }
+        .m-yellow { background: var(--mark-yellow); }
+        .m-red { background: var(--mark-red); }
+        .m-clear { background: #ffffff; border: 2px dashed #e2e8f0; display: flex; align-items: center; justify-content: center; color: #333; font-size: 12px; }
+
+        /* CONTENITORE INTERNO DEI BOX DELLA LAVAGNA */
+        .board-scroll-area {
+            background: #3a475d;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-y: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .board-label { color: #cbd5e0; font-size: 0.85rem; font-weight: bold; margin-bottom: 4px; }
+        .editable-board {
+            width: 100%;
+            min-height: 60px;
+            padding: 10px;
+            font-size: 15px;
+            line-height: 1.4;
+            border-radius: 6px;
+            border: 2px solid #4a5568;
+            background: #ffffff;
+            color: #2d3748;
+            box-sizing: border-box;
+            white-space: pre-wrap; 
+            word-wrap: break-word;
+        }
+        .editable-board:focus { outline: none; border-color: #4CAF50; }
+        .editable-board[contenteditable="false"] { background: #edf2f5; color: #4a5568; }
+        .editable-board:empty:before { content: attr(data-placeholder); color: #718096; font-style: italic; }
+
+        /* Classi evidenziatori */
+        span.hl-green { background-color: var(--mark-green); border-radius: 3px; }
+        span.hl-yellow { background-color: var(--mark-yellow); border-radius: 3px; }
+        span.hl-red { background-color: var(--mark-red); border-radius: 3px; }
+
+        .btn-invia {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+            width: 100%;
+            font-weight: bold;
+        }
+        .btn-invia:hover { background-color: #1a252f; }
+        
+        ul.options-list { list-style-type: none; padding-left: 5px; }
+        ul.options-list li { margin-bottom: 8px; padding: 6px; border-radius: 4px; background: #fdfbf7; border-left: 3px solid #cbd5e0; }
+
+        /* ========================================================== */
+        /* NUOVO STILE FISSO PER I BOX CLOZE NIDIFICATI NEL TESTO    */
+        /* ========================================================== */
+        .editable-board.text-cloze {
+            display: inline-block;
+            vertical-align: baseline; /* Allinea perfettamente la parola scritta al testo circostante */
+            min-width: 90px;          /* Dimensione di partenza compatta */
+            max-width: 180px;         /* Impedisce che il box si allarghi in modo sproporzionato */
+            min-height: auto;
+            height: auto;
+            padding: 0px 6px;
+            margin: 0 4px;            /* Evita l'attaccamento con i verbi tra parentesi o la punteggiatura */
+            font-size: 15px;
+            line-height: 1.2;
+            border: none;
+            border-bottom: 2px solid #9b59b6; /* Sottile linea viola orizzontale */
+            background-color: #fff8ff;
+            color: #2c3e50;
+            border-radius: 4px 4px 0 0;
+            white-space: nowrap;      /* EMERGENZA ANNULLATA: IMPEDISCE ASSOLUTAMENTE IL RITORNO A CAPO INTERNO */
+            overflow: hidden;
+            text-overflow: clip;
+            box-sizing: border-box;
+        }
+        .editable-board.text-cloze:focus {
+            outline: none;
+            border-bottom-color: #4CAF50; /* Diventa verde quando lo studente scrive */
+            background-color: #f0fff4;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Il viale del tramonto</h1>
+        <p class="subtitle">Tra sogno e realtà</p>
+    </div>
+
+    <!-- MAIN CONTAINER DIVISO IN DUE COLONNE -->
+    <div class="split-layout">
+        
+<!-- COLONNA SINISTRA: FLUSSO DIDATTICO (SCORRE) -->
+        <div class="left-column">
+            
+            <!-- IMMAGINE BANNER E INTRODUZIONE -->
+            <div style="text-align: center; margin-bottom: 25px;">
+                <img src="img/viale_del_tramonto_banner.jpg" 
+                     alt="La Contessa e Germano nella pellicceria" 
+                     style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+            </div>
+
+            <!-- PASSO 1: FASE DI ELICITAZIONE -->
+            <div class="intro-box">
+                <strong>PASSO 1 - Prima di ascoltare e leggere (Fase di Elicitazione):</strong> Osservate attentamente l'immagine qui sopra. Lasciatevi guidare dall'atmosfera, dall'eleganza della signora e dall'espressione dell'uomo. Usate il primo spazio della lavagna a destra ("Ipotesi Generali") per immaginare e descrivere, con parole vostre, di cosa parlerà il racconto. Costruite la vostra ipotesi di classe! ✨
+            </div>
+
+            <div style="margin-bottom: 40px;">
+                <button id="btn-concludi" class="btn-invia" onclick="concludiElicitazione()">Siete pronti per ascoltare la storia! 🚀</button>
+            </div>
+
+            <!-- PASSO 2: ASCOLTO E QUESITI IN COPPIA (APPAIONO DOPO L'ELICITAZIONE) -->
+            <div id="sezione-ascolto-esercizi" style="display: none;">
+                <div class="intro-box" style="border-left-color: #2196F3;">
+                    <strong>PASSO 2 - Ascolto e Lavoro in Coppia:</strong> <br>
+                    1. Cliccate su Play e ascoltate l'audio della storia, concentrandovi sulle voci dei personaggi. <br>
+                    2. Lavorate in coppia: lo studente A formula una domanda per ciascun punto qui sotto e lo studente B risponde usando i box numerati (da 1 a 6) della lavagna a destra. Non preoccupatevi se non capite tutto al primo ascolto! 💬
+                </div>
+
+                <!-- PLAYER AUDIO DEL RACCONTO -->
+                <div style="background: #1a202c; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                    <p style="color: white; margin-top: 0; margin-bottom: 12px; font-weight: bold; font-size: 0.9rem;">🎵 Ascolto: "Il viale del tramonto"</p>
+                    <audio id="audioLezione" src="audio/il_viale_del_tramonto.mp3" controls style="width: 100%; max-width: 400px;"></audio>
+                </div>
+
+                <!-- I Quesiti di Comprensione in Coppia -->
+                <div class="elicit-question">
+                    <p><strong>1. Il mistero dei costi nella pellicceria:</strong></p>
+                    <ul class="options-list">
+                        <li>a. Lo zibellino era più caro del visone.</li>
+                        <li>b. Lo zibellino era meno caro del visone.</li>
+                        <li>c. Lo zibellino costava como il visone.</li>
+                    </ul>
+                </div>
+
+                <div class="elicit-question">
+                    <p><strong>2. Il confronto dei gioielli:</strong></p>
+                    <ul class="options-list">
+                        <li>a. Il rubino era più piccolo del diamante.</li>
+                        <li>b. Il rubino era più grande del diamante.</li>
+                        <li>c. Il rubino era grande quanto il diamante.</li>
+                    </ul>
+                </div>
+
+                <div class="elicit-question">
+                    <p><strong>3. I pantaloni e i jeans:</strong></p>
+                    <ul class="options-list">
+                        <li>a. I pantaloni erano più larghi dei jeans.</li>
+                        <li>b. I pantaloni erano più stretti dei jeans.</li>
+                        <li>c. I pantaloni erano più pesanti dei jeans.</li>
+                    </ul>
+                </div>
+
+                <div class="elicit-question">
+                    <p><strong>4. Il consiglio della commessa:</strong></p>
+                    <ul class="options-list">
+                        <li>a. La contessa aveva bisogno di una taglia più piccola.</li>
+                        <li>b. La contessa aveva bisogno di una taglia più grande.</li>
+                    </ul>
+                </div>
+
+                <div class="elicit-question">
+                    <p><strong>5. La classifica della gentilezza secondo la contessa:</strong></p>
+                    <ul class="options-list">
+                        <li>a. Il commesso era più gentile del suo autista.</li>
+                        <li>b. Il commesso era più gentile del gioielliere.</li>
+                        <li>c. Il commesso era più gentile della commessa del negozio di abbigliamento.</li>
+                    </ul>
+                </div>
+
+                <div class="elicit-question">
+                    <p><strong>6. La Lamborghini contro l'autobus:</strong></p>
+                    <ul class="options-list">
+                        <li>a. Andare in autobus è più economico che andare a piedi.</li>
+                        <li>b. Andare in autobus è più economico che andare in Lamborghini.</li>
+                    </ul>
+                </div>
+
+                <div style="margin-top: 30px; margin-bottom: 40px;">
+                    <button id="btn-mostra-testo" class="btn-invia" onclick="mostraTestoVerifica()" style="background-color: #2196F3;">Avete completato i box? Leggiamo il testo per verificare! 📖</button>
+                </div>
+            </div>
+
+            <!-- PASSO 3: IL TESTO SCRITTO (APPARE ALLA FINE PER AUTOVERIFICA) -->
+            <div id="sezione-testo" style="display: none; margin-top: 40px;">
+                <hr style="border: 0; height: 1px; background: #e0e0e0; margin-bottom: 40px;">
+                <div class="header">
+                    <h2 style="color: var(--primary-color);">Il viale del tramonto (Il Testo)</h2>
+                    <p class="subtitle">Leggete ora il testo scritto per controllare le vostre risposte e verificare i vostri dubbi in autonomia.</p>
+                </div>
+
+                <!-- Testo della storia -->
+                <div style="background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 40px; text-align: justify; font-size: 15px;">
+                    <p><strong>Un giorno, una signora entra in una pellicceria</strong> con un uomo al seguito. Lei è di mezza età, elegante ma vestita come una diva degli anni '50; lui sembra uscito da un film noir con quel completo nero e il berretto dello stesso colore. La signora guarda le pellicce in esposizione, e ne vede due che le piacciono. “Posso provarle?”, chiede. “Ma certo, Signora”, risponde il commesso. “Sono indecisa”, dice lei, osservando le pellicce. “Lo zibellino mi sembra un po’ pesante. E poi... quanto costa, scusi?”. “Lo zibellino 6.800 euro, Signora, il visone 2.900”. “Beh, sono entrambe così belle che le prenderei tutte e due,” dice lei. “Ottima scelta, Signora”, dice il commesso, che ormai già sogna la sua provvigione. Ma l’uomo che la accompagna interviene: “Io non prenderei né l’una né l’altra”. La signora lo guarda, contrariata. “Germano! Ma che dice! Scusi, eh, il mio autista non è molto educato. Comunque per le pellicce ci penserò”, e escono dal negozio como due divi di Hollywood.</p>
+                    <p><strong>Subito dopo si dirigono verso una gioielleria.</strong> La signora vede due anelli, uno con un diamante e l’altro con un rubino enorme. “Quale mi consiglierebbe?”, chiede al gioielliere. “Vede, Signora, il diamante ha più luce del rubino, ma il rubino è più caldo. Dipende dal Suo stile”, risponde il gioielliere, già pregustando la vendita. “Io, per non sbagliare, li prenderei tutti e due,” dice lei. “Io invece non prenderei nulla, Signora Contessa”, interviene di nuovo Germano, con la delicatezza di un elefante. “Germano! Ma Lei è proprio senza speranza... viene dalla campagna, Lo scusi... non sa come ci si comporta e non capisce il valore delle cose. Comunque ci penserò, grazie”, e se ne escono dal negozio.</p>
+                    <p><strong>Proseguono in un negozio di abbigliamento.</strong> Anche qui, la signora è indecisa tra un paio di pantaloni di pelle nera, attillatissimi, e un paio di jeans strappati, pieni di brillantini. La commessa, un po' imbarazzata, suggerisce: “Forse dovrebbe guardare in un altro negozio, queste taglie non fanno per Lei”. “Ma no, sono perfetti! Certo, i pantaloni sono più eleganti, ma i jeans sono così... moderni. Che ne dice, Germano?”. “Io tornerei a casa, Signora Contessa”, sbotta lui, esausto. E ancora una volta escono senza avant comprato niente.</p>
+                    <p><strong>Infine, passano davanti a una concessionaria di auto.</strong> La contessa si ferma a osservare le vetrine. “In effetti, una macchina nuova non ci starebbe male, Germano”. Lui sospira profundamente, ma non dice niente. “Quella Lamborghini andrebbe a pennello con lo zibellino di prima, ma l’Alfa Romeo è una macchina più affidabile della Lamborghini, non è vero?”. Questa volta, continuano a camminare, senza neanche entrare nell’autosalone.</p>
+                    <p><strong>Arvivano alla fermata dell’autobus.</strong> La signora, ancora offesa, borbotta: "Che cafona quella commessa! Solo perché è più giovane e più magra di me... Il commesso della pellicceria, invece, sì che era un gentiluomo. Non trova, Germano?". Proprio in quel momento arriva l’autobus. La contessa e Germano salgono, trovano due posti liberi e si siedono. “Ah, Germano, mi sono scordata: non ho monete. Potrebbe fare i biglietti Lei, per favore?”.</p>
+                </div>
+            </div>
+
+            <!-- =================================================== -->
+            <!-- PASSO 4: ANALISI LINGUISTICA (IL CLOZE INTEGRATO COMPLETATO) -->
+            <!-- =================================================== -->
+            <div id="sezione-analisi-verbi" style="margin-top: 40px; display: none;">
+                <hr style="border: 0; height: 1px; background: #e0e0e0; margin-bottom: 40px;">
+                
+                <div class="intro-box" style="border-left-color: #9b59b6;">
+                    <strong>PASSO 4 - Analisi Linguistica e Grammatica del Fare:</strong><br>
+                    Ricostruiamo la storia direttamente nel testo! Completate i box vuoti coniugando i verbi tra parentesi al tempo corretto (<span style="color: #27ae60; font-weight: bold;">Passato Prossimo</span>, <span style="color: #2980b9; font-weight: bold;">Imperfetto</span> o <span style="color: #8e44ad; font-weight: bold;">Condizionale Composto</span>). Potete collaborare live! ✍️
+                </div>
+
+                <div style="background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); font-size: 16px; text-align: justify; line-height: 1.9;">
+                    
+                    <p><strong>1.</strong> Un giorno, la contessa Prosciuttoni (ENTRARE) 
+                        <span id="cloze_v1" class="editable-board text-cloze" style="display: inline-block; min-width: 120px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...1..."></span> 
+                        in una pellicceria, insieme al suo autista. La contessa, che ormai non (ESSERE) 
+                        <span id="cloze_v2" class="editable-board text-cloze" style="display: inline-block; min-width: 80px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...2..."></span> 
+                        più giovanissima, (PORTARE) 
+                        <span id="cloze_v3" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...3..."></span> 
+                        dei vestiti che (ANDARE) 
+                        <span id="cloze_v4" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...4..."></span> 
+                        di moda vent’anni prima; l’autista, più giovane di lei, (INDOSSARE) 
+                        <span id="cloze_v5" class="editable-board text-cloze" style="display: inline-block; min-width: 110px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...5..."></span> 
+                        un completo nero e un berretto dello stesso colore.</p>
+                    
+                    <p><strong>2.</strong> La contessa (VEDERE) 
+                        <span id="cloze_v6" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...6..."></span> 
+                        due pellicce che le (PIACERE) 
+                        <span id="cloze_v7" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...7..."></span> 
+                        , e (CHIEDERE) 
+                        <span id="cloze_v8" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...8..."></span> 
+                        informazioni al commesso. Il commesso (DIRE) 
+                        <span id="cloze_v9" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...9..."></span> 
+                        che lo zibellino è più caro del visone, ma che è molto più elegante; il visone però è più leggero dello zibellino, perché lo zibellino ha il pelo più lungo.</p>
+                    
+                    <p><strong>3.</strong> La contessa (PROVARE) 
+                        <span id="cloze_v10" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...10..."></span> 
+                        le due pellicce e (DIRE) 
+                        <span id="cloze_v11" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...11..."></span> 
+                        che in effetti il visone (ESSERE) 
+                        <span id="cloze_v12" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...12..."></span> 
+                        più morbido e più leggero dello zibellino. Lei (COMPRARE) 
+                        <span id="cloze_v13" class="editable-board text-cloze" style="display: inline-block; min-width: 130px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...13..."></span> 
+                        volentieri tutte e due le pellicce, ma l’autista (CONSIGLIARE) 
+                        <span id="cloze_v14" class="editable-board text-cloze" style="display: inline-block; min-width: 120px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...14..."></span> 
+                        di non prendere né l’una né l’altra.</p>
+                    
+                    <p><strong>4.</strong> Poi la contessa Prosciuttoni e il suo autista (ANDARE) 
+                        <span id="cloze_v15" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...15..."></span> 
+                        in una gioielleria. La contessa (VEDERE) 
+                        <span id="cloze_v16" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...16..."></span> 
+                        due anelli che le (SEMBRARE) 
+                        <span id="cloze_v17" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...17..."></span> 
+                        interessanti, e (CHIEDERE) 
+                        <span id="cloze_v18" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...18..."></span> 
+                        consiglio al gioielliere. Il gioielliere (SPIEGARE) 
+                        <span id="cloze_v19" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...19..."></span> 
+                        che il diamante ha più luce del rubino, mentre il rubino è più caldo. A parte questo, il diamante è più classico del rubino e sta bene con tutto. La contessa (PRENDERE) 
+                        <span id="cloze_v20" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...20..."></span> 
+                        tutti e due gli anelli, ma il suo autista (ESSERE) 
+                        <span id="cloze_v21" class="editable-board text-cloze" style="display: inline-block; min-width: 80px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...21..."></span> 
+                        di parere contrario e la (CONVINCERE) 
+                        <span id="cloze_v22" class="editable-board text-cloze" style="display: inline-block; min-width: 110px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...22..."></span> 
+                        a uscire dal negozio senza comprare niente.</p>
+                    
+                    <p><strong>5.</strong> Dopo (ANDARE) 
+                        <span id="cloze_v23" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...23..."></span> 
+                        in un negozio di abbigliamento. Anche qui la contessa (ESSERE) 
+                        <span id="cloze_v24" class="editable-board text-cloze" style="display: inline-block; min-width: 80px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...24..."></span> 
+                        indecisa: non (SAPERE) 
+                        <span id="cloze_v25" class="editable-board text-cloze" style="display: inline-block; min-width: 90px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...25..."></span> 
+                        se prendere un paio di pantaloni di pelle o un paio di jeans strappati con i brillantini. Secondo lei i pantaloni (ESSERE) 
+                        <span id="cloze_v26" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...26..."></span> 
+                        più eleganti dei jeans, ma anche meno pratici.</p>
+                    
+                    <p><strong>6.</strong> La commessa (CONSIGLIARE) 
+                        <span id="cloze_v27" class="editable-board text-cloze" style="display: inline-block; min-width: 110px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...27..."></span> 
+                        di andare in un altro negozio, e Germano (CONSIGLIARE) 
+                        <span id="cloze_v28" class="editable-board text-cloze" style="display: inline-block; min-width: 110px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...28..."></span> 
+                        di tornare a casa. La contessa (PENSARE) 
+                        <span id="cloze_v29" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...29..."></span> 
+                        che la commessa (ESSERE) 
+                        <span id="cloze_v30" class="editable-board text-cloze" style="display: inline-block; min-width: 80px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...30..."></span> 
+                        una maleducata; il commesso della pellicceria (ESSERE) 
+                        <span id="cloze_v31" class="editable-board text-cloze" style="display: inline-block; min-width: 80px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...31..."></span> 
+                        molto più gentile di lei.</p>
+                    
+                    <p><strong>7.</strong> Tornando a casa, (PASSARE) 
+                        <span id="cloze_v32" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...32..."></span> 
+                        davanti alla vetrina di un autosalone. La contessa (FERMARSI) 
+                        <span id="cloze_v33" class="editable-board text-cloze" style="display: inline-block; min-width: 110px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...33..."></span> 
+                        a guardare. Secondo lei, (AVERE) 
+                        <span id="cloze_v34" class="editable-board text-cloze" style="display: inline-block; min-width: 80px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...34..."></span> 
+                        bisogno di una macchina nuova; Germano (SOSPIRARE) 
+                        <span id="cloze_v35" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...35..."></span> 
+                        , ma non (DIRE) 
+                        <span id="cloze_v36" class="editable-board text-cloze" style="display: inline-block; min-width: 80px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...36..."></span> 
+                        niente.</p>
+                    
+                    <p><strong>8.</strong> La contessa (VEDERE) 
+                        <span id="cloze_v37" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...37..."></span> 
+                        una Lamborghini e un’Alfa Romeo. La Lamborghini (ESSERE) 
+                        <span id="cloze_v38" class="editable-board text-cloze" style="display: inline-block; min-width: 80px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...38..."></span> 
+                        più piccola dell'Alfa Romeo, ma secondo lei (ESSERE) 
+                        <span id="cloze_v39" class="editable-board text-cloze" style="display: inline-block; min-width: 80px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...39..."></span> 
+                        anche più prestigiosa e più chic. L’Alfa Romeo, invece, (SEMBRARE) 
+                        <span id="cloze_v40" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...40..."></span> 
+                        più comoda e più spaziosa della Lamborghini. La contessa comunque (PENSARE) 
+                        <span id="cloze_v41" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...41..."></span> 
+                        che per lo zibellino (ESSERE) 
+                        <span id="cloze_v42" class="editable-board text-cloze" style="display: inline-block; min-width: 80px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...42..."></span> 
+                        più adatta la Lamborghini.</p>
+                    
+                    <p><strong>9.</strong> La contessa e l’autista (ARRIVARE) 
+                        <span id="cloze_v43" class="editable-board text-cloze" style="display: inline-block; min-width: 110px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...43..."></span> 
+                        alla fermata dell'autobus. Dopo un po’ (ARRIVARE) 
+                        <span id="cloze_v44" class="editable-board text-cloze" style="display: inline-block; min-width: 110px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...44..."></span> 
+                        anche l’autobus, e loro (SALIRE) 
+                        <span id="cloze_v45" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...45..."></span> 
+                        . (TROVARE) 
+                        <span id="cloze_v46" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...46..."></span> 
+                        due posti liberi e (SEDERSI) 
+                        <span id="cloze_v47" class="editable-board text-cloze" style="display: inline-block; min-width: 110px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...47..."></span> 
+                        . Però la contessa non (AVERE) 
+                        <span id="cloze_v48" class="editable-board text-cloze" style="display: inline-block; min-width: 80px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...48..."></span> 
+                        i soldi per comprare i biglietti, così (DOVERE) 
+                        <span id="cloze_v49" class="editable-board text-cloze" style="display: inline-block; min-width: 100px; padding: 2px 6px; border-bottom: 2px solid #9b59b6; background: #fff8ff;" contenteditable="false" data-placeholder="...49..."></span> 
+                        pagare Germano.</p>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- COLONNA DESTRA: STRUTTURA DELLA LAVAGNA (COMPLETAMENTE FISSA) -->
+        <div class="right-column">
+            <div class="toolbar">
+                <div class="toolbar-row">
+                    <h1>📝 Lavagna Unica di Classe Live</h1>
+                    <div id="statusIndicator" class="status-badge">Caricamento... ⏳</div>
+                </div>
+                <div class="action-buttons">
+                    <button id="btnWrite" class="btn-write" onclick="takeMarker()">Prendete il Pennarello ✍️</button>
+                    <button id="btnSpectate" class="btn-spectate" onclick="releaseMarker()" style="display:none;">Lasciate il Pennarello 👁️</button>
+                    <button class="btn-unlock" onclick="forceUnlock()">Libera 🔓</button>
+                    <button class="btn-clear" onclick="clearBoard()">Cancella 🧹</button>
+                </div>
+                <div class="tools-row">
+                    <div class="marker-palette">
+                        <div class="marker m-green" title="Ben strutturata 🟢" onmousedown="event.preventDefault(); applyHighlight('hl-green')"></div>
+                        <div class="marker m-yellow" title="Imprecisione 🟡" onmousedown="event.preventDefault(); applyHighlight('hl-yellow')"></div>
+                        <div class="marker m-red" title="Errore 🔴" onmousedown="event.preventDefault(); applyHighlight('hl-red')"></div>
+                        <div class="marker m-clear" title="Pulisci ⚪" onmousedown="event.preventDefault(); applyHighlight('remove')">🧹</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AREA DEI DIVERSI BOX ASSOCIATI AI PUNTI DIDATTICI -->
+            <div class="board-scroll-area">
+                
+                <div>
+                    <div class="board-label">✨ Ipotesi Generali (Elicitazione):</div>
+                    <div id="boardElicit" class="editable-board" contenteditable="false" data-placeholder="Scrivete qui i vostri commenti prima di leggere..."></div>
+                </div>
+                
+                <div>
+                    <div class="board-label">💬 Box Esercizio 1 (Pellicceria):</div>
+                    <div id="boardQ1" class="editable-board" contenteditable="false" data-placeholder="Domanda e risposta per il punto 1..."></div>
+                </div>
+
+                <div>
+                    <div class="board-label">💬 Box Esercizio 2 (Gioielleria):</div>
+                    <div id="boardQ2" class="editable-board" contenteditable="false" data-placeholder="Domanda e risposta per il punto 2..."></div>
+                </div>
+
+                <div>
+                    <div class="board-label">💬 Box Esercizio 3 (Abbigliamento):</div>
+                    <div id="boardQ3" class="editable-board" contenteditable="false" data-placeholder="Domanda e risposta per il punto 3..."></div>
+                </div>
+
+                <div>
+                    <div class="board-label">💬 Box Esercizio 4 (La Taglia):</div>
+                    <div id="boardQ4" class="editable-board" contenteditable="false" data-placeholder="Domanda e risposta per il punto 4..."></div>
+                </div>
+
+                <div>
+                    <div class="board-label">💬 Box Esercizio 5 (La Gentilezza):</div>
+                    <div id="boardQ5" class="editable-board" contenteditable="false" data-placeholder="Domanda e risposta per il punto 5..."></div>
+                </div>
+
+                <div>
+                    <div class="board-label">💬 Box Esercizio 6 (Autobus vs Auto):</div>
+                    <div id="boardQ6" class="editable-board" contenteditable="false" data-placeholder="Domanda e risposta per il punto 6..."></div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+  <!-- LOGICA DI SINCRONIZZAZIONE E TRANSIZIONE DELLE FASI DIDATTICHE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app/"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        
+        // 1. Nodi base fissi della colonna destra (Lavagna)
+        const nodi = {
+            elicit: ref(db, "ricette_parlare/elicit_lavagna_globale"),
+            q1: ref(db, "ricette_parlare/comprensione_q1"),
+            q2: ref(db, "ricette_parlare/comprensione_q2"),
+            q3: ref(db, "ricette_parlare/comprensione_q3"),
+            q4: ref(db, "ricette_parlare/comprensione_q4"),
+            q5: ref(db, "ricette_parlare/comprensione_q5"),
+            q6: ref(db, "ricette_parlare/comprensione_q6")
+        };
+
+        const boards = {
+            elicit: document.getElementById('boardElicit'),
+            q1: document.getElementById('boardQ1'),
+            q2: document.getElementById('boardQ2'),
+            q3: document.getElementById('boardQ3'),
+            q4: document.getElementById('boardQ4'),
+            q5: document.getElementById('boardQ5'),
+            q6: document.getElementById('boardQ6')
+        };
+
+        // GENERAZIONE AUTOMATICA E DINAMICA DEI 49 CLOZE INTEGRATI A SINISTRA
+        for (let i = 1; i <= 49; i++) {
+            nodi[`v${i}`] = ref(db, `ricette_parlare/cloze_verbo_${i}`);
+            // Mappiamo live l'ID dell'elemento HTML presente a sinistra nel testo
+            boards[`v${i}`] = document.getElementById(`cloze_v${i}`);
+        }
+
+        const tokenRef = ref(db, "ricette_parlare/elicit_token_scrittura");
+        const bloccoRef = ref(db, "ricette_parlare/elicit_lavagna_bloccata");
+        const letturaRef = ref(db, "ricette_parlare/fase_lettura_attiva");
+
+        const statusIndicator = document.getElementById('statusIndicator');
+        const btnWrite = document.getElementById('btnWrite');
+        const btnSpectate = document.getElementById('btnSpectate');
+
+        const mySessionId = "user_" + Math.random().toString(36).substr(2, 9);
+        let currentWriter = "";
+        let isElicitFinished = false;
+        let isLetturaActive = false;
+
+        // Ascolto Variazioni Live di TUTTI i box (sia fissi a destra che cloze a sinistra)
+        Object.keys(nodi).forEach(key => {
+            onValue(nodi[key], (snapshot) => {
+                if (currentWriter !== mySessionId && boards[key]) {
+                    boards[key].innerHTML = snapshot.val()?.html || "";
+                }
+            });
+        });
+
+        // TRANSIZIONE FASE 1 (Razzo) -> Mostra la sezione del Passo 2 (Audio + Quesiti)
+        onValue(bloccoRef, (snapshot) => {
+            isElicitFinished = snapshot.val() || false;
+            const sezioneAscolto = document.getElementById('sezione-ascolto-esercizi');
+            const btnConcludi = document.getElementById('btn-concludi');
+
+            if (isElicitFinished) {
+                if (sezioneAscolto) sezioneAscolto.style.display = 'block';
+                if (btnConcludi) { btnConcludi.style.opacity = '0.5'; btnConcludi.disabled = true; }
+            } else {
+                if (sezioneAscolto) sezioneAscolto.style.display = 'none';
+                if (btnConcludi) { btnConcludi.style.opacity = '1'; btnConcludi.disabled = false; }
+            }
+            updateUI();
+        });
+
+        // TRANSIZIONE FASE 2 (Libro) -> Mostra sia il Passo 3 (Testo) sia il Passo 4 (Verbi Integrati)
+        onValue(letturaRef, (snapshot) => {
+            isLetturaActive = snapshot.val() || false;
+            const sezioneTesto = document.getElementById('sezione-testo');
+            const sezioneVerbi = document.getElementById('sezione-analisi-verbi');
+            const btnMostraTesto = document.getElementById('btn-mostra-testo');
+
+            if (isLetturaActive) {
+                if (sezioneTesto) sezioneTesto.style.display = 'block';
+                if (sezioneVerbi) sezioneVerbi.style.display = 'block';
+                if (btnMostraTesto) { btnMostraTesto.style.opacity = '0.5'; btnMostraTesto.disabled = true; }
+            } else {
+                if (sezioneTesto) sezioneTesto.style.display = 'none';
+                if (sezioneVerbi) sezioneVerbi.style.display = 'none';
+                if (btnMostraTesto) { btnMostraTesto.style.opacity = '1'; btnMostraTesto.disabled = false; }
+            }
+        });
+
+        // Gestione dei turni di scrittura globale
+        onValue(tokenRef, (snapshot) => {
+            currentWriter = snapshot.val() || "";
+            updateUI();
+        });
+
+        function updateUI() {
+            // Filtriamo i box validi per evitare errori nel caso in cui un elemento DOM non sia ancora caricato
+            const allBoards = Object.values(boards).filter(b => b !== null);
+            
+            if (currentWriter === "") {
+                statusIndicator.innerHTML = "Libera 🟢";
+                statusIndicator.className = "status-badge";
+                allBoards.forEach(b => b.setAttribute("contenteditable", "false"));
+                btnWrite.style.display = "inline-block"; btnWrite.disabled = false;
+                btnSpectate.style.display = "none";
+            } else if (currentWriter === mySessionId) {
+                statusIndicator.innerHTML = "Scrivi tu! ✍️";
+                statusIndicator.className = "status-badge status-writing";
+                allBoards.forEach(b => b.setAttribute("contenteditable", "true"));
+                btnWrite.style.display = "none";
+                btnSpectate.style.display = "inline-block";
+            } else {
+                statusIndicator.innerHTML = "Attesa... ⏳";
+                statusIndicator.className = "status-badge";
+                allBoards.forEach(b => b.setAttribute("contenteditable", "false"));
+                btnWrite.style.display = "inline-block"; btnWrite.disabled = true;
+                btnSpectate.style.display = "none";
+            }
+        }
+
+        function saveAllContent() {
+            if (currentWriter === mySessionId) {
+                Object.keys(nodi).forEach(key => {
+                    if (boards[key]) {
+                        set(nodi[key], { html: boards[key].innerHTML });
+                    }
+                });
+            }
+        }
+        
+        // Aggancia live l'evento di ascolto dell'input a tutti i box attivi (inclusi i 49 cloze)
+        setTimeout(() => {
+            Object.values(boards).forEach(b => {
+                if (b) b.addEventListener('input', saveAllContent);
+            });
+        }, 500);
+
+        window.takeMarker = function() { if (currentWriter === "") set(tokenRef, mySessionId); };
+        window.releaseMarker = function() { if (currentWriter === mySessionId) { set(tokenRef, ""); } };
+        window.forceUnlock = function() { set(tokenRef, ""); };
+        
+        // Il tasto cancella ora azzera live anche i 49 verbi a sinistra su Firebase
+        window.clearBoard = function() {
+            if (confirm("Volete resettare tutti i box della lavagna, i verbi e le fasi didattiche per tutta la classe?")) {
+                set(tokenRef, "");
+                set(bloccoRef, false);
+                set(letturaRef, false);
+                Object.keys(nodi).forEach(key => {
+                    set(nodi[key], { html: "" }).then(() => { if (boards[key]) boards[key].innerHTML = ""; });
+                });
+            }
+        };
+
+        window.applyHighlight = function(className) {
+            if (currentWriter !== mySessionId) { alert("Prendete prima il pennarello!"); return; }
+            const selection = window.getSelection();
+            if (!selection || selection.rangeCount === 0 || selection.isCollapsed) { alert("Selezionate il testo prima."); return; }
+            
+            const range = selection.getRangeAt(0);
+            if (className === 'remove') {
+                const extracted = range.extractContents();
+                const textNode = document.createTextNode(extracted.textContent);
+                range.insertNode(textNode);
+            } else {
+                const extracted = range.extractContents();
+                const span = document.createElement('span');
+                span.className = className;
+                span.textContent = extracted.textContent;
+                range.insertNode(span);
+            }
+            selection.removeAllRanges();
+            saveAllContent();
+        };
+
+        // PULSANTE 1: Conclude l'elicitazione e sblocca l'Audio + Esercizi
+        window.concludiElicitazione = function() {
+            set(tokenRef, "").then(() => {
+                set(bloccoRef, true).then(() => {
+                    const sezioneAscolto = document.getElementById('sezione-ascolto-esercizi');
+                    if (sezioneAscolto) {
+                        window.scrollTo({ top: sezioneAscolto.offsetTop - 20, behavior: 'smooth' });
+                    }
+                });
+            });
+        };
+
+        // PULSANTE 2: Conclude l'ascolto in coppia e mostra insieme Testo Scritto e Cloze Verbi
+        window.mostraTestoVerifica = function() {
+            set(tokenRef, "").then(() => {
+                set(letturaRef, true).then(() => {
+                    const sezioneTesto = document.getElementById('sezione-testo');
+                    if (sezioneTesto) {
+                        window.scrollTo({ top: sezioneTesto.offsetTop - 20, behavior: 'smooth' });
+                    }
+                });
+            });
+        };
+    </script>
+</body>
+</html>
