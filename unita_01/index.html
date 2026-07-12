@@ -139,8 +139,8 @@
                 <div class="fase-label">Fase 1</div>
                 <div class="question-title">${ConfigLezione.elicitazione.titolo}</div>
                 <p>${ConfigLezione.elicitazione.intro}</p>
+                ${ConfigLezione.elicitazione.immagineMappa ? `<div style="text-align: center; margin: 20px 0;"><img src="${ConfigLezione.elicitazione.immagineMappa}" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" alt="Immagine di Elicitazione"></div>` : ''}
                 ${creaLavagna('elicit', 'Scrivete qui le vostre idee...')}
-            `;
             
             // Se c'è il gioco, aggiungilo!
             if(ConfigLezione.elicitazione.gioco && ConfigLezione.elicitazione.gioco.length > 0) {
