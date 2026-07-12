@@ -47,7 +47,7 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
 
-        /* STRUTTURA LAYOUT LAYOUT SPLIT-SCREEN (DUE COLONNE) */
+        /* STRUTTURA LAYOUT SPLIT-SCREEN (DUE COLONNE SU DESKTOP) */
         .split-layout {
             display: flex;
             gap: 25px;
@@ -182,6 +182,65 @@
             color: #2c3e50;
             border: 1px solid #cbd5e0;
         }
+
+        /* BOTTONI DI CONTROLLO INTERFACCIA RESPONSIVE */
+        .btn-toggle-lavagna {
+            display: none; /* Nascosto su desktop */
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 14px 22px;
+            border-radius: 50px;
+            font-size: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 2px solid white;
+            font-weight: bold;
+        }
+        .btn-close-mobile {
+            display: none; /* Nascosto su desktop */
+            background: #4a5568;
+            color: white;
+        }
+
+        /* ========================================================== */
+        /* REGOLE DI ADATTAMENTO PER SMARTPHONE E PICCOLI SCHERMI     */
+        /* ========================================================== */
+        @media (max-width: 991px) {
+            body { padding: 10px; }
+            .split-layout { flex-direction: column; gap: 0; }
+            
+            /* La colonna destra diventa un overlay a scomparsa totale */
+            .right-column {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                max-height: 100vh;
+                background: var(--bg-color);
+                z-index: 1000;
+                padding: 15px;
+                box-sizing: border-box;
+                margin: 0;
+                display: none; /* Gestito via JavaScript */
+            }
+            
+            /* Classe applicata via JS per mostrare la lavagna su mobile */
+            .right-column.open {
+                display: flex !important;
+            }
+
+            /* Mostra i pulsanti di controllo per mobile */
+            .btn-toggle-lavagna {
+                display: block;
+            }
+            .btn-close-mobile {
+                display: inline-block;
+            }
+        }
     </style>
 </head>
 <body>
@@ -202,7 +261,7 @@
             </div>
 
             <div class="intro-box">
-                <strong>Scheda 1 - La macchina:</strong> Osservate l'immagine. Rispondete alle seguenti domande utilizzando i box corrispondenti sulla lavagna a destra:
+                <strong>Scheda 1 - La macchina:</strong> Osservate l'immagine. Rispondete alle seguenti domande utilizzando i box corrispondenti sulla lavagna:
                 <ul class="options-list" style="margin-top: 10px;">
                     <li>🚗 Chi ha una macchina? Che macchina è?</li>
                     <li>🗺️ Dove andate solitamente in macchina?</li>
@@ -223,7 +282,7 @@
                     <span class="word-pill">Dormire</span>
                 </div>
 
-                Immaginate la storia. Cosa fa il dottore secondo voi? Scrivete la vostra storia sulla lavagna a destra! ✍️
+                Immaginate la storia. Cosa fa il dottore secondo voi? Scrivete la vostra storia sulla lavagna! ✍️
             </div>
 
             <div style="margin-bottom: 40px;">
@@ -233,7 +292,7 @@
             <div id="sezione-ascolto" style="display: none;">
                 <div class="intro-box" style="border-left-color: #2196F3;">
                     <strong>Scheda 3 - Ascolto:</strong> <br>
-                    Cliccate su Play e ascoltate la storia del dottor Donelli. Mentre ascoltate, scrivete la storia che avete sentito nel box finale della lavagna. Non preoccupatevi di scrivere ogni singola parola, concentratevi sul senso generale! 🎧
+                    Cliccate su Play e ascoltate la storia del dottor Donelli. Mentre ascoltate, scrivete la storia che avete sentito nel box finale della lavagna. 🎧
                 </div>
 
                 <div style="background: #1a202c; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
@@ -262,24 +321,25 @@
                     <p>Ma lontano dalla macchina lui sta male. E così qualche volta il dottor Donelli va in garage, la notte, e dorme nella sua macchina.</p>
                 </div>
                 
-                <div class="intro-box" style="border-left-color: #9b59b6; text-align: center;">
+                <div class="intro-box" style="border-left-color: #9b59b6; text-align: center; margin-bottom: 60px;">
                     <em>(La fase degli esercizi grammaticali verrà sbloccata nella prossima scheda)</em>
                 </div>
             </div>
 
         </div>
 
-        <div class="right-column">
+        <div class="right-column" id="rightColumn">
             <div class="toolbar">
                 <div class="toolbar-row">
-                    <h1>📝 Lavagna Unica di Classe</h1>
+                    <h1>📝 Lavagna Live</h1>
                     <div id="statusIndicator" class="status-badge">Caricamento... ⏳</div>
                 </div>
                 <div class="action-buttons">
-                    <button id="btnWrite" class="btn-write" onclick="takeMarker()">Prendete il Pennarello ✍️</button>
-                    <button id="btnSpectate" class="btn-spectate" onclick="releaseMarker()" style="display:none;">Lasciate il Pennarello 👁️</button>
+                    <button id="btnWrite" class="btn-write" onclick="takeMarker()">Prendi Pennarello ✍️</button>
+                    <button id="btnSpectate" class="btn-spectate" onclick="releaseMarker()" style="display:none;">Lascia Pennarello 👁️</button>
                     <button class="btn-unlock" onclick="forceUnlock()">Libera 🔓</button>
                     <button class="btn-clear" onclick="clearBoard()">Cancella 🧹</button>
+                    <button class="btn-close-mobile" onclick="closeLavagna()">Chiudi ❌</button>
                 </div>
                 <div class="tools-row">
                     <div class="marker-palette">
@@ -323,11 +383,12 @@
 
     </div>
 
+    <button id="btnOpenMobile" class="btn-toggle-lavagna" onclick="openLavagna()">📋 Apri Lavagna</button>
+
   <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // NOTA: Utilizza le tue chiavi di configurazione Firebase se diverse
         const firebaseConfig = {
             databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app/"
         };
@@ -335,7 +396,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         
-        // Nodi base fissi della colonna destra (Lavagna) - Aggiornati per l'Unità 07
+        // Nodi Firebase
         const nodi = {
             q1: ref(db, "unita_07_macchina/risposta_q1"),
             q2: ref(db, "unita_07_macchina/risposta_q2"),
@@ -352,7 +413,6 @@
             listen: document.getElementById('boardListen')
         };
 
-        // Riferimenti per le fasi e il sistema di turni - Aggiornati per l'Unità 07
         const tokenRef = ref(db, "unita_07_macchina/elicit_token_scrittura");
         const bloccoRef = ref(db, "unita_07_macchina/elicit_lavagna_bloccata");
         const letturaRef = ref(db, "unita_07_macchina/fase_lettura_attiva");
@@ -365,6 +425,14 @@
         let currentWriter = "";
         let isElicitFinished = false;
         let isLetturaActive = false;
+
+        // Funzioni per la gestione della scomparsa/comparsa su mobile (esposte globalmente)
+        window.openLavagna = function() {
+            document.getElementById('rightColumn').classList.add('open');
+        };
+        window.closeLavagna = function() {
+            document.getElementById('rightColumn').classList.remove('open');
+        };
 
         // Ascolto Variazioni Live di TUTTI i box
         Object.keys(nodi).forEach(key => {
@@ -446,7 +514,7 @@
             }
         }
         
-        // Aggancia live l'evento di ascolto dell'input a tutti i box attivi
+        // Aggancia live l'evento di input
         setTimeout(() => {
             Object.values(boards).forEach(b => {
                 if (b) b.addEventListener('input', saveAllContent);
@@ -489,7 +557,6 @@
             saveAllContent();
         };
 
-        // Sblocca la sezione Ascolto
         window.concludiElicitazione = function() {
             set(tokenRef, "").then(() => {
                 set(bloccoRef, true).then(() => {
@@ -501,7 +568,6 @@
             });
         };
 
-        // Sblocca la Lettura
         window.mostraTestoVerifica = function() {
             set(tokenRef, "").then(() => {
                 set(letturaRef, true).then(() => {
