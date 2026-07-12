@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template Lezione Universale</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --bg-color: #fcf8f2;
+            --text-color: #34495e;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px; margin: 0;
+        }
+        .main-container { max-width: 800px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 30px; }
+        h1 { color: var(--primary-color); margin-bottom: 5px; }
+        .subtitle { font-style: italic; color: #7f8c8d; }
+        
+        /* OVERLAY DI LOGIN PERSISTENTE */
+        #login-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(44, 62, 80, 0.95); z-index: 2000;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .login-box {
+            background: white; padding: 30px; border-radius: 8px; text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3); width: 90%; max-width: 400px;
+        }
+        .login-box input {
+            width: 100%; padding: 12px; margin: 15px 0; text-align: center;
+            border: 2px solid #cbd5e0; border-radius: 6px; font-size: 16px; box-sizing: border-box;
+        }
+        .login-box button {
+            background: var(--primary-color); color: white; padding: 12px 20px;
+            border: none; border-radius: 6px; font-size: 16px; font-weight: bold; width: 100%; cursor: pointer;
+        }
+
+        /* STRUTTURA SCHEDE */
+        .didactic-block { 
+            background: #fff; padding: 25px; border-radius: 8px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 30px; 
+            border-left: 5px solid var(--primary-color);
+        }
+        .didactic-block.fase-elicitazione { border-left-color: #e67e22; }
+        .didactic-block.fase-ascolto { border-left-color: #2980b9; }
+        .didactic-block.fase-lettura { border-left-color: #27ae60; }
+        .didactic-block.fase-comprensione { border-left-color: #16a085; }
+        .didactic-block.fase-grammatica { border-left-color: #9b59b6; }
+        .didactic-block.fase-orale { border-left-color: #f1c40f; }
+        .didactic-block.fase-rinforzo { border-left-color: #34495e; }
+        .didactic-block.fase-autovalutazione { border-left-color: #95a5a6; }
+
+        .question-title { font-weight: bold; font-size: 1.15rem; color: var(--primary-color); margin-bottom: 10px; }
+        .fase-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #7f8c8d; font-weight: bold; margin-bottom: 5px; }
+
+        /* LAVAGNA CONDIVISA ATTIVA */
+        .board-container { background: #3a475d; padding: 12px; border-radius: 6px; margin-top: 15px; }
+        .board-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; background: #4a5568; color: white; user-select: none; }
+        .status-writing { background: #f1c40f; color: #1a202c; }
+        .status-reading { background: #2ecc71; }
+        
+        .action-buttons { display: flex; gap: 6px; flex-wrap: wrap; }
+        button { padding: 6px 12px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; transition: all 0.2s; }
+        .btn-write { background: #4CAF50; color: white; }
+        .btn-spectate { background: #2196F3; color: white; }
+        .btn-submit { background: #9b59b6; color: white; } 
+        .btn-unlock { background: #00bcd4; color: white; } 
+        .btn-clear { background: var(--accent-color); color: white; }
+        button:hover { opacity: 0.9; }
+        button:disabled { background: #4a5568; color: #718096; cursor: not-allowed; }
+
+        .editable-board {
+            width: 100%; min-height: 80px; padding: 10px; font-size: 15px; line-height: 1.4; border-radius: 4px;
+            border: 2px solid #4a5568; background: #ffffff; color: #2d3748; box-sizing: border-box; white-space: pre-wrap; word-wrap: break-word;
+        }
+        .editable-board:focus { outline: none; border-color: #4CAF50; }
+        .editable-board[contenteditable="false"] { background: #edf2f5; color: #4a5568; }
+        .editable-board:empty:before { content: attr(data-placeholder); color: #718096; font-style: italic; }
+
+        /* RISPOSTA FISSA INVIATA */
+        .fixed-container {
+            background: #ffffff; border: 2px solid #cbd5e0; border-left: 5px solid #2ecc71;
+            border-radius: 6px; padding: 15px; margin-top: 10px; display: flex; justify-content: space-between; align-items: flex-start; gap: 15px;
+        }
+        .fixed-text-content { font-size: 15px; color: #2d3748; white-space: pre-wrap; word-wrap: break-word; }
+        .author-label { font-size: 0.8rem; color: #718096; margin-bottom: 8px; font-weight: bold; }
+        .btn-edit { background: #718096; color: white; padding: 6px 12px; font-size: 12px; }
+
+        .btn-invia-fase {
+            background-color: var(--primary-color); color: white; padding: 12px 20px; border: none; border-radius: 4px;
+            cursor: pointer; font-size: 15px; font-weight: bold; width: 100%; margin: 15px 0 35px 0; transition: background 0.3s;
+        }
+        .btn-invia-fase:hover { background-color: #1a252f; }
+    </style>
+</head>
+<body>
+
+    <div id="login-overlay">
+        <div class="login-box">
+            <h2>Benvenuti a lezione! 🇮🇹</h2>
+            <p style="color: #7f8c8d; font-size: 0.9rem; margin-bottom: 20px;">Inserisci il tuo nome per entrare nella classe live.</p>
+            <input type="text" id="username-input" placeholder="Il tuo nome (es. Maria, Prof. Rossi)" onkeypress="if(event.key==='Enter') entraInClasse()">
+            <button onclick="entraInClasse()">Entra in Classe</button>
+        </div>
+    </div>
+
+    <div class="main-container">
+        
+        <div class="header">
+            <h1>Titolo dell'Unità Didattica</h1>
+            <p class="subtitle">Sottotitolo o livello (es. Livello A2)</p>
+        </div>
+
+        <div class="didactic-block fase-elicitazione">
+            <div class="fase-label">Fase 1</div>
+            <div class="question-title">✨ Scheda 1 - Elicitazione e Motivazione</div>
+            <p>Inserisci qui le domande stimolo, immagini o attività per fare ipotesi prima del testo reale.</p>
+            
+            <div id="edit_container_elicit" class="board-container">
+                <div class="board-toolbar">
+                    <div id="status_elicit" class="status-badge">Caricamento... ⏳</div>
+                    <div class="action-buttons">
+                        <button id="btn_write_elicit" class="btn-write" onclick="takeMarker('elicit')">Scrivi ✍️</button>
+                        <button id="btn_spec_elicit" class="btn-spectate" onclick="releaseMarker('elicit')" style="display:none;">Lascia 👁️</button>
+                        <button id="btn_invia_elicit" class="btn-submit" onclick="submitBoard('elicit')" style="display:none;">Invia 🚀</button>
+                        <button class="btn-unlock" onclick="forceUnlock('elicit')">Libera 🔓</button>
+                        <button class="btn-clear" onclick="clearBoard('elicit')">Cancella 🧹</button>
+                    </div>
+                </div>
+                <div id="board_elicit" class="editable-board" contenteditable="false" data-placeholder="Scrivete qui le vostre ipotesi..."></div>
+            </div>
+            <div id="fixed_container_elicit" class="fixed-container" style="display: none;">
+                <div style="flex: 1;">
+                    <div id="author_fixed_elicit" class="author-label"></div>
+                    <div id="text_fixed_elicit" class="fixed-text-content"></div>
+                </div>
+                <button class="btn-edit" onclick="editBoard('elicit')">Modifica ✏️</button>
+            </div>
+        </div>
+        <button id="btn_fase_ascolto" class="btn-invia-fase" onclick="cambiaFase('fase_ascolto', true)">Passa alla fase di Ascolto 🚀</button>
+
+
+        <div id="sezione-fase_ascolto" style="display: none;">
+            <div class="didactic-block fase-ascolto">
+                <div class="fase-label">Fase 2</div>
+                <div class="question-title">🎧 Scheda 2 - Ascolto (Comprensione Globale)</div>
+                <p>Inserisci qui le tracce audio o le istruzioni per il primo ascolto.</p>
+                
+                <div id="edit_container_ascolto" class="board-container">
+                    <div class="board-toolbar">
+                        <div id="status_ascolto" class="status-badge">Caricamento... ⏳</div>
+                        <div class="action-buttons">
+                            <button id="btn_write_ascolto" class="btn-write" onclick="takeMarker('ascolto')">Scrivi ✍️</button>
+                            <button id="btn_spec_ascolto" class="btn-spectate" onclick="releaseMarker('ascolto')" style="display:none;">Lascia 👁️</button>
+                            <button id="btn_invia_ascolto" class="btn-submit" onclick="submitBoard('ascolto')" style="display:none;">Invia 🚀</button>
+                            <button class="btn-unlock" onclick="forceUnlock('ascolto')">Libera 🔓</button>
+                            <button class="btn-clear" onclick="clearBoard('ascolto')">Cancella 🧹</button>
+                        </div>
+                    </div>
+                    <div id="board_ascolto" class="editable-board" contenteditable="false" data-placeholder="Cosa avete capito dall'ascolto?..."></div>
+                </div>
+                <div id="fixed_container_ascolto" class="fixed-container" style="display: none;">
+                    <div style="flex: 1;">
+                        <div id="author_fixed_ascolto" class="author-label"></div>
+                        <div id="text_fixed_ascolto" class="fixed-text-content"></div>
+                    </div>
+                    <button class="btn-edit" onclick="editBoard('ascolto')">Modifica ✏️</button>
+                </div>
+            </div>
+            <button id="btn_fase_lettura" class="btn-invia-fase" onclick="cambiaFase('fase_lettura', true)">Passa alla fase di Lettura 📖</button>
+        </div>
+
+
+        <div id="sezione-fase_lettura" style="display: none;">
+            <div class="didactic-block fase-lettura">
+                <div class="fase-label">Fase 3</div>
+                <div class="question-title">📖 Scheda 3 - Lettura dell'input scritto</div>
+                <p>Inserisci qui il testo principale della lezione (dialogo, articolo o racconto) per la lettura autonoma o ad alta voce.</p>
+                <div style="background: #fafafa; padding: 15px; border-radius: 6px; border: 1px dashed #ccc; margin-top: 15px;">
+                    [Inserisci il brano/testo scritto qui]
+                </div>
+            </div>
+            <button id="btn_fase_comprensione" class="btn-invia-fase" onclick="cambiaFase('fase_comprensione', true)">Vai agli Esercizi di Comprensione 📝</button>
+        </div>
+
+
+        <div id="sezione-fase_comprensione" style="display: none;">
+            <div class="didactic-block fase-comprensione">
+                <div class="fase-label">Fase 4</div>
+                <div class="question-title">📝 Scheda 4 - Esercizi di Comprensione Analitica</div>
+                <p>Domande vero/falso, quesiti a risposta aperta o griglie di analisi del testo.</p>
+                
+                <div id="edit_container_comp" class="board-container">
+                    <div class="board-toolbar">
+                        <div id="status_comp" class="status-badge">Caricamento... ⏳</div>
+                        <div class="action-buttons">
+                            <button id="btn_write_comp" class="btn-write" onclick="takeMarker('comp')">Scrivi ✍️</button>
+                            <button id="btn_spec_comp" class="btn-spectate" onclick="releaseMarker('comp')" style="display:none;">Lascia 👁️</button>
+                            <button id="btn_invia_comp" class="btn-submit" onclick="submitBoard('comp')" style="display:none;">Invia 🚀</button>
+                            <button class="btn-unlock" onclick="forceUnlock('comp')">Libera 🔓</button>
+                            <button class="btn-clear" onclick="clearBoard('comp')">Cancella 🧹</button>
+                        </div>
+                    </div>
+                    <div id="board_comp" class="editable-board" contenteditable="false" data-placeholder="Risposte agli esercizi..."></div>
+                </div>
+                <div id="fixed_container_comp" class="fixed-container" style="display: none;">
+                    <div style="flex: 1;">
+                        <div id="author_fixed_comp" class="author-label"></div>
+                        <div id="text_fixed_comp" class="fixed-text-content"></div>
+                    </div>
+                    <button class="btn-edit" onclick="editBoard('comp')">Modifica ✏️</button>
+                </div>
+            </div>
+            <button id="btn_fase_grammatica" class="btn-invia-fase" onclick="cambiaFase('fase_grammatica', true)">Scopriamo la Grammatica 🧐</button>
+        </div>
+
+
+        <div id="sezione-fase_grammatica" style="display: none;">
+            <div class="didactic-block fase-grammatica">
+                <div class="fase-label">Fase 5</div>
+                <div class="question-title">🧐 Scheda 5 - Alla scoperta della Grammatica (Fissazione)</div>
+                <p>Attività di riflessione linguistica. Gli studenti notano le strutture, i verbi o i pronomi ed esplicitano la regola insieme.</p>
+                
+                <div id="edit_container_gramm" class="board-container">
+                    <div class="board-toolbar">
+                        <div id="status_gramm" class="status-badge">Caricamento... ⏳</div>
+                        <div class="action-buttons">
+                            <button id="btn_write_gramm" class="btn-write" onclick="takeMarker('gramm')">Scrivi ✍️</button>
+                            <button id="btn_spec_gramm" class="btn-spectate" onclick="releaseMarker('gramm')" style="display:none;">Lascia 👁️</button>
+                            <button id="btn_invia_gramm" class="btn-submit" onclick="submitBoard('gramm')" style="display:none;">Invia 🚀</button>
+                            <button class="btn-unlock" onclick="forceUnlock('gramm')">Libera 🔓</button>
+                            <button class="btn-clear" onclick="clearBoard('gramm')">Cancella 🧹</button>
+                        </div>
+                    </div>
+                    <div id="board_gramm" class="editable-board" contenteditable="false" data-placeholder="Analisi delle regole grammaticali..."></div>
+                </div>
+                <div id="fixed_container_gramm" class="fixed-container" style="display: none;">
+                    <div style="flex: 1;">
+                        <div id="author_fixed_gramm" class="author-label"></div>
+                        <div id="text_fixed_gramm" class="fixed-text-content"></div>
+                    </div>
+                    <button class="btn-edit" onclick="editBoard('gramm')">Modifica ✏️</button>
+                </div>
+            </div>
+            <button id="btn_fase_orale" class="btn-invia-fase" onclick="cambiaFase('fase_orale', true)">Passa alla Produzione Orale 💬</button>
+        </div>
+
+
+        <div id="sezione-fase_orale" style="display: none;">
+            <div class="didactic-block fase-orale">
+                <div class="fase-label">Fase 6</div>
+                <div class="question-title">💬 Scheda 6 - Produzione Orale (Riutilizzo Libero)</div>
+                <p>Roleplay, dibattiti o presentazioni basate sui contenuti dell'unità. La lavagna serve per raccogliere le idee del gruppo.</p>
+                
+                <div id="edit_container_orale" class="board-container">
+                    <div class="board-toolbar">
+                        <div id="status_orale" class="status-badge">Caricamento... ⏳</div>
+                        <div class="action-buttons">
+                            <button id="btn_write_orale" class="btn-write" onclick="takeMarker('orale')">Scrivi ✍️</button>
+                            <button id="btn_spec_orale" class="btn-spectate" onclick="releaseMarker('orale')" style="display:none;">Lascia 👁️</button>
+                            <button id="btn_invia_orale" class="btn-submit" onclick="submitBoard('orale')" style="display:none;">Invia 🚀</button>
+                            <button class="btn-unlock" onclick="forceUnlock('orale')">Libera 🔓</button>
+                            <button class="btn-clear" onclick="clearBoard('orale')">Cancella 🧹</button>
+                        </div>
+                    </div>
+                    <div id="board_orale" class="editable-board" contenteditable="false" data-placeholder="Idee per la discussione..."></div>
+                </div>
+                <div id="fixed_container_orale" class="fixed-container" style="display: none;">
+                    <div style="flex: 1;">
+                        <div id="author_fixed_orale" class="author-label"></div>
+                        <div id="text_fixed_orale" class="fixed-text-content"></div>
+                    </div>
+                    <button class="btn-edit" onclick="editBoard('orale')">Modifica ✏️</button>
+                </div>
+            </div>
+            <button id="btn_fase_rinforzo" class="btn-invia-fase" onclick="cambiaFase('fase_rinforzo', true)">Vai agli Esercizi di Rinforzo 🛠️</button>
+        </div>
+
+
+        <div id="sezione-fase_rinforzo" style="display: none;">
+            <div class="didactic-block fase-rinforzo">
+                <div class="fase-label">Fase 7</div>
+                <div class="question-title">🛠️ Scheda 7 - Esercizi di Rinforzo e Sintesi</div>
+                <p>Esercizi strutturali complessi, reimpiego scritto o cruciverba per consolidare il lessico appreso.</p>
+                
+                <div id="edit_container_rinforzo" class="board-container">
+                    <div class="board-toolbar">
+                        <div id="status_rinforzo" class="status-badge">Caricamento... ⏳</div>
+                        <div class="action-buttons">
+                            <button id="btn_write_rinforzo" class="btn-write" onclick="takeMarker('rinforzo')">Scrivi ✍️</button>
+                            <button id="btn_spec_rinforzo" class="btn-spectate" onclick="releaseMarker('rinforzo')" style="display:none;">Lascia 👁️</button>
+                            <button id="btn_invia_rinforzo" class="btn-submit" onclick="submitBoard('rinforzo')" style="display:none;">Invia 🚀</button>
+                            <button class="btn-unlock" onclick="forceUnlock('rinforzo')">Libera 🔓</button>
+                            <button class="btn-clear" onclick="clearBoard('rinforzo')">Cancella 🧹</button>
+                        </div>
+                    </div>
+                    <div id="board_rinforzo" class="editable-board" contenteditable="false" data-placeholder="Esercizi di sintesi completati..."></div>
+                </div>
+                <div id="fixed_container_rinforzo" class="fixed-container" style="display: none;">
+                    <div style="flex: 1;">
+                        <div id="author_fixed_rinforzo" class="author-label"></div>
+                        <div id="text_fixed_rinforzo" class="fixed-text-content"></div>
+                    </div>
+                    <button class="btn-edit" onclick="editBoard('rinforzo')">Modifica ✏️</button>
+                </div>
+            </div>
+            <button id="btn_fase_autovalutazione" class="btn-invia-fase" onclick="cambiaFase('fase_autovalutazione', true)">Completa l'Autovalutazione 🏁</button>
+        </div>
+
+
+        <div id="sezione-fase_autovalutazione" style="display: none;">
+            <div class="didactic-block fase-autovalutazione">
+                <div class="fase-label">Fase 8</div>
+                <div class="question-title">🏁 Scheda 8 - Autovalutazione e Bilancio</div>
+                <p>Spazio riflessivo finale: cosa ho imparato oggi? Quali sono le mie difficoltà rimaste?</p>
+                
+                <div id="edit_container_auto" class="board-container">
+                    <div class="board-toolbar">
+                        <div id="status_auto" class="status-badge">Caricamento... ⏳</div>
+                        <div class="action-buttons">
+                            <button id="btn_write_auto" class="btn-write" onclick="takeMarker('auto')">Scrivi ✍️</button>
+                            <button id="btn_spec_auto" class="btn-spectate" onclick="releaseMarker('auto')" style="display:none;">Lascia 👁️</button>
+                            <button id="btn_invia_auto" class="btn-submit" onclick="submitBoard('auto')" style="display:none;">Invia 🚀</button>
+                            <button class="btn-unlock" onclick="forceUnlock('auto')">Libera 🔓</button>
+                            <button class="btn-clear" onclick="clearBoard('auto')">Cancella 🧹</button>
+                        </div>
+                    </div>
+                    <div id="board_auto" class="editable-board" contenteditable="false" data-placeholder="Cosa ho imparato oggi?..."></div>
+                </div>
+                <div id="fixed_container_auto" class="fixed-container" style="display: none;">
+                    <div style="flex: 1;">
+                        <div id="author_fixed_auto" class="author-label"></div>
+                        <div id="text_fixed_auto" class="fixed-text-content"></div>
+                    </div>
+                    <button class="btn-edit" onclick="editBoard('auto')">Modifica ✏️</button>
+                </div>
+            </div>
+            
+            <div class="intro-box" style="border-left-color: #2c3e50; text-align: center; font-weight: bold;">
+                🎉 Ottimo lavoro! La lezione è conclusa con successo.
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        // =======================================================
+        // ⚠️ CAMBIA SOLO QUESTO ID QUANDO CREI UN NUOVO FILE HTML!
+        // =======================================================
+        const ID_LEZIONE = "lezione_generica_template"; 
+
+        const firebaseConfig = { databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app/" };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        
+        const mySessionId = "user_" + Math.random().toString(36).substr(2, 9);
+        let myUserName = localStorage.getItem('parlo_italiano_username') || "";
+
+        // Gestione automatica della memoria del Login nominale
+        if (myUserName) { document.getElementById('login-overlay').style.display = 'none'; }
+        window.entraInClasse = function() {
+            const nameInput = document.getElementById('username-input').value.trim();
+            if (nameInput.length < 2) { alert("Inserisci il tuo nome."); return; }
+            myUserName = nameInput;
+            localStorage.setItem('parlo_italiano_username', myUserName); 
+            document.getElementById('login-overlay').style.display = 'none';
+        };
+
+        // AUTO-RILEVATORE DI LAVAGNE CONDIVISE (JS scansiona e aggancia i nodi Firebase in automatico)
+        const chiavi = [];
+        const boards = {};
+        const currentWriters = {};
+        const currentWriterNames = {};
+
+        document.querySelectorAll('.editable-board').forEach(boardElement => {
+            const key = boardElement.id.replace('board_', '');
+            chiavi.push(key);
+            boards[key] = boardElement;
+            currentWriters[key] = "";
+            currentWriterNames[key] = "";
+
+            const nodoContenuto = ref(db, `${ID_LEZIONE}/content_${key}`);
+            const nodoToken = ref(db, `${ID_LEZIONE}/token_${key}`);
+            const nodoStatoVisivo = ref(db, `${ID_LEZIONE}/view_state_${key}`);
+
+            onValue(nodoContenuto, (snapshot) => {
+                const htmlContent = snapshot.val()?.html || "";
+                if (currentWriters[key] !== mySessionId) boards[key].innerHTML = htmlContent;
+                const textFixed = document.getElementById(`text_fixed_${key}`);
+                if (textFixed) textFixed.innerHTML = htmlContent;
+            });
+
+            onValue(nodoToken, (snapshot) => {
+                const data = snapshot.val();
+                if (data && typeof data === 'object') {
+                    currentWriters[key] = data.id || "";
+                    currentWriterNames[key] = data.name || "Qualcuno";
+                } else {
+                    currentWriters[key] = ""; currentWriterNames[key] = "";
+                }
+                updateBoardUI(key);
+            });
+
+            onValue(nodoStatoVisivo, (snapshot) => {
+                const isFixed = snapshot.val()?.fixed || false;
+                const author = snapshot.val()?.author || "";
+                document.getElementById(`edit_container_${key}`).style.display = isFixed ? "none" : "block";
+                document.getElementById(`fixed_container_${key}`).style.display = isFixed ? "flex" : "none";
+                const label = document.getElementById(`author_fixed_${key}`);
+                if (label) label.innerHTML = author ? `Inviato da: ${author} 👤` : "";
+            });
+
+            boards[key].addEventListener('input', () => {
+                if (currentWriters[key] === mySessionId) set(nodoContenuto, { html: boards[key].innerHTML });
+            });
+        });
+
+        function updateBoardUI(key) {
+            const board = boards[key];
+            const status = document.getElementById(`status_${key}`);
+            const btnWrite = document.getElementById(`btn_write_${key}`);
+            const btnSpec = document.getElementById(`btn_spec_${key}`);
+            const btnInvia = document.getElementById(`btn_invia_${key}`);
+            if (!board || !status) return;
+
+            if (currentWriters[key] === "") {
+                status.innerHTML = "Libera 🟢"; status.className = "status-badge status-reading";
+                board.setAttribute("contenteditable", "false");
+                if (btnWrite) { btnWrite.style.display = "inline-block"; btnWrite.disabled = false; }
+                if (btnSpec) btnSpec.style.display = "none";
+                if (btnInvia) btnInvia.style.display = "none";
+            } else if (currentWriters[key] === mySessionId) {
+                status.innerHTML = "Scrivi tu! ✍️"; status.className = "status-badge status-writing";
+                board.setAttribute("contenteditable", "true");
+                if (btnWrite) btnWrite.style.display = "none";
+                if (btnSpec) btnSpec.style.display = "inline-block";
+                if (btnInvia) btnInvia.style.display = "inline-block";
+            } else {
+                status.innerHTML = `⏳ Scrive ${currentWriterNames[key]}`; status.className = "status-badge";
+                board.setAttribute("contenteditable", "false");
+                if (btnWrite) { btnWrite.style.display = "inline-block"; btnWrite.disabled = true; }
+                if (btnSpec) btnSpec.style.display = "none";
+                if (btnInvia) btnInvia.style.display = "none";
+            }
+        }
+
+        // FUNZIONI DI TURNISTICA DEL PENNARELLO
+        window.takeMarker = function(key) { if (currentWriters[key] === "") set(ref(db, `${ID_LEZIONE}/token_${key}`), { id: mySessionId, name: myUserName }); };
+        window.releaseMarker = function(key) { if (currentWriters[key] === mySessionId) set(ref(db, `${ID_LEZIONE}/token_${key}`), null); };
+        window.forceUnlock = function(key) { set(ref(db, `${ID_LEZIONE}/token_${key}`), null); };
+        window.editBoard = function(key) { set(ref(db, `${ID_LEZIONE}/view_state_${key}`), { fixed: false }); };
+        
+        window.submitBoard = function(key) {
+            if (currentWriters[key] === mySessionId) {
+                set(ref(db, `${ID_LEZIONE}/view_state_${key}`), { fixed: true, author: myUserName }).then(() => {
+                    set(ref(db, `${ID_LEZIONE}/token_${key}`), null); 
+                });
+            }
+        };
+
+        window.clearBoard = function(key) {
+            if (confirm("Vuoi cancellare questa lavagna per tutta la classe?")) {
+                set(ref(db, `${ID_LEZIONE}/token_${key}`), null);
+                set(ref(db, `${ID_LEZIONE}/view_state_${key}`), { fixed: false, author: "" });
+                set(ref(db, `${ID_LEZIONE}/content_${key}`), { html: "" }).then(() => { if (boards[key]) boards[key].innerHTML = ""; });
+            }
+        };
+
+        // CONTROLLO LIVE DELLE 8 FASI DIDATTICHE
+        const fasiInteressate = ['fase_ascolto', 'fase_lettura', 'fase_comprensione', 'fase_grammatica', 'fase_orale', 'fase_rinforzo', 'fase_autovalutazione'];
+        
+        fasiInteressate.forEach(fase => {
+            onValue(ref(db, `${ID_LEZIONE}/stato_${fase}`), (snapshot) => {
+                const isActive = snapshot.val() || false;
+                const area = document.getElementById(`sezione-${fase}`);
+                if (area) area.style.display = isActive ? 'block' : 'none';
+                
+                // Disabilita il rispettivo pulsante se la fase è già attiva
+                const btnPrecedente = document.getElementById(`btn_${fase}`);
+                if (btnPrecedente) { btnPrecedente.style.opacity = isActive ? '0.5' : '1'; btnPrecedente.disabled = isActive; }
+            });
+        });
+
+        window.cambiaFase = function(faseTarget, stato) {
+            set(ref(db, `${ID_LEZIONE}/stato_${faseTarget}`), stato).then(() => {
+                const targetElement = document.getElementById(`sezione-${faseTarget}`);
+                if (targetElement) window.scrollTo({ top: targetElement.offsetTop - 20, behavior: 'smooth' });
+            });
+        };
+    </script>
+</body>
+</html>
