@@ -14,8 +14,9 @@ export const ConfigLezione = {
 
     // 3. SCHEDA 1: ELICITAZIONE E GIOCO LESSICALE
     elicitazione: {
-        titolo: "✨ Conosci l'Italia?", // <--- Aggiungi questa riga qui!
+        titolo: "✨ Conosci l'Italia?",
         intro: "Osserva la mappa dell'Italia. Sei mai stato in Italia? Quali città conosci? Scrivi sulla lavagna le parole italiane che già conosci.",
+        immagineMappa: "img/mappa_italia.jpg", // <--- Aggiungi questa riga!
         gioco: [
             { parola: "L'albergo", audio: "audio/albergo.mp3", imgC: "img/albergo.jpg", imgS: "img/scuola.jpg" },
             { parola: "Firenze", audio: "audio/firenze.mp3", imgC: "img/firenze.jpg", imgS: "img/roma.jpg" },
