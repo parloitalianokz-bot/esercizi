@@ -3,248 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Italiano Online | UA 07: La macchina</title>
+    <title>Lezione Italiano | UA 07</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         :root {
-            --primary: #1e293b;
+            --primary: #0f172a;
             --accent: #e11d48;
             --bg-page: #f8fafc;
-            --sidebar-bg: #0f172a;
             --white: #ffffff;
-            
-            /* Colori Metodo Balboni */
+            --sidebar-width: 260px;
+            --board-width: 400px;
+            /* Colori Balboni */
             --mark-green: #dcfce7;
             --mark-yellow: #fef9c3;
             --mark-red: #fee2e2;
-            
-            --sidebar-width: 280px;
-            --board-width: 450px;
         }
 
         * { box-sizing: border-box; }
-
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-page);
-            color: var(--primary);
             margin: 0;
+            background: var(--bg-page);
             display: flex;
             height: 100vh;
             overflow: hidden;
         }
 
-        /* SIDEBAR DI NAVIGAZIONE */
+        /* --- SIDEBAR (NAVIGAZIONE) --- */
         .sidebar {
             width: var(--sidebar-width);
-            background-color: var(--sidebar-bg);
+            background: var(--primary);
             color: white;
             display: flex;
             flex-direction: column;
-            flex-shrink: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
         }
 
-        .sidebar-header {
-            padding: 30px 20px;
-            border-bottom: 1px solid #334155;
-            text-align: center;
-        }
+        .sidebar-header { padding: 25px; border-bottom: 1px solid #334155; text-align: center; }
+        .sidebar-header h1 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--accent); margin: 0; }
 
-        .sidebar-header h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.2rem;
-            margin: 0;
-            color: var(--accent);
-        }
-
-        .nav-menu {
-            flex: 1;
-            padding: 20px 0;
-        }
-
+        .nav-menu { flex: 1; padding: 20px 0; }
         .nav-item {
             padding: 15px 25px;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 12px;
-            transition: all 0.3s;
             color: #94a3b8;
-            border-left: 4px solid transparent;
+            transition: 0.2s;
         }
+        .nav-item.active { background: #1e293b; color: white; border-left: 4px solid var(--accent); }
 
-        .nav-item:hover { background: #1e293b; color: white; }
-        .nav-item.active {
-            background: #1e293b;
-            color: white;
-            border-left-color: var(--accent);
-            font-weight: 600;
-        }
-
-        /* AREA CONTENUTI CENTRALE */
+        /* --- MAIN CONTENT --- */
         main {
             flex: 1;
-            padding: 40px;
             overflow-y: auto;
-            background-color: var(--white);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .step-content { display: none; }
-        .step-content.active { display: block; animation: fadeIn 0.5s ease; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .elicit-img {
-            width: 100%;
-            height: 350px;
-            object-fit: cover;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-        }
-
-        .instruction-card {
-            background: #f1f5f9;
-            padding: 25px;
-            border-radius: 12px;
-            border-left: 6px solid var(--accent);
-            margin-bottom: 30px;
-        }
-
-        .action-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .action-table th {
-            background: var(--primary);
-            color: white;
-            padding: 15px;
-            text-align: left;
-        }
-
-        .action-table td {
-            height: 150px;
-            border: 2px dashed #cbd5e0;
-            padding: 15px;
-            vertical-align: top;
-            background: #fafafa;
-        }
-
-        .word-tag {
-            display: inline-block;
-            background: #e2e8f0;
-            padding: 8px 18px;
-            border-radius: 20px;
-            margin: 5px;
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .reading-container {
-            line-height: 1.9;
-            font-size: 1.2rem;
-            text-align: justify;
-            color: #334155;
-            background: #fffcf5;
+            background: white;
             padding: 40px;
-            border-radius: 15px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            position: relative;
         }
 
+        .step-content { display: none; max-width: 800px; margin: 0 auto; }
+        .step-content.active { display: block; animation: fadeIn 0.4s; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .responsive-img { width: 100%; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .instruction-card { background: #f1f5f9; padding: 20px; border-radius: 10px; border-left: 5px solid var(--accent); margin: 20px 0; }
+
+        .reading-container { line-height: 1.8; font-size: 1.1rem; text-align: justify; white-space: pre-line; }
         .reading-container b { color: var(--accent); }
 
-        /* LAVAGNA LATERALE (DESTRE) */
-        .board-container {
+        /* --- LAVAGNA (BOARD) --- */
+        .board-aside {
             width: var(--board-width);
             background: #f1f5f9;
             border-left: 1px solid #e2e8f0;
             display: flex;
             flex-direction: column;
-            flex-shrink: 0;
+            transition: all 0.3s ease;
+            z-index: 999;
         }
 
-        .board-header {
-            background: #0f172a;
+        .board-header { background: var(--primary); color: white; padding: 15px; }
+        .board-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+        .btn { border: none; padding: 8px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.75rem; }
+        .btn-write { background: #3b82f6; color: white; }
+
+        .palette { display: flex; justify-content: center; gap: 10px; padding: 10px; background: #1e293b; }
+        .dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid white; }
+
+        .board-writing-area { flex: 1; margin: 15px; background: white; border-radius: 8px; padding: 15px; outline: none; overflow-y: auto; font-size: 1rem; }
+
+        /* --- MOBILE UI ELEMENTS --- */
+        .mobile-header {
+            display: none;
+            background: var(--primary);
             color: white;
-            padding: 20px;
-        }
-
-        .board-controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .btn {
-            padding: 10px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.8rem;
-            transition: 0.2s;
-        }
-
-        .btn-marker { background: #3b82f6; color: white; }
-        .btn-clear { background: var(--accent); color: white; }
-
-        .palette {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
             padding: 15px;
-            background: #1e293b;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0; width: 100%; z-index: 1001;
         }
 
-        .dot {
-            width: 35px;
-            height: 35px;
+        .floating-board-btn {
+            display: none;
+            position: fixed;
+            bottom: 20px; right: 20px;
+            background: var(--accent);
+            color: white;
+            width: 60px; height: 60px;
             border-radius: 50%;
+            justify-content: center; align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 1002;
             cursor: pointer;
-            border: 2px solid white;
+            border: none;
+            font-size: 1.5rem;
         }
 
-        .board-writing-area {
-            flex: 1;
-            margin: 20px;
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            outline: none;
-            overflow-y: auto;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        /* --- RESPONSIVE LOGIC (MOBILE) --- */
+        @media (max-width: 1024px) {
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                height: 100%;
+            }
+            .sidebar.open { left: 0; }
+
+            .board-aside {
+                position: fixed;
+                right: -100%;
+                height: 100%;
+                width: 100%;
+            }
+            .board-aside.open { right: 0; }
+
+            .mobile-header, .floating-board-btn { display: flex; }
+
+            main { padding: 80px 20px 100px 20px; }
+            
+            .step-content h2 { font-size: 1.5rem; }
         }
 
-        .board-writing-area:empty:before {
-            content: "L'insegnante scrive qui le ipotesi della classe...";
-            color: #94a3b8;
-            font-style: italic;
-        }
-
-        /* Classi Highlights */
-        span.hl-green { background-color: var(--mark-green); border-radius: 4px; padding: 2px; }
-        span.hl-yellow { background-color: var(--mark-yellow); border-radius: 4px; padding: 2px; }
-        span.hl-red { background-color: var(--mark-red); border-radius: 4px; padding: 2px; }
+        /* Evidenziatori */
+        span.hl-green { background: var(--mark-green); border-radius: 4px; padding: 0 2px; }
+        span.hl-yellow { background: var(--mark-yellow); border-radius: 4px; padding: 0 2px; }
+        span.hl-red { background: var(--mark-red); border-radius: 4px; padding: 0 2px; }
 
     </style>
 </head>
 <body>
 
-    <nav class="sidebar">
+    <div class="mobile-header">
+        <i class="fa-solid fa-bars" onclick="toggleSidebar()"></i>
+        <span>UA 07: La macchina</span>
+        <div style="width: 20px;"></div>
+    </div>
+
+    <button class="floating-board-btn" onclick="toggleBoard()">
+        <i class="fa-solid fa-pen-fancy"></i>
+    </button>
+
+    <nav class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <h1>ITALIANO ONLINE</h1>
-            <p style="font-size: 0.8rem; color: #64748b;">Unità 07: La macchina</p>
         </div>
         <div class="nav-menu">
             <div class="nav-item active" onclick="goToStep(0, this)">
@@ -257,175 +186,104 @@
                 <i class="fa-solid fa-book-open"></i> 3. Lettura
             </div>
         </div>
-        <div style="padding: 20px; font-size: 0.7rem; color: #475569; text-align: center;">
-            Metodo Umanistico-Affettivo
-        </div>
     </nav>
 
     <main>
-        
         <section id="step0" class="step-content active">
-            <h2 style="font-family: 'Playfair Display', serif; font-size: 2.2rem;">Fase di elicitazione</h2>
-            <img src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&q=80&w=1200" class="elicit-img" alt="Auto">
-            
+            <h2>1. Fase di elicitazione</h2>
+            <img src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=800&q=80" class="responsive-img">
             <div class="instruction-card">
-                <strong>Attivazione Mentale:</strong>
-                <p>Osserviamo l'immagine. Chi di voi ha una macchina? Che macchina è? Dove andiamo solitamente in macchina?</p>
+                <strong>Attivazione:</strong> Chi ha una macchina? Dove andate solitamente?
             </div>
-
-            <table class="action-table">
-                <thead>
-                    <tr>
-                        <th>Azioni (Cosa facciamo?)</th>
-                        <th>Luoghi (Dove andiamo?)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
+            <p>Compiliamo la tabella nella lavagna con Azioni e Luoghi.</p>
         </section>
 
         <section id="step1" class="step-content">
-            <h2 style="font-family: 'Playfair Display', serif; font-size: 2.2rem;">Crea la tua storia</h2>
-            <p>Usiamo la creatività. Ecco alcune parole chiave. Cosa fa il dottore?</p>
-            
-            <div style="margin: 30px 0;">
-                <span class="word-tag">Dottore 👨‍⚕️</span>
-                <span class="word-tag">Macchina 🚗</span>
-                <span class="word-tag">Ufficio 🏢</span>
-                <span class="word-tag">Parcheggio 🅿️</span>
-                <span class="word-tag">Casa 🏠</span>
-                <span class="word-tag">Garage 🔒</span>
-                <span class="word-tag">Dormire 😴</span>
-            </div>
-
-            <div class="instruction-card" style="border-left-color: #8b5cf6;">
-                <strong>Domanda per lo studente:</strong>
-                <p>Tu ami la tua macchina? È solo un oggetto o ha un nome? Raccontami.</p>
+            <h2>2. Crea la tua storia</h2>
+            <p>Usa queste parole: <b>Dottore, Macchina, Ufficio, Garage, Dormire...</b></p>
+            <div class="instruction-card">
+                Cosa fa il dottore secondo te? Scrivilo sulla lavagna!
             </div>
         </section>
 
         <section id="step2" class="step-content">
-            <h2 style="font-family: 'Playfair Display', serif; font-size: 2.2rem;">Lettura: La macchina</h2>
+            <h2>3. Lettura: La macchina</h2>
             <div class="reading-container">
-                <b>Il dottor Donelli</b> ha una bella macchina. La sua macchina è grande, nera, abbastanza nuova; è una macchina tedesca. Lui ama molto la sua macchina, e naturalmente ha molta paura dei ladri.
-                <br><br>
-                Il dottor Donelli usa la macchina tutti i giorni. <b>Va a lavorare</b> in macchina, torna a casa in macchina. La mattina, quando va in ufficio, lascia la macchina nel parcheggio custodito; la sera, quando torna a casa, la lascia in garage.
-                <br><br>
-                Il sabato, quando finalmente non lavora e ha un po’ di tempo libero, il dottor Donelli lava la macchina, controlla il motore e controlla le gomme. La domenica di solito prende la macchina e gira un po’ per la città, oppure va in campagna.
-                <br><br>
-                Nella città dove vive il dottor Donelli, purtroppo, c’è molto traffico. Le strade sono piccole e strette: per questo <b>ci sono</b> gli ingorghi. Ma il dottor Donelli è contento quando c’è un ingorgo. Lui <b>ci sta bene</b> dentro la sua macchina, perché è molto comoda e calda. Per passare il tempo ascolta la radio, oppure telefona, oppure mangia qualcosa.
-                <br><br>
-                La sera il dottor Donelli torna a casa e finalmente lascia la macchina in garage. Dice: “Buonanotte! Dormi bene!”. Poi va nel suo appartamento.
-                <br><br>
+                <b>Il dottor Donelli</b> ha una bella macchina. La sua macchina è grande, nera, abbastanza nuova; è una macchina tedesca. Lui ama molto la sua macchina...
+                
+                Il dottor Donelli usa la macchina tutti i giorni. <b>Va a lavorare</b> in macchina, torna a casa in macchina. La mattina, quando va in ufficio, lascia la macchina nel parcheggio custodito...
+                
                 Ma lontano dalla macchina lui sta male. E così qualche volta il dottor Donelli va in garage, la notte, e dorme nella sua macchina.
             </div>
         </section>
-
     </main>
 
-    <aside class="board-container">
+    <aside class="board-aside" id="board">
         <div class="board-header">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-weight:bold; font-size:0.9rem;">LAVAGNA LIVE</span>
-                <span id="status" style="font-size:0.7rem; opacity:0.7;">Libera 🟢</span>
+                <span>LAVAGNA LIVE</span>
+                <i class="fa-solid fa-xmark" onclick="toggleBoard()" style="cursor:pointer;"></i>
             </div>
             <div class="board-controls">
-                <button class="btn btn-marker" onclick="takeControl()">Scrivi ✍️</button>
+                <button class="btn btn-write" onclick="takeControl()">Scrivi ✍️</button>
                 <button class="btn" style="background:#475569; color:white;" onclick="releaseControl()">Smetti</button>
-                <button class="btn btn-clear" onclick="clearAll()" style="grid-column: span 2;">Svuota Lavagna 🧹</button>
             </div>
         </div>
-        
         <div class="palette">
             <div class="dot" style="background:var(--mark-green)" onmousedown="event.preventDefault(); applyMark('hl-green')"></div>
             <div class="dot" style="background:var(--mark-yellow)" onmousedown="event.preventDefault(); applyMark('hl-yellow')"></div>
             <div class="dot" style="background:var(--mark-red)" onmousedown="event.preventDefault(); applyMark('hl-red')"></div>
-            <div class="dot" style="background:white; display:flex; align-items:center; justify-content:center; color:black; font-weight:bold;" onclick="applyMark('remove')">X</div>
+            <div class="dot" style="background:white; color:black; text-align:center; line-height:30px; font-weight:bold" onclick="applyMark('remove')">X</div>
         </div>
-
-        <div id="liveBoard" class="board-writing-area" contenteditable="false"></div>
+        <div id="liveBoard" class="board-writing-area" contenteditable="false" data-placeholder="Scrivete qui le vostre idee..."></div>
     </aside>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // CONFIGURA IL TUO FIREBASE QUI
-        const firebaseConfig = {
-            databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app/"
-        };
-
+        const firebaseConfig = { databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app/" };
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const boardRef = ref(db, "lezioni/macchina_07");
+        const boardRef = ref(db, "lezioni/macchina_responsive");
 
         const liveBoard = document.getElementById('liveBoard');
-        const status = document.getElementById('status');
         const myId = "teacher_" + Math.random().toString(36).substr(2, 5);
-        let activeWriter = "";
+        let writer = "";
 
-        // Navigazione tra gli step
+        // UI Toggles
+        window.toggleSidebar = () => document.getElementById('sidebar').classList.toggle('open');
+        window.toggleBoard = () => document.getElementById('board').classList.toggle('open');
+
         window.goToStep = (index, el) => {
             document.querySelectorAll('.step-content').forEach(s => s.classList.remove('active'));
             document.getElementById('step' + index).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             el.classList.add('active');
+            if(window.innerWidth < 1024) toggleSidebar();
         };
 
-        // Sincronizzazione Real-time
-        onValue(boardRef, (snapshot) => {
-            const data = snapshot.val() || {};
-            activeWriter = data.writer || "";
-            if (activeWriter !== myId) {
-                liveBoard.innerHTML = data.html || "";
-            }
-            updateStatus();
+        // Firebase Logic
+        onValue(boardRef, (snap) => {
+            const d = snap.val() || {};
+            writer = d.writer || "";
+            if(writer !== myId) liveBoard.innerHTML = d.html || "";
+            liveBoard.contentEditable = (writer === myId);
         });
 
-        function updateStatus() {
-            if (activeWriter === "") {
-                status.innerText = "Libera 🟢";
-                liveBoard.contentEditable = false;
-            } else if (activeWriter === myId) {
-                status.innerText = "Scrivi tu! 🔥";
-                liveBoard.contentEditable = true;
-            } else {
-                status.innerText = "In uso... ⏳";
-                liveBoard.contentEditable = false;
-            }
-        }
+        liveBoard.oninput = () => { if(writer === myId) update(boardRef, { html: liveBoard.innerHTML }); };
+        window.takeControl = () => { if(!writer) update(boardRef, { writer: myId }); };
+        window.releaseControl = () => { if(writer === myId) update(boardRef, { writer: "" }); };
 
-        liveBoard.addEventListener('input', () => {
-            if (activeWriter === myId) {
-                update(boardRef, { html: liveBoard.innerHTML });
-            }
-        });
-
-        window.takeControl = () => { if(activeWriter === "") update(boardRef, { writer: myId }); };
-        window.releaseControl = () => { if(activeWriter === myId) update(boardRef, { writer: "" }); };
-        window.clearAll = () => { if(confirm("Cancellare tutto?")) set(boardRef, { writer: "", html: "" }); };
-
-        // Feedback Balboni
         window.applyMark = (cls) => {
-            if (activeWriter !== myId) return;
+            if(writer !== myId) return;
             const sel = window.getSelection();
-            if (!sel.rangeCount || sel.isCollapsed) return;
+            if(!sel.rangeCount || sel.isCollapsed) return;
             const range = sel.getRangeAt(0);
-            
-            if (cls === 'remove') {
-                const txt = range.toString();
-                range.deleteContents();
-                range.insertNode(document.createTextNode(txt));
+            if(cls === 'remove') {
+                const t = range.toString(); range.deleteContents(); range.insertNode(document.createTextNode(t));
             } else {
-                const span = document.createElement('span');
-                span.className = cls;
-                span.appendChild(range.extractContents());
-                range.insertNode(span);
+                const s = document.createElement('span'); s.className = cls; s.appendChild(range.extractContents()); range.insertNode(s);
             }
             update(boardRef, { html: liveBoard.innerHTML });
         };
