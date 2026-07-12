@@ -4,17 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unità 07 - La Macchina</title>
-<style>
+    <style>
         :root {
             --primary-color: #2c3e50;
             --accent-color: #e74c3c;
             --bg-color: #fcf8f2;
             --text-color: #34495e;
-            
-            /* Colori evidenziatori metodo Balboni */
-            --mark-green: #c6f6d5;
-            --mark-yellow: #fefcbf;
-            --mark-red: #fed7d7;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -24,6 +19,10 @@
             padding: 20px;
             margin: 0;
         }
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
         .header {
             text-align: center;
             margin-bottom: 30px;
@@ -31,6 +30,40 @@
         h1 { color: var(--primary-color); margin-bottom: 5px; }
         .subtitle { font-style: italic; color: #7f8c8d; }
         
+        /* OVERLAY DI LOGIN INIZIALE */
+        #login-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(44, 62, 80, 0.95);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-box {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 400px;
+        }
+        .login-box input {
+            width: 100%; padding: 12px; margin: 15px 0;
+            border: 2px solid #cbd5e0; border-radius: 6px;
+            font-size: 16px; box-sizing: border-box;
+            text-align: center;
+        }
+        .login-box input:focus { outline: none; border-color: var(--primary-color); }
+        .login-box button {
+            background: var(--primary-color); color: white;
+            padding: 12px 20px; border: none; border-radius: 6px;
+            font-size: 16px; font-weight: bold; cursor: pointer; width: 100%;
+            transition: background 0.3s;
+        }
+        .login-box button:hover { background: #1a252f; }
+
         .intro-box {
             background: #fff;
             padding: 20px;
@@ -39,102 +72,66 @@
             margin-bottom: 25px;
             border-left: 5px solid var(--accent-color);
         }
-        .elicit-question {
-            margin-bottom: 20px;
+        
+        .didactic-block {
             background: #fff;
-            padding: 15px;
-            border-radius: 6px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
-
-        /* STRUTTURA LAYOUT SPLIT-SCREEN (DUE COLONNE SU DESKTOP) */
-        .split-layout {
-            display: flex;
-            gap: 25px;
-            align-items: flex-start;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        .left-column {
-            flex: 1; /* Colonna dei contenuti e degli esercizi (scorre) */
-            min-width: 0;
-        }
-        .right-column {
-            width: 450px; /* Colonna della lavagna fissa */
-            position: -webkit-sticky;
-            position: sticky;
-            top: 20px; /* Rimane bloccata in alto durante lo scrolling */
-            max-height: calc(100vh - 40px);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        /* STILI DELLA LAVAGNA CONDIVISA FISSA */
-        .toolbar {
-            background: #1a202c;
-            padding: 15px;
-            color: white;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            padding: 20px;
             border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
         }
-        .toolbar-row {
+        .question-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        /* STILE DELLA LAVAGNA ATTIVA (STATO EDITING) */
+        .board-container {
+            background: #3a475d;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        .board-toolbar {
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 10px;
+            margin-bottom: 10px;
         }
-        .toolbar h1 { font-size: 1.1rem; margin: 0; color: #e2e8f0; }
-        .status-badge { padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; background: #4a5568; user-select: none; }
-        .status-writing { background: #cbd5e0; color: #1a202c; }
-        .action-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 5px; }
+        .status-badge { 
+            padding: 4px 10px; 
+            border-radius: 20px; 
+            font-weight: bold; 
+            font-size: 0.85rem; 
+            background: #4a5568; 
+            color: white;
+            user-select: none; 
+        }
+        .status-writing { background: #f1c40f; color: #1a202c; } /* Giallo per chi scrive */
+        .status-reading { background: #2ecc71; } /* Verde libero */
         
-        button { padding: 8px 14px; font-size: 13px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; transition: all 0.2s; }
+        .action-buttons { display: flex; gap: 6px; flex-wrap: wrap; }
+        
+        button { padding: 6px 12px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; transition: all 0.2s; }
         .btn-write { background: #4CAF50; color: white; }
         .btn-spectate { background: #2196F3; color: white; }
+        .btn-submit { background: #9b59b6; color: white; } 
         .btn-unlock { background: #00bcd4; color: white; } 
         .btn-clear { background: var(--accent-color); color: white; }
         button:hover { opacity: 0.9; }
         button:disabled { background: #4a5568; color: #718096; cursor: not-allowed; }
-        
-        .tools-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #2d3748;
-            padding: 8px 12px;
-            border-radius: 6px;
-            margin-top: 10px;
-        }
-        .marker-palette { display: flex; gap: 8px; align-items: center; font-size: 0.9rem; }
-        .marker { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #ffffff; cursor: pointer; transition: transform 0.1s; }
-        .marker:hover { transform: scale(1.1); }
-        .m-green { background: var(--mark-green); }
-        .m-yellow { background: var(--mark-yellow); }
-        .m-red { background: var(--mark-red); }
-        .m-clear { background: #ffffff; border: 2px dashed #e2e8f0; display: flex; align-items: center; justify-content: center; color: #333; font-size: 12px; }
 
-        /* CONTENITORE INTERNO DEI BOX DELLA LAVAGNA */
-        .board-scroll-area {
-            background: #3a475d;
-            padding: 15px;
-            border-radius: 8px;
-            overflow-y: auto;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.2);
-        }
-        .board-label { color: #cbd5e0; font-size: 0.85rem; font-weight: bold; margin-bottom: 4px; }
         .editable-board {
             width: 100%;
-            min-height: 60px;
+            min-height: 80px;
             padding: 10px;
             font-size: 15px;
             line-height: 1.4;
-            border-radius: 6px;
+            border-radius: 4px;
             border: 2px solid #4a5568;
             background: #ffffff;
             color: #2d3748;
@@ -146,12 +143,30 @@
         .editable-board[contenteditable="false"] { background: #edf2f5; color: #4a5568; }
         .editable-board:empty:before { content: attr(data-placeholder); color: #718096; font-style: italic; }
 
-        /* Classi evidenziatori */
-        span.hl-green { background-color: var(--mark-green); border-radius: 3px; }
-        span.hl-yellow { background-color: var(--mark-yellow); border-radius: 3px; }
-        span.hl-red { background-color: var(--mark-red); border-radius: 3px; }
+        /* STILE DEL TESTO FISSO IN APERTO (STATO INVIATO) */
+        .fixed-container {
+            background: #ffffff;
+            border: 2px solid #cbd5e0;
+            border-left: 5px solid #2ecc71;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        .fixed-text-content {
+            font-size: 15px;
+            color: #2d3748;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .fixed-text-content:empty:before { content: "Nessuna risposta inviata."; color: #a0aec0; font-style: italic; }
+        .author-label { font-size: 0.8rem; color: #718096; margin-bottom: 8px; font-weight: bold; }
+        .btn-edit { background: #718096; color: white; padding: 6px 12px; font-size: 12px; }
 
-        .btn-invia {
+        .btn-invia-fase {
             background-color: var(--primary-color);
             color: white;
             padding: 12px 20px;
@@ -162,230 +177,217 @@
             transition: background 0.3s;
             width: 100%;
             font-weight: bold;
+            margin: 20px 0;
         }
-        .btn-invia:hover { background-color: #1a252f; }
-        
-        ul.options-list { list-style-type: none; padding-left: 5px; }
-        ul.options-list li { margin-bottom: 8px; padding: 6px; border-radius: 4px; background: #fdfbf7; border-left: 3px solid #cbd5e0; }
-        
-        .word-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 15px 0;
-        }
-        .word-pill {
-            background: #e2e8f0;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            color: #2c3e50;
-            border: 1px solid #cbd5e0;
-        }
-
-        /* BOTTONI DI CONTROLLO INTERFACCIA RESPONSIVE */
-        .btn-toggle-lavagna {
-            display: none; /* Nascosto su desktop */
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 999;
-            background-color: var(--primary-color);
-            color: white;
-            padding: 14px 22px;
-            border-radius: 50px;
-            font-size: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            border: 2px solid white;
-            font-weight: bold;
-        }
-        .btn-close-mobile {
-            display: none; /* Nascosto su desktop */
-            background: #4a5568;
-            color: white;
-        }
-
-        /* ========================================================== */
-        /* REGOLE DI ADATTAMENTO PER SMARTPHONE E PICCOLI SCHERMI     */
-        /* ========================================================== */
-        @media (max-width: 991px) {
-            body { padding: 10px; }
-            .split-layout { flex-direction: column; gap: 0; }
-            
-            /* La colonna destra diventa un overlay a scomparsa totale */
-            .right-column {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                max-height: 100vh;
-                background: var(--bg-color);
-                z-index: 1000;
-                padding: 15px;
-                box-sizing: border-box;
-                margin: 0;
-                display: none; /* Gestito via JavaScript */
-            }
-            
-            /* Classe applicata via JS per mostrare la lavagna su mobile */
-            .right-column.open {
-                display: flex !important;
-            }
-
-            /* Mostra i pulsanti di controllo per mobile */
-            .btn-toggle-lavagna {
-                display: block;
-            }
-            .btn-close-mobile {
-                display: inline-block;
-            }
-        }
+        .btn-invia-fase:hover { background-color: #1a252f; }
+        .word-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+        .word-pill { background: #e2e8f0; padding: 6px 12px; border-radius: 20px; font-weight: bold; color: #2c3e50; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>Unità 07 - La Macchina</h1>
-        <p class="subtitle">Il dottor Donelli e la sua auto</p>
+    <div id="login-overlay">
+        <div class="login-box">
+            <h2 style="color: var(--primary-color); margin-top:0;">Benvenuti! 🇮🇹</h2>
+            <p style="color: #7f8c8d; font-size: 0.9rem; margin-bottom: 20px;">Inserisci il tuo nome per entrare in classe.</p>
+            <input type="text" id="username-input" placeholder="Il tuo nome (es. Maria, Prof. Rossi)" onkeypress="handleEnter(event)">
+            <button onclick="entraInClasse()">Entra in Classe</button>
+        </div>
     </div>
 
-    <div class="split-layout">
+    <div class="main-container">
         
-<div class="left-column">
+        <div class="header">
+            <h1>Unità 07 - La Macchina</h1>
+            <p class="subtitle">Il dottor Donelli e la sua auto</p>
+        </div>
             
-            <div style="text-align: center; margin-bottom: 25px;">
-                <img src="img/macchina_banner.jpg" 
-                     alt="Immagine di una macchina" 
-                     style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+        <div style="text-align: center; margin-bottom: 25px;">
+            <img src="img/macchina_banner.jpg" 
+                 alt="Immagine di una macchina" 
+                 style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+        </div>
+
+        <div class="intro-box">
+            <strong>Scheda 1 - La macchina:</strong> Osservate l'immagine qui sopra e rispondete alle domande.
+        </div>
+
+        <div class="didactic-block">
+            <div class="question-title">🚗 1. Chi ha una macchina? Che macchina è?</div>
+            
+            <div id="edit_container_q1" class="board-container">
+                <div class="board-toolbar">
+                    <div id="status_q1" class="status-badge">Caricamento... ⏳</div>
+                    <div class="action-buttons">
+                        <button id="btn_write_q1" class="btn-write" onclick="takeMarker('q1')">Scrivi ✍️</button>
+                        <button id="btn_spec_q1" class="btn-spectate" onclick="releaseMarker('q1')" style="display:none;">Lascia 👁️</button>
+                        <button id="btn_invia_q1" class="btn-submit" onclick="submitBoard('q1')" style="display:none;">Invia 🚀</button>
+                        <button class="btn-unlock" onclick="forceUnlock('q1')">Libera 🔓</button>
+                        <button class="btn-clear" onclick="clearBoard('q1')">Cancella 🧹</button>
+                    </div>
+                </div>
+                <div id="board_q1" class="editable-board" contenteditable="false" data-placeholder="Rispondete qui alla domanda 1..."></div>
             </div>
 
-            <div class="intro-box">
-                <strong>Scheda 1 - La macchina:</strong> Osservate l'immagine. Rispondete alle seguenti domande utilizzando i box corrispondenti sulla lavagna:
-                <ul class="options-list" style="margin-top: 10px;">
-                    <li>🚗 Chi ha una macchina? Che macchina è?</li>
-                    <li>🗺️ Dove andate solitamente in macchina?</li>
-                    <li>⚙️ Cosa fate con la macchina?</li>
-                </ul>
+            <div id="fixed_container_q1" class="fixed-container" style="display: none;">
+                <div style="flex: 1;">
+                    <div id="author_fixed_q1" class="author-label"></div>
+                    <div id="text_fixed_q1" class="fixed-text-content"></div>
+                </div>
+                <button class="btn-edit" onclick="editBoard('q1')">Modifica ✏️</button>
+            </div>
+        </div>
+
+        <div class="didactic-block">
+            <div class="question-title">🗺️ 2. Dove andate solitamente in macchina?</div>
+            
+            <div id="edit_container_q2" class="board-container">
+                <div class="board-toolbar">
+                    <div id="status_q2" class="status-badge">Caricamento... ⏳</div>
+                    <div class="action-buttons">
+                        <button id="btn_write_q2" class="btn-write" onclick="takeMarker('q2')">Scrivi ✍️</button>
+                        <button id="btn_spec_q2" class="btn-spectate" onclick="releaseMarker('q2')" style="display:none;">Lascia 👁️</button>
+                        <button id="btn_invia_q2" class="btn-submit" onclick="submitBoard('q2')" style="display:none;">Invia 🚀</button>
+                        <button class="btn-unlock" onclick="forceUnlock('q2')">Libera 🔓</button>
+                        <button class="btn-clear" onclick="clearBoard('q2')">Cancella 🧹</button>
+                    </div>
+                </div>
+                <div id="board_q2" class="editable-board" contenteditable="false" data-placeholder="Rispondete qui alla domanda 2..."></div>
             </div>
 
-            <div class="intro-box">
-                <strong>Scheda 2 - Immagina la storia:</strong> Leggete con attenzione le seguenti parole chiave:
+            <div id="fixed_container_q2" class="fixed-container" style="display: none;">
+                <div style="flex: 1;">
+                    <div id="author_fixed_q2" class="author-label"></div>
+                    <div id="text_fixed_q2" class="fixed-text-content"></div>
+                </div>
+                <button class="btn-edit" onclick="editBoard('q2')">Modifica ✏️</button>
+            </div>
+        </div>
+
+        <div class="didactic-block">
+            <div class="question-title">⚙️ 3. Cosa fate con la macchina?</div>
+            
+            <div id="edit_container_q3" class="board-container">
+                <div class="board-toolbar">
+                    <div id="status_q3" class="status-badge">Caricamento... ⏳</div>
+                    <div class="action-buttons">
+                        <button id="btn_write_q3" class="btn-write" onclick="takeMarker('q3')">Scrivi ✍️</button>
+                        <button id="btn_spec_q3" class="btn-spectate" onclick="releaseMarker('q3')" style="display:none;">Lascia 👁️</button>
+                        <button id="btn_invia_q3" class="btn-submit" onclick="submitBoard('q3')" style="display:none;">Invia 🚀</button>
+                        <button class="btn-unlock" onclick="forceUnlock('q3')">Libera 🔓</button>
+                        <button class="btn-clear" onclick="clearBoard('q3')">Cancella 🧹</button>
+                    </div>
+                </div>
+                <div id="board_q3" class="editable-board" contenteditable="false" data-placeholder="Rispondete qui alla domanda 3..."></div>
+            </div>
+
+            <div id="fixed_container_q3" class="fixed-container" style="display: none;">
+                <div style="flex: 1;">
+                    <div id="author_fixed_q3" class="author-label"></div>
+                    <div id="text_fixed_q3" class="fixed-text-content"></div>
+                </div>
+                <button class="btn-edit" onclick="editBoard('q3')">Modifica ✏️</button>
+            </div>
+        </div>
+
+        <div class="didactic-block">
+            <div class="question-title">✨ Scheda 2 - Immagina la storia</div>
+            <p>Usate queste parole chiave per immaginare e inventare la trama. Cosa fa il dottore secondo voi?</p>
+            <div class="word-list">
+                <span class="word-pill">Dottore</span>
+                <span class="word-pill">Macchina</span>
+                <span class="word-pill">Ufficio</span>
+                <span class="word-pill">Parcheggio</span>
+                <span class="word-pill">Casa</span>
+                <span class="word-pill">Garage</span>
+                <span class="word-pill">Dormire</span>
+            </div>
+            
+            <div id="edit_container_story" class="board-container">
+                <div class="board-toolbar">
+                    <div id="status_story" class="status-badge">Caricamento... ⏳</div>
+                    <div class="action-buttons">
+                        <button id="btn_write_story" class="btn-write" onclick="takeMarker('story')">Scrivi ✍️</button>
+                        <button id="btn_spec_story" class="btn-spectate" onclick="releaseMarker('story')" style="display:none;">Lascia 👁️</button>
+                        <button id="btn_invia_story" class="btn-submit" onclick="submitBoard('story')" style="display:none;">Invia 🚀</button>
+                        <button class="btn-unlock" onclick="forceUnlock('story')">Libera 🔓</button>
+                        <button class="btn-clear" onclick="clearBoard('story')">Cancella 🧹</button>
+                    </div>
+                </div>
+                <div id="board_story" class="editable-board" contenteditable="false" data-placeholder="Scrivete qui la storia immaginata dalla classe..."></div>
+            </div>
+
+            <div id="fixed_container_story" class="fixed-container" style="display: none;">
+                <div style="flex: 1;">
+                    <div id="author_fixed_story" class="author-label"></div>
+                    <div id="text_fixed_story" class="fixed-text-content"></div>
+                </div>
+                <button class="btn-edit" onclick="editBoard('story')">Modifica ✏️</button>
+            </div>
+        </div>
+
+        <button id="btn-concludi" class="btn-invia-fase" onclick="concludiElicitazione()">Siete pronti per ascoltare la storia reale! 🚀</button>
+
+        <div id="sezione-ascolto" style="display: none;">
+            <div class="didactic-block">
+                <div class="question-title">🎧 Scheda 3 - Ascolto</div>
+                <p>Cliccate su Play e ascoltate il file audio. Poi, usate il box condiviso per riassumere la storia.</p>
                 
-                <div class="word-list">
-                    <span class="word-pill">Dottore</span>
-                    <span class="word-pill">Macchina</span>
-                    <span class="word-pill">Ufficio</span>
-                    <span class="word-pill">Parcheggio</span>
-                    <span class="word-pill">Casa</span>
-                    <span class="word-pill">Garage</span>
-                    <span class="word-pill">Dormire</span>
-                </div>
-
-                Immaginate la storia. Cosa fa il dottore secondo voi? Scrivete la vostra storia sulla lavagna! ✍️
-            </div>
-
-            <div style="margin-bottom: 40px;">
-                <button id="btn-concludi" class="btn-invia" onclick="concludiElicitazione()">Siete pronti per ascoltare la storia reale! 🚀</button>
-            </div>
-
-            <div id="sezione-ascolto" style="display: none;">
-                <div class="intro-box" style="border-left-color: #2196F3;">
-                    <strong>Scheda 3 - Ascolto:</strong> <br>
-                    Cliccate su Play e ascoltate la storia del dottor Donelli. Mentre ascoltate, scrivete la storia che avete sentito nel box finale della lavagna. 🎧
-                </div>
-
-                <div style="background: #1a202c; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-                    <p style="color: white; margin-top: 0; margin-bottom: 12px; font-weight: bold; font-size: 0.9rem;">🎵 Ascolto: "La macchina"</p>
+                <div style="background: #1a202c; padding: 15px; border-radius: 8px; text-align: center; margin: 20px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                    <p style="color: white; margin-top: 0; margin-bottom: 12px; font-weight: bold; font-size: 0.9rem;">🎵 Riproduttore</p>
                     <audio id="audioLezione" src="audio/la_macchina.mp3" controls style="width: 100%; max-width: 400px;"></audio>
                 </div>
 
-                <div style="margin-top: 30px; margin-bottom: 40px;">
-                    <button id="btn-mostra-testo" class="btn-invia" onclick="mostraTestoVerifica()" style="background-color: #2196F3;">Avete scritto la storia? Leggiamo il testo originale! 📖</button>
+                <div id="edit_container_listen" class="board-container">
+                    <div class="board-toolbar">
+                        <div id="status_listen" class="status-badge">Caricamento... ⏳</div>
+                        <div class="action-buttons">
+                            <button id="btn_write_listen" class="btn-write" onclick="takeMarker('listen')">Scrivi ✍️</button>
+                            <button id="btn_spec_listen" class="btn-spectate" onclick="releaseMarker('listen')" style="display:none;">Lascia 👁️</button>
+                            <button id="btn_invia_listen" class="btn-submit" onclick="submitBoard('listen')" style="display:none;">Invia 🚀</button>
+                            <button class="btn-unlock" onclick="forceUnlock('listen')">Libera 🔓</button>
+                            <button class="btn-clear" onclick="clearBoard('listen')">Cancella 🧹</button>
+                        </div>
+                    </div>
+                    <div id="board_listen" class="editable-board" contenteditable="false" data-placeholder="Scrivete qui quello che avete capito dall'ascolto..."></div>
+                </div>
+
+                <div id="fixed_container_listen" class="fixed-container" style="display: none;">
+                    <div style="flex: 1;">
+                        <div id="author_fixed_listen" class="author-label"></div>
+                        <div id="text_fixed_listen" class="fixed-text-content"></div>
+                    </div>
+                    <button class="btn-edit" onclick="editBoard('listen')">Modifica ✏️</button>
                 </div>
             </div>
 
-            <div id="sezione-testo" style="display: none; margin-top: 40px;">
-                <hr style="border: 0; height: 1px; background: #e0e0e0; margin-bottom: 40px;">
-                <div class="header">
-                    <h2 style="color: var(--primary-color);">Scheda 4 - Lettura: La macchina</h2>
-                    <p class="subtitle">Leggete il testo per confrontare la vostra versione con la storia originale.</p>
-                </div>
-
-                <div style="background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 40px; text-align: justify; font-size: 16px; line-height: 1.8;">
-                    <p>Il dottor Donelli ha una bella macchina. La sua macchina è grande, nera, abbastanza nuova; è una macchina tedesca. Lui ama molto la sua macchina, e naturalmente ha molta paura dei ladri.</p>
-                    <p>Il dottor Donelli usa la macchina tutti i giorni. Va a lavorare in macchina, torna a casa in macchina. La mattina, quando va in ufficio, lascia la macchina nel parcheggio custodito; la sera, quando torna a casa, la lascia in garage.</p>
-                    <p>Il sabato, quando finalmente non lavora e ha un po’ di tempo libero, il dottor Donelli lava la macchina, controlla il motore e controlla le gomme. La domenica di solito prende la macchina e gira un po’ per la città, oppure va in campagna.</p>
-                    <p>Nella città dove vive il dottor Donelli, purtroppo, c’è molto traffico. Le strade sono piccole e strette: per questo ci sono gli ingorghi. Ma il dottor Donelli è contento quando c’è un ingorgo. Lui sta bene dentro la sua macchina, perché è molto comoda e calda. Per passare il tempo ascolta la radio, oppure telefona, oppure mangia qualcosa.</p>
-                    <p>La sera il dottor Donelli torna a casa e finalmente lascia la macchina in garage. Dice: “Buonanotte! Dormi bene!”. Poi va nel suo appartamento.</p>
-                    <p>Ma lontano dalla macchina lui sta male. E così qualche volta il dottor Donelli va in garage, la notte, e dorme nella sua macchina.</p>
-                </div>
-                
-                <div class="intro-box" style="border-left-color: #9b59b6; text-align: center; margin-bottom: 60px;">
-                    <em>(La fase degli esercizi grammaticali verrà sbloccata nella prossima scheda)</em>
-                </div>
-            </div>
-
+            <button id="btn-mostra-testo" class="btn-invia-fase" onclick="mostraTestoVerifica()" style="background-color: #2196F3;">Avete scritto la storia? Leggiamo il testo originale! 📖</button>
         </div>
 
-        <div class="right-column" id="rightColumn">
-            <div class="toolbar">
-                <div class="toolbar-row">
-                    <h1>📝 Lavagna Live</h1>
-                    <div id="statusIndicator" class="status-badge">Caricamento... ⏳</div>
-                </div>
-                <div class="action-buttons">
-                    <button id="btnWrite" class="btn-write" onclick="takeMarker()">Prendi Pennarello ✍️</button>
-                    <button id="btnSpectate" class="btn-spectate" onclick="releaseMarker()" style="display:none;">Lascia Pennarello 👁️</button>
-                    <button class="btn-unlock" onclick="forceUnlock()">Libera 🔓</button>
-                    <button class="btn-clear" onclick="clearBoard()">Cancella 🧹</button>
-                    <button class="btn-close-mobile" onclick="closeLavagna()">Chiudi ❌</button>
-                </div>
-                <div class="tools-row">
-                    <div class="marker-palette">
-                        <div class="marker m-green" title="Ben strutturata 🟢" onmousedown="event.preventDefault(); applyHighlight('hl-green')"></div>
-                        <div class="marker m-yellow" title="Imprecisione 🟡" onmousedown="event.preventDefault(); applyHighlight('hl-yellow')"></div>
-                        <div class="marker m-red" title="Errore 🔴" onmousedown="event.preventDefault(); applyHighlight('hl-red')"></div>
-                        <div class="marker m-clear" title="Pulisci ⚪" onmousedown="event.preventDefault(); applyHighlight('remove')">🧹</div>
-                    </div>
-                </div>
+        <div id="sezione-testo" style="display: none;">
+            <hr style="border: 0; height: 1px; background: #e0e0e0; margin: 40px 0;">
+            <div class="header">
+                <h2 style="color: var(--primary-color);">Scheda 4 - Lettura: La macchina</h2>
+                <p class="subtitle">Leggete il testo per verificare la vostra comprensione.</p>
             </div>
 
-            <div class="board-scroll-area">
-                
-                <div>
-                    <div class="board-label">🚗 Chi ha una macchina? Che macchina è?</div>
-                    <div id="boardQ1" class="editable-board" contenteditable="false" data-placeholder="Scrivete qui le vostre risposte..."></div>
-                </div>
-                
-                <div>
-                    <div class="board-label">🗺️ Dove andate solitamente in macchina?</div>
-                    <div id="boardQ2" class="editable-board" contenteditable="false" data-placeholder="Scrivete qui..."></div>
-                </div>
-
-                <div>
-                    <div class="board-label">⚙️ Cosa fate con la macchina?</div>
-                    <div id="boardQ3" class="editable-board" contenteditable="false" data-placeholder="Scrivete qui..."></div>
-                </div>
-
-                <div>
-                    <div class="board-label">✨ Immagina la storia (con le parole chiave):</div>
-                    <div id="boardStory" class="editable-board" contenteditable="false" data-placeholder="Costruite qui la vostra ipotesi di storia..."></div>
-                </div>
-
-                <div>
-                    <div class="board-label">🎧 La storia ascoltata:</div>
-                    <div id="boardListen" class="editable-board" contenteditable="false" data-placeholder="Scrivete qui la storia che avete capito dall'audio..."></div>
-                </div>
-
+            <div style="background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 40px; text-align: justify; font-size: 16px; line-height: 1.8;">
+                <p>Il dottor Donelli ha una bella macchina. La sua macchina è grande, nera, abbastanza nuova; è una macchina tedesca. Lui ama molto la sua macchina, e naturalmente ha molta paura dei ladri.</p>
+                <p>Il dottor Donelli usa la macchina tutti i giorni. Va a lavorare in macchina, torna a casa in macchina. La mattina, quando va in ufficio, lascia la macchina nel parcheggio custodito; la sera, quando torna a casa, la lascia in garage.</p>
+                <p>Il sabato, quando finalmente non lavora e ha un po’ di tempo libero, il dottor Donelli lava la macchina, controlla il motore e controlla le gomme. La domenica di solito prende la macchina e gira un po’ per la città, oppure va in campagna.</p>
+                <p>Nella città dove vive il dottor Donelli, purtroppo, c’è molto traffico. Le strade sono piccole e strette: per questo ci sono gli ingorghi. Ma il dottor Donelli è contento quando c’è un ingorgo. Lui sta bene dentro la sua macchina, perché è molto comoda e calda. Per passare il tempo ascolta la radio, oppure telefona, oppure mangia qualcosa.</p>
+                <p>La sera il dottor Donelli torna a casa e finalmente lascia la macchina in garage. Dice: “Buonanotte! Dormi bene!”. Poi va nel suo appartamento.</p>
+                <p>Ma lontano dalla macchina lui sta male. E così qualche volta il dottor Donelli va in garage, la notte, e dorme nella sua macchina.</p>
+            </div>
+            
+            <div class="intro-box" style="border-left-color: #9b59b6; text-align: center;">
+                <em>(La fase degli esercizi verrà sbloccata successivamente)</em>
             </div>
         </div>
 
     </div>
 
-    <button id="btnOpenMobile" class="btn-toggle-lavagna" onclick="openLavagna()">📋 Apri Lavagna</button>
-
-  <script type="module">
+    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
@@ -396,59 +398,169 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         
-        // Nodi Firebase
-        const nodi = {
-            q1: ref(db, "unita_07_macchina/risposta_q1"),
-            q2: ref(db, "unita_07_macchina/risposta_q2"),
-            q3: ref(db, "unita_07_macchina/risposta_q3"),
-            story: ref(db, "unita_07_macchina/storia_immaginata"),
-            listen: ref(db, "unita_07_macchina/storia_ascoltata")
-        };
-
-        const boards = {
-            q1: document.getElementById('boardQ1'),
-            q2: document.getElementById('boardQ2'),
-            q3: document.getElementById('boardQ3'),
-            story: document.getElementById('boardStory'),
-            listen: document.getElementById('boardListen')
-        };
-
-        const tokenRef = ref(db, "unita_07_macchina/elicit_token_scrittura");
-        const bloccoRef = ref(db, "unita_07_macchina/elicit_lavagna_bloccata");
-        const letturaRef = ref(db, "unita_07_macchina/fase_lettura_attiva");
-
-        const statusIndicator = document.getElementById('statusIndicator');
-        const btnWrite = document.getElementById('btnWrite');
-        const btnSpectate = document.getElementById('btnSpectate');
-
+        // GESTIONE UTENTE E LOGIN
         const mySessionId = "user_" + Math.random().toString(36).substr(2, 9);
-        let currentWriter = "";
-        let isElicitFinished = false;
-        let isLetturaActive = false;
+        let myUserName = "";
 
-        // Funzioni per la gestione della scomparsa/comparsa su mobile (esposte globalmente)
-        window.openLavagna = function() {
-            document.getElementById('rightColumn').classList.add('open');
-        };
-        window.closeLavagna = function() {
-            document.getElementById('rightColumn').classList.remove('open');
-        };
+        window.handleEnter = function(e) {
+            if (e.key === 'Enter') entraInClasse();
+        }
 
-        // Ascolto Variazioni Live di TUTTI i box
-        Object.keys(nodi).forEach(key => {
-            onValue(nodi[key], (snapshot) => {
-                if (currentWriter !== mySessionId && boards[key]) {
-                    boards[key].innerHTML = snapshot.val()?.html || "";
+        window.entraInClasse = function() {
+            const nameInput = document.getElementById('username-input').value.trim();
+            if (nameInput.length < 2) {
+                alert("Per favore, inserisci il tuo nome per continuare.");
+                return;
+            }
+            myUserName = nameInput;
+            document.getElementById('login-overlay').style.display = 'none';
+        };
+        
+        const chiavi = ['q1', 'q2', 'q3', 'story', 'listen'];
+        const nodiContenuto = {};
+        const nodiToken = {};
+        const nodiStatoVisivo = {}; 
+        const boards = {};
+        const currentWriters = {};
+        const currentWriterNames = {}; // Memorizza IL NOME di chi sta scrivendo in tempo reale
+
+        chiavi.forEach(key => {
+            nodiContenuto[key] = ref(db, `unita_07_macchina/content_${key}`);
+            nodiToken[key] = ref(db, `unita_07_macchina/token_${key}`);
+            nodiStatoVisivo[key] = ref(db, `unita_07_macchina/view_state_${key}`);
+            boards[key] = document.getElementById(`board_${key}`);
+            currentWriters[key] = "";
+            currentWriterNames[key] = "";
+
+            // 1. Ascolto testo in tempo reale
+            onValue(nodiContenuto[key], (snapshot) => {
+                const htmlContent = snapshot.val()?.html || "";
+                if (currentWriters[key] !== mySessionId && boards[key]) {
+                    boards[key].innerHTML = htmlContent;
+                }
+                const textFixed = document.getElementById(`text_fixed_${key}`);
+                if (textFixed) textFixed.innerHTML = htmlContent;
+            });
+
+            // 2. Ascolto dei turni di scrittura (Aggiornato per supportare ID e NOME)
+            onValue(nodiToken[key], (snapshot) => {
+                const data = snapshot.val();
+                if (data && typeof data === 'object') {
+                    currentWriters[key] = data.id || "";
+                    currentWriterNames[key] = data.name || "Qualcuno";
+                } else {
+                    currentWriters[key] = "";
+                    currentWriterNames[key] = "";
+                }
+                updateBoardUI(key);
+            });
+
+            // 3. Ascolto dello stato visivo (Fisso o Editing)
+            onValue(nodiStatoVisivo[key], (snapshot) => {
+                const isFixed = snapshot.val()?.fixed || false;
+                const author = snapshot.val()?.author || "";
+                const editContainer = document.getElementById(`edit_container_${key}`);
+                const fixedContainer = document.getElementById(`fixed_container_${key}`);
+                const authorLabel = document.getElementById(`author_fixed_${key}`);
+                
+                if (isFixed) {
+                    editContainer.style.display = "none";
+                    fixedContainer.style.display = "flex";
+                    if (authorLabel) authorLabel.innerHTML = author ? `Inviato da: ${author} 👤` : "";
+                } else {
+                    editContainer.style.display = "block";
+                    fixedContainer.style.display = "none";
                 }
             });
+            
+            // 4. Salvataggio live durante la digitazione
+            if (boards[key]) {
+                boards[key].addEventListener('input', () => {
+                    if (currentWriters[key] === mySessionId) {
+                        set(nodiContenuto[key], { html: boards[key].innerHTML });
+                    }
+                });
+            }
         });
 
-        // TRANSIZIONE FASE 1 -> Mostra la sezione di Ascolto
+        // Aggiorna i pulsanti e mostra CHI sta scrivendo
+        function updateBoardUI(key) {
+            const board = boards[key];
+            const status = document.getElementById(`status_${key}`);
+            const btnWrite = document.getElementById(`btn_write_${key}`);
+            const btnSpec = document.getElementById(`btn_spec_${key}`);
+            const btnInvia = document.getElementById(`btn_invia_${key}`);
+            
+            if (!board || !status) return;
+
+            if (currentWriters[key] === "") {
+                status.innerHTML = "Libera 🟢";
+                status.className = "status-badge status-reading";
+                board.setAttribute("contenteditable", "false");
+                if (btnWrite) { btnWrite.style.display = "inline-block"; btnWrite.disabled = false; }
+                if (btnSpec) btnSpec.style.display = "none";
+                if (btnInvia) btnInvia.style.display = "none";
+            } else if (currentWriters[key] === mySessionId) {
+                status.innerHTML = "Scrivi tu! ✍️";
+                status.className = "status-badge status-writing";
+                board.setAttribute("contenteditable", "true");
+                if (btnWrite) btnWrite.style.display = "none";
+                if (btnSpec) btnSpec.style.display = "inline-block";
+                if (btnInvia) btnInvia.style.display = "inline-block";
+            } else {
+                // Etichetta personalizzata con il nome dello studente!
+                status.innerHTML = `⏳ Scrive ${currentWriterNames[key]}`;
+                status.className = "status-badge";
+                board.setAttribute("contenteditable", "false");
+                if (btnWrite) { btnWrite.style.display = "inline-block"; btnWrite.disabled = true; }
+                if (btnSpec) btnSpec.style.display = "none";
+                if (btnInvia) btnInvia.style.display = "none";
+            }
+        }
+
+        // AZIONI DELLA LAVAGNA CONDIVISA
+        window.takeMarker = function(key) { 
+            // Invia al database sia l'ID tecnico che il nome utente visuale
+            if (currentWriters[key] === "") set(nodiToken[key], { id: mySessionId, name: myUserName }); 
+        };
+        window.releaseMarker = function(key) { 
+            if (currentWriters[key] === mySessionId) set(nodiToken[key], null); 
+        };
+        window.forceUnlock = function(key) { 
+            set(nodiToken[key], null); 
+        };
+
+        // Tasto INVIA: Salva chi ha inviato e chiude la lavagna
+        window.submitBoard = function(key) {
+            if (currentWriters[key] === mySessionId) {
+                set(nodiStatoVisivo[key], { fixed: true, author: myUserName }).then(() => {
+                    set(nodiToken[key], null); 
+                });
+            }
+        };
+
+        window.editBoard = function(key) {
+            set(nodiStatoVisivo[key], { fixed: false });
+        };
+        
+        window.clearBoard = function(key) {
+            if (confirm("Vuoi svuotare questo specifico box e reimpostarlo in modalità scrittura per tutti?")) {
+                set(nodiToken[key], null);
+                set(nodiStatoVisivo[key], { fixed: false, author: "" });
+                set(nodiContenuto[key], { html: "" }).then(() => {
+                    if (boards[key]) boards[key].innerHTML = "";
+                });
+            }
+        };
+
+        // CONTROLLO FLUSSO DELLE SCHEDE DIDATTICHE
+        const bloccoRef = ref(db, "unita_07_macchina/fase_ascolto_bloccata");
+        const letturaRef = ref(db, "unita_07_macchina/fase_lettura_attiva");
+
         onValue(bloccoRef, (snapshot) => {
-            isElicitFinished = snapshot.val() || false;
+            const isElicitFinished = snapshot.val() || false;
             const sezioneAscolto = document.getElementById('sezione-ascolto');
             const btnConcludi = document.getElementById('btn-concludi');
-
             if (isElicitFinished) {
                 if (sezioneAscolto) sezioneAscolto.style.display = 'block';
                 if (btnConcludi) { btnConcludi.style.opacity = '0.5'; btnConcludi.disabled = true; }
@@ -456,15 +568,12 @@
                 if (sezioneAscolto) sezioneAscolto.style.display = 'none';
                 if (btnConcludi) { btnConcludi.style.opacity = '1'; btnConcludi.disabled = false; }
             }
-            updateUI();
         });
 
-        // TRANSIZIONE FASE 2 -> Mostra Testo Scritto
         onValue(letturaRef, (snapshot) => {
-            isLetturaActive = snapshot.val() || false;
+            const isLetturaActive = snapshot.val() || false;
             const sezioneTesto = document.getElementById('sezione-testo');
             const btnMostraTesto = document.getElementById('btn-mostra-testo');
-
             if (isLetturaActive) {
                 if (sezioneTesto) sezioneTesto.style.display = 'block';
                 if (btnMostraTesto) { btnMostraTesto.style.opacity = '0.5'; btnMostraTesto.disabled = true; }
@@ -474,108 +583,17 @@
             }
         });
 
-        // Gestione dei turni di scrittura globale
-        onValue(tokenRef, (snapshot) => {
-            currentWriter = snapshot.val() || "";
-            updateUI();
-        });
-
-        function updateUI() {
-            const allBoards = Object.values(boards).filter(b => b !== null);
-            
-            if (currentWriter === "") {
-                statusIndicator.innerHTML = "Libera 🟢";
-                statusIndicator.className = "status-badge";
-                allBoards.forEach(b => b.setAttribute("contenteditable", "false"));
-                btnWrite.style.display = "inline-block"; btnWrite.disabled = false;
-                btnSpectate.style.display = "none";
-            } else if (currentWriter === mySessionId) {
-                statusIndicator.innerHTML = "Scrivi tu! ✍️";
-                statusIndicator.className = "status-badge status-writing";
-                allBoards.forEach(b => b.setAttribute("contenteditable", "true"));
-                btnWrite.style.display = "none";
-                btnSpectate.style.display = "inline-block";
-            } else {
-                statusIndicator.innerHTML = "Attesa... ⏳";
-                statusIndicator.className = "status-badge";
-                allBoards.forEach(b => b.setAttribute("contenteditable", "false"));
-                btnWrite.style.display = "inline-block"; btnWrite.disabled = true;
-                btnSpectate.style.display = "none";
-            }
-        }
-
-        function saveAllContent() {
-            if (currentWriter === mySessionId) {
-                Object.keys(nodi).forEach(key => {
-                    if (boards[key]) {
-                        set(nodi[key], { html: boards[key].innerHTML });
-                    }
-                });
-            }
-        }
-        
-        // Aggancia live l'evento di input
-        setTimeout(() => {
-            Object.values(boards).forEach(b => {
-                if (b) b.addEventListener('input', saveAllContent);
-            });
-        }, 500);
-
-        window.takeMarker = function() { if (currentWriter === "") set(tokenRef, mySessionId); };
-        window.releaseMarker = function() { if (currentWriter === mySessionId) { set(tokenRef, ""); } };
-        window.forceUnlock = function() { set(tokenRef, ""); };
-        
-        window.clearBoard = function() {
-            if (confirm("Volete resettare tutti i box della lavagna e le fasi didattiche per tutta la classe?")) {
-                set(tokenRef, "");
-                set(bloccoRef, false);
-                set(letturaRef, false);
-                Object.keys(nodi).forEach(key => {
-                    set(nodi[key], { html: "" }).then(() => { if (boards[key]) boards[key].innerHTML = ""; });
-                });
-            }
-        };
-
-        window.applyHighlight = function(className) {
-            if (currentWriter !== mySessionId) { alert("Prendete prima il pennarello!"); return; }
-            const selection = window.getSelection();
-            if (!selection || selection.rangeCount === 0 || selection.isCollapsed) { alert("Selezionate il testo prima."); return; }
-            
-            const range = selection.getRangeAt(0);
-            if (className === 'remove') {
-                const extracted = range.extractContents();
-                const textNode = document.createTextNode(extracted.textContent);
-                range.insertNode(textNode);
-            } else {
-                const extracted = range.extractContents();
-                const span = document.createElement('span');
-                span.className = className;
-                span.textContent = extracted.textContent;
-                range.insertNode(span);
-            }
-            selection.removeAllRanges();
-            saveAllContent();
-        };
-
         window.concludiElicitazione = function() {
-            set(tokenRef, "").then(() => {
-                set(bloccoRef, true).then(() => {
-                    const sezioneAscolto = document.getElementById('sezione-ascolto');
-                    if (sezioneAscolto) {
-                        window.scrollTo({ top: sezioneAscolto.offsetTop - 20, behavior: 'smooth' });
-                    }
-                });
+            set(bloccoRef, true).then(() => {
+                const sezioneAscolto = document.getElementById('sezione-ascolto');
+                if (sezioneAscolto) window.scrollTo({ top: sezioneAscolto.offsetTop - 20, behavior: 'smooth' });
             });
         };
 
         window.mostraTestoVerifica = function() {
-            set(tokenRef, "").then(() => {
-                set(letturaRef, true).then(() => {
-                    const sezioneTesto = document.getElementById('sezione-testo');
-                    if (sezioneTesto) {
-                        window.scrollTo({ top: sezioneTesto.offsetTop - 20, behavior: 'smooth' });
-                    }
-                });
+            set(letturaRef, true).then(() => {
+                const sezioneTesto = document.getElementById('sezione-testo');
+                if (sezioneTesto) window.scrollTo({ top: sezioneTesto.offsetTop - 20, behavior: 'smooth' });
             });
         };
     </script>
