@@ -1,22 +1,24 @@
 /**
  * DATI LEZIONE - CONFIGURAZIONE
- * Sostituisci i valori in questa configurazione per creare ogni nuova lezione.
+ * Questo è il file unico da usare per l'Unità 1.
  */
 
 export const ConfigLezione = {
-    // 1. ID UNIVOCO (Cambialo per ogni lezione per separare i dati su Firebase)
-    idFirebase: "unita_01_albergo",
+    // 1. ID UNIVOCO PER FIREBASE
+    idFirebase: "unita_01_albergo_centro",
 
     // 2. INTESTAZIONE
-    titolo: "Titolo dell'Unità",
-    sottotitolo: "Breve descrizione o livello (es. A1)",
-    bannerImg: "img/banner.jpg",
+    titolo: "Unità 1 - Un albergo in centro",
+    sottotitolo: "Livello A1 - Iniziamo a viaggiare",
+    bannerImg: "img/ponte_vecchio_firenze.jpg", 
 
     // 3. SCHEDA 1: ELICITAZIONE E GIOCO LESSICALE
     elicitazione: {
-        intro: "Inserisci qui l'intro della fase di elicitazione.",
+        intro: "Osserva la mappa dell'Italia. Sei mai stato in Italia? Quali città conosci? Scrivi sulla lavagna le parole italiane che già conosci.",
         gioco: [
-            { parola: "Esempio", audio: "audio/esempio.mp3", imgC: "img/c1.jpg", imgS: "img/s1.jpg" }
+            { parola: "L'albergo", audio: "audio/albergo.mp3", imgC: "img/albergo.jpg", imgS: "img/scuola.jpg" },
+            { parola: "Firenze", audio: "audio/firenze.mp3", imgC: "img/firenze.jpg", imgS: "img/roma.jpg" },
+            { parola: "Il centro", audio: "audio/centro.mp3", imgC: "img/centro.jpg", imgS: "img/periferia.jpg" }
         ]
     },
 
@@ -36,7 +38,7 @@ export const ConfigLezione = {
         ]
     },
 
-    // 6. SCHEDA 4: COMPRENSIONE (Lista di oggetti)
+    // 6. SCHEDA 4: COMPRENSIONE
     comprensione: {
         titolo: "📝 Comprensione",
         domande: [
