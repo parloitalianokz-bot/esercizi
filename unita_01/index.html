@@ -271,10 +271,14 @@ if (ConfigLezione.ascolto) {
 }
 
 if (ConfigLezione.lettura) {
-    const testoHtml = ConfigLezione.lettura.testo.map(p => `<p>${p}</p>`).join('');
+    // Invece di usare map() sul testo semplice, inseriamo il blocco HTML formattato direttamente
     htmlDinamico += creaSezioneFisarmonica(ConfigLezione.lettura.titolo, 'lettura', `
-        ${testoHtml}
-        ${creaLavagna('lettura', 'Scrivi un commento al testo...')}
+        <div class="didactic-block">
+            ${testoFormattato} 
+            <div style="margin-top: 20px;">
+                ${creaLavagna('lettura', 'Scrivi un commento al testo...')}
+            </div>
+        </div>
     `);
 }
 
