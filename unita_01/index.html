@@ -291,9 +291,24 @@
                 }
                 document.getElementById('game-next-btn').style.display = "block";
             };
-            window.nextGameRound = function() { window.currentRound++; window.loadGameRound(); };
-            setTimeout(window.loadGameRound, 500);
-        }
+            window.nextGameRound = function() {
+                const nextIndex = (window.currentRound + 1) % ConfigLezione.elicitazione.gioco.length;
+                // Scriviamo sul database: questo aggiornerà tutti istantaneamente
+                set(ref(db, `${ID_LEZIONE}/gioco_corrente`), { index: nextIndex });
+            };
+
+            onValue(ref(db, `${ID_LEZIONE}/gioco_corrente`), (snapshot) => {
+                const data = snapshot.val();
+                // Verifichiamo che i dati esistano e contengano un indice valido
+                if (data && typeof data.index !== 'undefined') {
+                    window.currentRound = data.index;
+                    window.loadGameRound();
+                } else {
+                    // Fallback: se il database è vuoto, forziamo il caricamento del primo round
+                    window.currentRound = 0;
+                    window.loadGameRound();
+                }
+            });
 
         // 5. FIREBASE E LOGICA LOGIN/LAVAGNE
         const firebaseConfig = { databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app/" };
