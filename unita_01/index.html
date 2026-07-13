@@ -176,13 +176,14 @@
                 
                 <hr style="margin: 40px 0; border: 0; border-top: 2px dashed #ccc;">
 
-                <!-- 2. FLASHCARD STUDIO -->
+                <!-- FLASHCARD SLIDER -->
                 <div class="question-title">📚 Studiamo i nuovi vocaboli:</div>
-                <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap:10px; margin: 20px 0;">
+                <div class="flashcard-slider">
                     ${ConfigLezione.elicitazione.vocabolario.map(item => `
-                        <div style="background:#fff; border: 1px solid #ddd; padding:10px; border-radius:8px; text-align:center; cursor:pointer;" onclick="new Audio('${item.audio}').play()">
-                            <img src="${item.img}" style="width:100%; border-radius:4px;">
-                            <div style="font-size:0.8rem; font-weight:bold; margin-top:5px;">${item.parola}</div>
+                        <div class="flashcard-item" onclick="new Audio('${item.audio}').play()">
+                            <img src="${item.img}" alt="${item.parola}">
+                            <div style="font-size:1.2rem; font-weight:bold; margin-top:10px;">${item.parola}</div>
+                            <small style="color:#777;">(clicca per ascoltare)</small>
                         </div>
                     `).join('')}
                 </div>
