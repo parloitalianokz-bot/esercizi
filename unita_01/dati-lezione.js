@@ -33,23 +33,9 @@ export const ConfigLezione = {
             { parola: "Grande", audio: "audio/grande.mp3", img: "img/grande.webp" },
             { parola: "Comodo", audio: "audio/comodo.mp3", img: "img/comodo.webp" },
             { parola: "Occupato", audio: "audio/occupato.mp3", img: "img/occupato.webp" }
-        ],
-
-         // Dati per la modalità "Gioco delle scelte"
-        gioco: [
-            { img: "img/albergo.webp", parolaC: "L'albergo", parolaS: "La scuola", audio: "audio/albergo.mp3" },
-            { img: "img/firenze.webp", parolaC: "Firenze", parolaS: "Roma", audio: "audio/firenze.mp3" },
-            { img: "img/centro.webp", parolaC: "Il centro", parolaS: "La periferia", audio: "audio/centro.mp3" },
-            { img: "img/camera.webp", parolaC: "La camera", parolaS: "Il bagno", audio: "audio/camera.mp3" },
-            { img: "img/avvocato.webp", parolaC: "L'avvocato", parolaS: "Il medico", audio: "audio/avvocato.mp3" },
-            { img: "img/studente.webp", parolaC: "Lo studente", parolaS: "L'insegnante", audio: "audio/studente.mp3" },
-            { img: "img/insegnante.webp", parolaC: "L'insegnante", parolaS: "Il meccanico", audio: "audio/insegnante.mp3" },
-            { img: "img/dentista.webp", parolaC: "Il dentista", parolaS: "Il cuoco", audio: "audio/dentista.mp3" },
-            { img: "img/direttore.webp", parolaC: "Il direttore", parolaS: "Il cameriere", audio: "audio/direttore.mp3" },
-            { img: "img/grande.webp", parolaC: "Grande", parolaS: "Piccolo", audio: "audio/grande.mp3" },
-            { img: "img/comodo.webp", parolaC: "Comodo", parolaS: "Scomodo", audio: "audio/comodo.mp3" },
-            { img: "img/occupato.webp", parolaC: "Occupato", parolaS: "Libero", audio: "audio/occupato.mp3" }
         ]
+    }
+};
 
     // 4. SCHEDA 2: ASCOLTO
     ascolto: {
