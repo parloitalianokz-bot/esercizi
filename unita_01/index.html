@@ -271,10 +271,10 @@ if (ConfigLezione.ascolto) {
 }
 
 if (ConfigLezione.lettura) {
-    // Invece di usare map() sul testo semplice, inseriamo il blocco HTML formattato direttamente
+    // Usiamo direttamente il testo formattato che abbiamo messo nei dati
     htmlDinamico += creaSezioneFisarmonica(ConfigLezione.lettura.titolo, 'lettura', `
         <div class="didactic-block">
-            ${testoFormattato} 
+            ${ConfigLezione.lettura.testoFormattato}
             <div style="margin-top: 20px;">
                 ${creaLavagna('lettura', 'Scrivi un commento al testo...')}
             </div>
