@@ -370,6 +370,13 @@
                 const btn = document.getElementById(`btn_${fase}`); if (btn) { btn.style.opacity = isActive ? '0.5' : '1'; btn.disabled = isActive; }
             });
         });
+
+        window.scrollSlider = function(direction) {
+            const container = document.getElementById('flashcard-slider');
+            const scrollAmount = container.offsetWidth * 0.7; // Scorri del 70% della larghezza
+            container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+        };
+        
     </script>
 </body>
 </html>
