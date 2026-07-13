@@ -197,12 +197,10 @@ window.creaSezioneFisarmonica = function(titolo, id, contenuto) {
 
 let htmlDinamico = "";
 
-// 2. Costruiamo Fase 1 (Elicitazione + Gioco scrittura) - Sempre visibile
+// 2. Costruiamo Fase 1 (Elicitazione + Gioco scrittura) - Ora dentro la fisarmonica
 if (ConfigLezione && ConfigLezione.elicitazione) {
-    htmlDinamico += `
+    const contenutoElicitazione = `
     <div class="didactic-block fase-elicitazione">
-        <div class="fase-label">Fase 1</div>
-        <div class="question-title">${ConfigLezione.elicitazione.titolo || ""}</div>
         <p>${ConfigLezione.elicitazione.intro || ""}</p>
         
         ${ConfigLezione.elicitazione.immagineMappa ? `<div style="text-align: center; margin: 20px 0;"><img src="${ConfigLezione.elicitazione.immagineMappa}" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" alt="Mappa"></div>` : ''}
@@ -244,6 +242,9 @@ if (ConfigLezione && ConfigLezione.elicitazione) {
             }).join('') : ''}
         </div>
     </div>`;
+
+    // Aggiungiamo la Fase 1 usando la funzione fisarmonica
+    htmlDinamico += creaSezioneFisarmonica("Fase 1: " + ConfigLezione.elicitazione.titolo, 'elicitazione', contenutoElicitazione);
 }
 
 // 3. Aggiungiamo le sezioni Fisarmonica
