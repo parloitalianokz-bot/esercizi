@@ -93,6 +93,18 @@
             background-color: #f9f9f9; /* Colore di sfondo se l'immagine non riempie tutto */
             border-radius: 10px;
         }
+
+        /* Contenitore relativo per posizionare le frecce */
+        .slider-wrapper { position: relative; display: flex; align-items: center; }
+        
+        .arrow-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(44, 62, 80, 0.8); color: white;
+            border: none; padding: 10px; cursor: pointer;
+            z-index: 10; border-radius: 50%; font-size: 1.5rem;
+        }
+        .prev-btn { left: -15px; }
+        .next-btn { right: -15px; }
         
     </style>
 </head>
