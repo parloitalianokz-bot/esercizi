@@ -232,18 +232,33 @@
                 <hr style="margin: 30px 0; border: 0; border-top: 2px solid #ddd;">
                 
                 <div class="question-title">🎮 Ora mettiti alla prova!</div>
-                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center; border: 2px solid #cbd5e0;">
-                    <h2 id="game-word" style="color: var(--primary-color); font-size: 1.5rem; margin: 10px 0;"></h2>
-                    <button onclick="playGameAudio()" style="background: #2196F3; color: white; padding: 10px 20px; border-radius: 50px; border:none; margin-bottom: 20px; cursor:pointer;">🔊 Ascolta</button>
-                    <audio id="game-audio" src=""></audio>
-                    <div style="display: flex; gap: 20px; justify-content: center;">
-                        <img id="game-img-1" class="game-img" src="" onclick="checkAnswer(1)">
-                        <img id="game-img-2" class="game-img" src="" onclick="checkAnswer(2)">
-                    </div>
-                    <div id="game-feedback" style="font-size: 1.2rem; font-weight: bold; margin-top: 20px; height: 30px;"></div>
-                    <button id="game-next-btn" onclick="nextGameRound()" style="display: none; background: var(--primary-color); color: white; border:none; font-size: 1rem; padding: 10px; margin-top: 15px; width: 100%; border-radius:6px; cursor:pointer;">Prossima Parola ➡️</button>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center; border: 2px solid #cbd5e0;">
+                
+                <!-- Barra di stato per il turno -->
+                <div id="game-status-bar" class="status-badge" style="margin-bottom: 15px; display: inline-block;">Libero 🟢</div>
+                <button id="btn-gioca" onclick="prendiControlloGioco()" style="background: #f1c40f; color: #1a202c; border:none; padding: 5px 15px; border-radius:20px; cursor:pointer; font-weight:bold; margin-left:10px;">Rispondo io 🙋‍♂️</button>
+
+                <!-- Immagine Centrale -->
+                <div style="margin: 20px 0;">
+                    <img id="game-main-img" src="" style="width: 100%; max-width: 300px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
                 </div>
+
+                <button onclick="playGameAudio()" style="background: #2196F3; color: white; padding: 10px 20px; border-radius: 50px; border:none; margin-bottom: 20px; cursor:pointer;">🔊 Ascolta</button>
+                <audio id="game-audio" src=""></audio>
+
+                <!-- Pulsanti per le parole -->
+                <div style="display: flex; gap: 15px; justify-content: center; margin-bottom: 20px;">
+                    <button id="game-btn-1" onclick="selezionaParola(1)" style="flex: 1; padding: 15px; font-size: 1.2rem; background: white; border: 2px solid #cbd5e0; border-radius: 8px; cursor: pointer; color: #2c3e50; font-weight:bold; transition: all 0.2s;"></button>
+                    <button id="game-btn-2" onclick="selezionaParola(2)" style="flex: 1; padding: 15px; font-size: 1.2rem; background: white; border: 2px solid #cbd5e0; border-radius: 8px; cursor: pointer; color: #2c3e50; font-weight:bold; transition: all 0.2s;"></button>
+                </div>
+
+                <!-- Tasto Conferma e Feedback -->
+                <button id="game-conferma-btn" onclick="confermaSceltaGioco()" style="display: none; background: #9b59b6; color: white; font-size: 1.2rem; padding: 10px 30px; border-radius: 6px; cursor:pointer; margin: 0 auto; border:none; font-weight:bold;">Conferma Scelta ✔️</button>
+                <div id="game-feedback" style="font-size: 1.5rem; font-weight: bold; margin-top: 20px; min-height: 40px;"></div>
+
+                <button id="game-next-btn" onclick="nextGameRound()" style="background: var(--primary-color); color: white; border:none; font-size: 1rem; padding: 10px; margin-top: 15px; width: 100%; border-radius:6px; cursor:pointer;">Prossima Parola ➡️</button>
             </div>
+            
             <button id="btn_fase_ascolto" class="btn-invia-fase" onclick="cambiaFase('fase_ascolto', true)">Passa alla fase di Ascolto 🚀</button>`;
         }
         
@@ -348,64 +363,156 @@
         });
 
         // ==========================================
-        // 5. LOGICA GIOCO FLASHCARD
+        // 5. LOGICA GIOCO FLASHCARD (Sincronizzata con Turni)
         // ==========================================
         if (ConfigLezione.elicitazione && ConfigLezione.elicitazione.gioco) {
-            window.currentRound = 0; window.correctIndex = 1;
+            window.currentRound = 0; 
+            window.correctOption = 1;
             
+            // Variabili per gestire chi sta giocando in questo momento
+            let gameTokenWriter = "";
+            let gameTokenName = "";
+            let currentSelection = null;
+            let isConfirmed = false;
+
+            const nodeGameState = ref(db, `${ID_LEZIONE}/game_state`);
+            const nodeGameToken = ref(db, `${ID_LEZIONE}/game_token`);
+
+            // 1. Ascoltiamo chi ha prenotato il turno
+            onValue(nodeGameToken, (snap) => {
+                const data = snap.val();
+                if (data) { gameTokenWriter = data.id; gameTokenName = data.name; } 
+                else { gameTokenWriter = ""; gameTokenName = ""; }
+                aggiornaUIGioco();
+            });
+
+            // 2. Ascoltiamo lo stato del gioco (round, parola cliccata, conferma)
+            onValue(nodeGameState, (snap) => {
+                const data = snap.val() || { round: 0, selezione: null, confermato: false };
+                window.currentRound = data.round;
+                currentSelection = data.selezione;
+                isConfirmed = data.confermato;
+
+                window.loadGameRound(); // Ricarica l'immagine e i testi
+                aggiornaSelezioneVisiva(); // Colora i tasti
+                aggiornaUIGioco(); // Mostra/nasconde il tasto conferma
+            });
+
             window.loadGameRound = function() {
-                const gameWordEl = document.getElementById('game-word');
-                if (!gameWordEl) return;
+                const gameImgEl = document.getElementById('game-main-img');
+                if (!gameImgEl) return;
 
                 if (window.currentRound >= ConfigLezione.elicitazione.gioco.length) {
-                    gameWordEl.innerHTML = "🎉 Bravissimi! Gioco Finito.";
-                    document.getElementById('game-audio').style.display = 'none';
+                    gameImgEl.style.display = 'none';
+                    document.getElementById('game-btn-1').style.display = 'none';
+                    document.getElementById('game-btn-2').style.display = 'none';
+                    document.getElementById('game-feedback').innerHTML = "🎉 Bravissimi! Gioco Finito.";
                     return;
                 }
+
                 const rd = ConfigLezione.elicitazione.gioco[window.currentRound];
-                gameWordEl.innerText = rd.parola;
+                gameImgEl.src = rd.img;
+                gameImgEl.style.display = 'inline-block';
                 document.getElementById('game-audio').src = rd.audio;
-                document.getElementById('game-feedback').innerText = "";
-                document.getElementById('game-next-btn').style.display = "none";
-                document.getElementById('game-img-1').style.borderColor = "transparent"; document.getElementById('game-img-2').style.borderColor = "transparent";
-                document.getElementById('game-img-1').style.pointerEvents = "auto"; document.getElementById('game-img-2').style.pointerEvents = "auto";
-                
-                window.correctIndex = Math.random() < 0.5 ? 1 : 2;
-                document.getElementById('game-img-1').src = window.correctIndex === 1 ? rd.imgC : rd.imgS;
-                document.getElementById('game-img-2').src = window.correctIndex === 2 ? rd.imgC : rd.imgS;
+
+                // Trucco matematico per mischiare le parole in modo uguale per tutti gli schermi
+                window.correctOption = (window.currentRound % 2 === 0) ? 1 : 2;
+
+                if (window.correctOption === 1) {
+                    document.getElementById('game-btn-1').innerText = rd.parolaC;
+                    document.getElementById('game-btn-2').innerText = rd.parolaS;
+                } else {
+                    document.getElementById('game-btn-1').innerText = rd.parolaS;
+                    document.getElementById('game-btn-2').innerText = rd.parolaC;
+                }
             };
 
+            // Funzioni richiamate dai pulsanti HTML
             window.playGameAudio = function() { document.getElementById('game-audio').play(); };
-            
-            window.checkAnswer = function(sel) {
-                document.getElementById('game-img-1').style.pointerEvents = "none"; document.getElementById('game-img-2').style.pointerEvents = "none";
-                if (sel === window.correctIndex) {
-                    document.getElementById(`game-img-${sel}`).style.borderColor = "#2ecc71";
-                    document.getElementById('game-feedback').innerHTML = "✅ Esatto!"; document.getElementById('game-feedback').style.color = "#27ae60";
-                } else {
-                    document.getElementById(`game-img-${sel}`).style.borderColor = "#e74c3c";
-                    document.getElementById(`game-img-${window.correctIndex}`).style.borderColor = "#2ecc71";
-                    document.getElementById('game-feedback').innerHTML = "❌ Sbagliato!"; document.getElementById('game-feedback').style.color = "#c0392b";
+
+            window.prendiControlloGioco = function() {
+                if (gameTokenWriter === "") set(nodeGameToken, { id: mySessionId, name: myUserName });
+            };
+
+            window.selezionaParola = function(sel) {
+                // Solo chi ha prenotato il turno può cliccare, e solo se non ha ancora confermato
+                if (gameTokenWriter === mySessionId && !isConfirmed) {
+                    set(nodeGameState, { round: window.currentRound, selezione: sel, confermato: false });
                 }
-                document.getElementById('game-next-btn').style.display = "block";
+            };
+
+            window.confermaSceltaGioco = function() {
+                if (gameTokenWriter === mySessionId && currentSelection !== null) {
+                    set(nodeGameState, { round: window.currentRound, selezione: currentSelection, confermato: true });
+                    // Rilasciamo il turno in automatico dopo 2 secondi
+                    setTimeout(() => { set(nodeGameToken, null); }, 2000);
+                }
             };
 
             window.nextGameRound = function() {
-                const nextIndex = (window.currentRound + 1) % ConfigLezione.elicitazione.gioco.length;
-                set(ref(db, `${ID_LEZIONE}/gioco_corrente`), { index: nextIndex });
+                const nextRound = (window.currentRound + 1) % ConfigLezione.elicitazione.gioco.length;
+                set(nodeGameState, { round: nextRound, selezione: null, confermato: false });
+                set(nodeGameToken, null); // Assicuriamoci che il turno sia libero per la nuova parola
             };
 
-            onValue(ref(db, `${ID_LEZIONE}/gioco_corrente`), (snapshot) => {
-                const data = snapshot.val();
-                if (data && typeof data.index !== 'undefined') {
-                    window.currentRound = data.index;
-                    window.loadGameRound();
-                } else {
-                    window.currentRound = 0;
-                    window.loadGameRound();
+            // Funzioni grafiche interne
+            function aggiornaSelezioneVisiva() {
+                const b1 = document.getElementById('game-btn-1'); const b2 = document.getElementById('game-btn-2');
+                const feedback = document.getElementById('game-feedback');
+                if (!b1 || !b2) return;
+
+                b1.style.borderColor = "#cbd5e0"; b1.style.backgroundColor = "white"; b1.style.color = "#2c3e50";
+                b2.style.borderColor = "#cbd5e0"; b2.style.backgroundColor = "white"; b2.style.color = "#2c3e50";
+                feedback.innerHTML = "";
+
+                if (currentSelection !== null) {
+                    const btnSelez = document.getElementById(`game-btn-${currentSelection}`);
+                    btnSelez.style.borderColor = "#3498db"; btnSelez.style.backgroundColor = "#eaf2f8";
+
+                    if (isConfirmed) {
+                        if (currentSelection === window.correctOption) {
+                            btnSelez.style.borderColor = "#2ecc71"; btnSelez.style.backgroundColor = "#2ecc71"; btnSelez.style.color = "white";
+                            feedback.innerHTML = "✅ Esatto!"; feedback.style.color = "#27ae60";
+                        } else {
+                            btnSelez.style.borderColor = "#e74c3c"; btnSelez.style.backgroundColor = "#e74c3c"; btnSelez.style.color = "white";
+                            const btnCorretto = document.getElementById(`game-btn-${window.correctOption}`);
+                            btnCorretto.style.borderColor = "#2ecc71"; btnCorretto.style.borderWidth = "4px";
+                            feedback.innerHTML = "❌ Sbagliato!"; feedback.style.color = "#c0392b";
+                        }
+                    }
                 }
-            });
+            }
+
+            function aggiornaUIGioco() {
+                const status = document.getElementById('game-status-bar'); const btnGioca = document.getElementById('btn-gioca');
+                const b1 = document.getElementById('game-btn-1'); const b2 = document.getElementById('game-btn-2');
+                const btnConferma = document.getElementById('game-conferma-btn');
+                if (!status) return;
+
+                if (isConfirmed) {
+                    status.innerHTML = "Round terminato 🏁"; status.className = "status-badge";
+                    btnGioca.style.display = "none"; btnConferma.style.display = "none";
+                    b1.style.pointerEvents = "none"; b2.style.pointerEvents = "none";
+                    return;
+                }
+
+                if (gameTokenWriter === "") {
+                    status.innerHTML = "Libero 🟢"; status.className = "status-badge status-reading";
+                    btnGioca.style.display = "inline-block"; btnConferma.style.display = "none";
+                    b1.style.pointerEvents = "none"; b2.style.pointerEvents = "none";
+                } else if (gameTokenWriter === mySessionId) {
+                    status.innerHTML = "Tocca a te! ✍️"; status.className = "status-badge status-writing";
+                    btnGioca.style.display = "none"; 
+                    b1.style.pointerEvents = "auto"; b2.style.pointerEvents = "auto";
+                    btnConferma.style.display = currentSelection !== null ? "block" : "none";
+                } else {
+                    status.innerHTML = `⏳ Sceglie ${gameTokenName}...`; status.className = "status-badge";
+                    btnGioca.style.display = "none"; btnConferma.style.display = "none";
+                    b1.style.pointerEvents = "none"; b2.style.pointerEvents = "none";
+                }
+            }
         }
+    
     </script>
 </body>
 </html>
