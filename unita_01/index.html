@@ -250,11 +250,19 @@ if (ConfigLezione && ConfigLezione.elicitazione) {
 // 3. Aggiungiamo le sezioni Fisarmonica
 if (ConfigLezione.ascolto) {
     htmlDinamico += creaSezioneFisarmonica(ConfigLezione.ascolto.titolo, 'ascolto', `
-        <p>${ConfigLezione.ascolto.istruzioni || ""}</p>
-        <div style="text-align: center; margin: 20px 0;">
-            <audio src="${ConfigLezione.ascolto.tracciaAudio || ""}" controls style="width: 100%; max-width: 400px;"></audio>
+        <div class="didactic-block">
+            <p>${ConfigLezione.ascolto.istruzioni || ""}</p>
+            
+            <div style="text-align: center; margin: 20px 0; position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;">
+                <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
+                        src="https://www.youtube.com/embed/${ConfigLezione.ascolto.videoUrl}" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                </iframe>
+            </div>
+            
+            ${creaLavagna('ascolto', 'Cosa avete capito?...')}
         </div>
-        ${creaLavagna('ascolto', 'Cosa avete capito?...')}
     `);
 }
 
