@@ -189,16 +189,20 @@
                 
                 <hr style="margin: 40px 0; border: 0; border-top: 2px dashed #ccc;">
 
-                <!-- FLASHCARD SLIDER -->
+                <!-- FLASHCARD SLIDER CON FRECCE -->
                 <div class="question-title">📚 Studiamo i nuovi vocaboli:</div>
-                <div class="flashcard-slider">
-                    ${ConfigLezione.elicitazione.vocabolario.map(item => `
-                        <div class="flashcard-item" onclick="new Audio('${item.audio}').play()">
-                            <img src="${item.img}" alt="${item.parola}">
-                            <div style="font-size:1.2rem; font-weight:bold; margin-top:10px;">${item.parola}</div>
-                            <small style="color:#777;">(clicca per ascoltare)</small>
-                        </div>
-                    `).join('')}
+                <div class="slider-wrapper">
+                    <button class="arrow-btn prev-btn" onclick="scrollSlider(-1)">❮</button>
+                    <div id="flashcard-slider" class="flashcard-slider">
+                        ${ConfigLezione.elicitazione.vocabolario.map(item => `
+                            <div class="flashcard-item" onclick="new Audio('${item.audio}').play()">
+                                <img src="${item.img}" alt="${item.parola}">
+                                <div style="font-size:1.2rem; font-weight:bold; margin-top:10px;">${item.parola}</div>
+                                <small style="color:#777;">(clicca per ascoltare)</small>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="arrow-btn next-btn" onclick="scrollSlider(1)">❯</button>
                 </div>
 
                 <hr style="margin: 30px 0; border: 0; border-top: 2px solid #ddd;">
