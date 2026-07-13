@@ -74,8 +74,9 @@
             padding: 20px 0;
             scrollbar-width: thin;
         }
+        /* Stile base (per smartphone - flashcard grandi) */
         .flashcard-item {
-            flex: 0 0 70%; /* Ogni card occupa il 70% della larghezza disponibile */
+            flex: 0 0 70%; 
             scroll-snap-align: center;
             background: #fff;
             border: 2px solid #ddd;
@@ -88,10 +89,20 @@
         }
         .flashcard-item img {
             width: 100%;
-            aspect-ratio: 1 / 1; /* Forza il rapporto 1:1, perfetto per le tue immagini quadrate */
-            object-fit: contain; /* Mostra tutta l'immagine senza tagliarla */
-            background-color: #f9f9f9; /* Colore di sfondo se l'immagine non riempie tutto */
+            aspect-ratio: 1 / 1; 
+            object-fit: contain; 
+            background-color: #f9f9f9; 
             border-radius: 10px;
+        }
+
+        /* Stile per PC (schermi più larghi di 768px - flashcard più piccole) */
+        @media (min-width: 768px) {
+            .flashcard-item {
+                flex: 0 0 25%; /* Su PC ne vedi 3-4 insieme */
+            }
+            .flashcard-item img {
+                height: 150px; /* Altezza ridotta su PC per non farle occupare tutto lo schermo */
+            }
         }
 
         /* Contenitore relativo per posizionare le frecce */
