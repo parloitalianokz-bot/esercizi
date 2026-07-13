@@ -44,11 +44,11 @@ export const ConfigLezione = {
     testoFormattato: `
         <p>L'albergo "Ponte Vecchio" <b>è</b> a Firenze, in Italia. <b>È</b> un albergo grande, con molte camere. <b>È</b> un albergo comodo per gli stranieri, perché <b>è</b> in centro.</p>
         <p>Chi sono gli ospiti dell'albergo "Ponte Vecchio" in questo momento?</p>
-        <p><span style="color: #007bff; font-weight: bold;">Victor</span> <b>è</b> un cliente dell'albergo. <span style="color: #007bff; font-weight: bold;">Victor</span> <b>è</b> francese; <b>è</b> avvocato. Adesso <b>è</b> in Italia per affari.</p>
-        <p>Anche <span style="color: #007bff; font-weight: bold;">Klaus</span> e <span style="color: #007bff; font-weight: bold;">Karl</span> sono clienti dell'albergo. Sono tedeschi e sono studenti. Sono in Italia per studiare l'italiano.</p>
-        <p><span style="color: #d9534f; font-weight: bold;">Mary</span> <b>è</b> inglese; <b>è</b> insegnante, ed <b>è</b> in Italia per insegnare l'inglese. <span style="color: #d9534f; font-weight: bold;">Yoko</span>, invece, <b>è</b> giapponese; <b>è</b> dentista ed <b>è</b> in Italia per una conferenza.</p>
-        <p><span style="color: #d9534f; font-weight: bold;">Olga</span> <b>è</b> russa. <b>È</b> studentessa. <b>È</b> in Italia per studiare l'italiano e per fare shopping.</p>
-        <p><span style="color: #007bff; font-weight: bold;">Paolo Rossi</span> <b>è</b> il direttore dell'albergo "Ponte Vecchio". <b>È</b> sposato e ha tre figli. <b>È</b> sempre molto occupato con i clienti.</p>
+        <p>Victor <b>è</b> un cliente dell'albergo. Victor <b>è</b> francese; <b>è</b> avvocato. Adesso <b>è</b> in Italia per affari.</p>
+        <p>Anche Klaus e Karl sono clienti dell'albergo. Sono tedeschi e sono studenti. Sono in Italia per studiare l'italiano.</p>
+        <p>Mary <b>è</b> inglese; <b>è</b> insegnante, ed <b>è</b> in Italia per insegnare l'inglese. Yoko, invece, <b>è</b> giapponese; <b>è</b> dentista ed <b>è</b> in Italia per una conferenza.</p>
+        <p>Olga <b>è</b> russa. <b>È</b> studentessa. <b>È</b> in Italia per studiare l'italiano e per fare shopping.</p>
+        <p>Paolo Rossi <b>è</b> il direttore dell'albergo "Ponte Vecchio". <b>È</b> sposato e ha tre figli. <b>È</b> sempre molto occupato con i clienti.</p>
     `
 },
 
