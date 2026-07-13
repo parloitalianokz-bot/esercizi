@@ -132,38 +132,46 @@
         // 3. GENERAZIONE DINAMICA DELLE SCHEDE
         let htmlDinamico = "";
 
-        // -- SCHEDA 1: ELICITAZIONE --
+        // -- SCHEDA 1: ELICITAZIONE (Studio Flashcard + Gioco) --
         if (ConfigLezione.elicitazione) {
             htmlDinamico += `
             <div class="didactic-block fase-elicitazione">
                 <div class="fase-label">Fase 1</div>
                 <div class="question-title">${ConfigLezione.elicitazione.titolo}</div>
                 <p>${ConfigLezione.elicitazione.intro}</p>
-                ${ConfigLezione.elicitazione.immagineMappa ? `<div style="text-align: center; margin: 20px 0;"><img src="${ConfigLezione.elicitazione.immagineMappa}" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" alt="Immagine di Elicitazione"></div>` : ''}
-                ${creaLavagna('elicit', 'Scrivete qui le vostre idee...')}
-            `; // <--- QUESTA ERA LA RIGA CHE MANCAVA! Chiude l'HTML prima del gioco.
+                ${ConfigLezione.elicitazione.immagineMappa ? `<div style="text-align: center; margin: 20px 0;"><img src="${ConfigLezione.elicitazione.immagineMappa}" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" alt="Mappa"></div>` : ''}
+                
+                <!-- FLASHCARD DI STUDIO -->
+                <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap:10px; margin: 20px 0;">
+                    ${ConfigLezione.elicitazione.vocabolario.map(item => `
+                        <div style="background:#eee; padding:10px; border-radius:8px; text-align:center; cursor:pointer;" onclick="new Audio('${item.audio}').play()">
+                            <img src="${item.img}" style="width:100%; border-radius:4px;">
+                            <div style="font-size:0.8rem; font-weight:bold; margin-top:5px;">${item.parola}</div>
+                        </div>
+                    `).join('')}
+                </div>
 
-            // Se c'è il gioco, aggiungilo!
-            if(ConfigLezione.elicitazione.gioco && ConfigLezione.elicitazione.gioco.length > 0) {
-                htmlDinamico += `
-                <hr style="border:0; height:1px; background:#e0e0e0; margin:30px 0;">
-                <div class="question-title">🎮 Scopriamo le parole nuove</div>
-                <p>Ascolta l'audio e scegli l'immagine corretta.</p>
-                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center; border: 2px solid #cbd5e0;">
-                    <h2 id="game-word" style="color: var(--primary-color); font-size: 2rem; margin: 10px 0;"></h2>
-                    <button onclick="playGameAudio()" style="background: #2196F3; color: white; font-size: 1.2rem; padding: 10px 20px; border-radius: 50px; border:none; margin-bottom: 20px; cursor:pointer;">🔊 Ascolta</button>
-                    <audio id="game-audio" src=""></audio>
-                    <div style="display: flex; gap: 20px; justify-content: center;">
+                ${creaLavagna('elicit', 'Scrivete qui le vostre idee...')}
+                
+                <hr style="margin: 30px 0; border: 0; border-top: 2px solid #ddd;">
+                
+                <!-- GIOCO DELLE SCELTE -->
+                <div class="question-title">🎮 Mettiti alla prova!</div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border: 2px solid #cbd5e0;">
+                    <h2 id="game-word" style="color: var(--primary-color); font-size: 1.5rem; text-align:center;"></h2>
+                    <div style="text-align:center;">
+                        <button onclick="playGameAudio()" style="background: #2196F3; color: white; padding: 10px 20px; border-radius: 50px; border:none; cursor:pointer;">🔊 Ascolta</button>
+                    </div>
+                    <div style="display: flex; gap: 20px; justify-content: center; margin-top:20px;">
                         <img id="game-img-1" class="game-img" src="" onclick="checkAnswer(1)">
                         <img id="game-img-2" class="game-img" src="" onclick="checkAnswer(2)">
                     </div>
-                    <div id="game-feedback" style="font-size: 1.2rem; font-weight: bold; margin-top: 20px; height: 30px;"></div>
-                    <button id="game-next-btn" onclick="nextGameRound()" style="display: none; background: var(--primary-color); color: white; border:none; font-size: 1rem; padding: 10px; margin-top: 15px; width: 100%; border-radius:6px; cursor:pointer;">Prossima Parola ➡️</button>
-                </div>`;
-            }
-            htmlDinamico += `</div><button id="btn_fase_ascolto" class="btn-invia-fase" onclick="cambiaFase('fase_ascolto', true)">Passa alla fase di Ascolto 🚀</button>`;
+                    <div id="game-feedback" style="text-align:center; font-weight: bold; margin-top: 15px; height: 25px;"></div>
+                    <button id="game-next-btn" onclick="nextGameRound()" style="display: none; background: var(--primary-color); color: white; border:none; padding: 10px; margin-top: 10px; width: 100%; border-radius:6px; cursor:pointer;">Prossima Parola ➡️</button>
+                </div>
+            </div>
+            <button id="btn_fase_ascolto" class="btn-invia-fase" onclick="cambiaFase('fase_ascolto', true)">Passa alla fase di Ascolto 🚀</button>`;
         }
-
         
         // -- SCHEDA 2: ASCOLTO --
         if (ConfigLezione.ascolto) {
