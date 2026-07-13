@@ -255,12 +255,16 @@ if (ConfigLezione.ascolto) {
             
             <div style="text-align: center; margin: 20px 0; position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;">
                 <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
-                        src="https://www.youtube.com/embed/${ConfigLezione.ascolto.videoUrl}" 
+                        src="https://www.youtube.com/embed/${ConfigLezione.ascolto.videoUrl}?cc_load_policy=0" 
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                         allowfullscreen>
                 </iframe>
             </div>
             
+            <p style="font-size: 0.9rem; color: #7f8c8d; text-align: center;">
+                <em>Suggerimento: clicca sull'ingranaggio nel video per impostare la velocità a 0.75x o 0.8x!</em>
+            </p>
+
             ${creaLavagna('ascolto', 'Cosa avete capito?...')}
         </div>
     `);
