@@ -18,9 +18,20 @@ export const ConfigLezione = {
         intro: "Osserva la mappa dell'Italia. Sei mai stato in Italia? Quali città conosci? Scrivi sulla lavagna le parole italiane che già conosci.",
         immagineMappa: "img/mappa_italia.jpg", // <--- Aggiungi questa riga!
         gioco: [
+            // LUOGHI
             { parola: "L'albergo", audio: "audio/albergo.mp3", imgC: "img/albergo.jpg", imgS: "img/scuola.jpg" },
-            { parola: "Firenze", audio: "audio/firenze.mp3", imgC: "img/firenze.jpg", imgS: "img/roma.jpg" },
-            { parola: "Il centro", audio: "audio/centro.mp3", imgC: "img/centro.jpg", imgS: "img/periferia.jpg" }
+            { parola: "Il centro", audio: "audio/centro.mp3", imgC: "img/centro.jpg", imgS: "img/periferia.jpg" },
+            { parola: "Le camere", audio: "audio/camere.mp3", imgC: "img/camere.jpg", imgS: "img/bagno.jpg" },
+            // PROFESSIONI
+            { parola: "L'avvocato", audio: "audio/avvocato.mp3", imgC: "img/avvocato.jpg", imgS: "img/medico.jpg" },
+            { parola: "Lo studente", audio: "audio/studente.mp3", imgC: "img/studente.jpg", imgS: "img/insegnante.jpg" },
+            { parola: "L'insegnante", audio: "audio/insegnante.mp3", imgC: "img/insegnante.jpg", imgS: "img/meccanico.jpg" },
+            { parola: "Il dentista", audio: "audio/dentista.mp3", imgC: "img/dentista.jpg", imgS: "img/cuoco.jpg" },
+            { parola: "Il direttore", audio: "audio/direttore.mp3", imgC: "img/direttore.jpg", imgS: "img/cameriere.jpg" },
+            // AGGETTIVI
+            { parola: "Grande", audio: "audio/grande.mp3", imgC: "img/grande.jpg", imgS: "img/piccolo.jpg" },
+            { parola: "Comodo", audio: "audio/comodo.mp3", imgC: "img/comodo.jpg", imgS: "img/scomodo.jpg" },
+            { parola: "Occupato", audio: "audio/occupato.mp3", imgC: "img/occupato.jpg", imgS: "img/libero.jpg" }
         ]
     },
 
