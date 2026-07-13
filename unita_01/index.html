@@ -99,21 +99,12 @@
         /* Stile per PC (schermi più larghi di 768px) */
         @media (min-width: 768px) {
             .flashcard-item {
-                /* Aumentato al 35% per renderle più grandi su PC */
-                flex: 0 0 35%; 
+                /* Con il 45% avrai circa 2 card belle grandi per riga */
+                flex: 0 0 45%; 
             }
             .flashcard-item img {
-                /* Altezza aumentata per dare più respiro alle immagini */
-                height: 250px; 
-            }
-        }
-        /* Stile per PC (schermi più larghi di 768px - flashcard più piccole) */
-        @media (min-width: 768px) {
-            .flashcard-item {
-                flex: 0 0 25%; /* Su PC ne vedi 3-4 insieme */
-            }
-            .flashcard-item img {
-                height: 150px; /* Altezza ridotta su PC per non farle occupare tutto lo schermo */
+                /* Altezza aumentata per dare importanza visiva */
+                height: 300px; 
             }
         }
 
