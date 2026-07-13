@@ -57,59 +57,14 @@
 
         .btn-invia-fase { background-color: var(--primary-color); color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 15px; font-weight: bold; width: 100%; margin: 15px 0 35px 0; }
         
-        /* Stili Gioco Flashcard */
-        .game-img { width: 45%; border-radius: 8px; cursor: pointer; border: 4px solid transparent; transition: transform 0.2s; }
-        .game-img:hover { transform: scale(1.05); }
-        
         /* Slider Flashcard */
-        .flashcard-slider {
-            display: flex;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            gap: 20px;
-            padding: 20px 0;
-            scrollbar-width: thin;
-        }
-        
-        /* Stile base (per smartphone - flashcard grandi) */
-        .flashcard-item {
-            flex: 0 0 70%; 
-            scroll-snap-align: center;
-            background: #fff;
-            border: 2px solid #ddd;
-            border-radius: 15px;
-            padding: 15px;
-            text-align: center;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
-        }
-        .flashcard-item img {
-            width: 100%;
-            aspect-ratio: 1 / 1; 
-            object-fit: contain; 
-            background-color: #f9f9f9; 
-            border-radius: 10px;
-        }
-
-        /* Stile per PC (schermi più larghi di 768px) */
-        @media (min-width: 768px) {
-            .flashcard-item { flex: 0 0 45%; }
-            .flashcard-item img { height: 300px; }
-        }
-
-        /* Contenitore relativo per posizionare le frecce */
+        .flashcard-slider { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 20px; padding: 20px 0; scrollbar-width: thin; }
+        .flashcard-item { flex: 0 0 70%; scroll-snap-align: center; background: #fff; border: 2px solid #ddd; border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.2s; }
+        .flashcard-item img { width: 100%; aspect-ratio: 1 / 1; object-fit: contain; background-color: #f9f9f9; border-radius: 10px; }
+        @media (min-width: 768px) { .flashcard-item { flex: 0 0 45%; } .flashcard-item img { height: 300px; } }
         .slider-wrapper { position: relative; display: flex; align-items: center; }
-        
-        .arrow-btn {
-            position: absolute; top: 50%; transform: translateY(-50%);
-            background: rgba(44, 62, 80, 0.8); color: white;
-            border: none; padding: 10px; cursor: pointer;
-            z-index: 10; border-radius: 50%; font-size: 1.5rem;
-        }
-        .prev-btn { left: -15px; }
-        .next-btn { right: -15px; }
-        
+        .arrow-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(44, 62, 80, 0.8); color: white; border: none; padding: 10px; cursor: pointer; z-index: 10; border-radius: 50%; font-size: 1.5rem; }
+        .prev-btn { left: -15px; } .next-btn { right: -15px; }
     </style>
 </head>
 <body>
@@ -123,7 +78,6 @@
     </div>
 
     <div class="main-container">
-        <!-- L'INTESTAZIONE SI RIEMPIE DA SOLA -->
         <div class="header">
             <h1 id="titolo-lezione">Caricamento...</h1>
             <p id="sottotitolo-lezione" class="subtitle"></p>
@@ -131,12 +85,9 @@
         <div style="text-align: center; margin-bottom: 25px;">
             <img id="banner-lezione" src="" style="max-width: 100%; border-radius: 8px; display: none;">
         </div>
-
-        <!-- IL MOTORE COSTRUIRÀ TUTTE LE SCHEDE QUI DENTRO -->
         <div id="contenitore-dinamico"></div>
     </div>
 
-    <!-- SCRIPT MOTORE -->
     <script type="module">
         import { ConfigLezione } from "./dati-lezione.js";
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -155,14 +106,11 @@
             const titEl = document.getElementById('titolo-lezione'); if (titEl) titEl.innerText = ConfigLezione.titolo || "";
             const sottEl = document.getElementById('sottotitolo-lezione'); if (sottEl) sottEl.innerText = ConfigLezione.sottotitolo || "";
             const banEl = document.getElementById('banner-lezione');
-            if(banEl && ConfigLezione.bannerImg) {
-                banEl.src = ConfigLezione.bannerImg;
-                banEl.style.display = "inline-block";
-            }
+            if(banEl && ConfigLezione.bannerImg) { banEl.src = ConfigLezione.bannerImg; banEl.style.display = "inline-block"; }
         }
 
         // ==========================================
-        // 2. FUNZIONI DI SUPPORTO
+        // 2. FUNZIONI DI SUPPORTO LAVAGNE
         // ==========================================
         function creaLavagna(id, placeholder) {
             return `
@@ -187,9 +135,7 @@
 
         window.scrollSlider = function(direction) {
             const container = document.getElementById('flashcard-slider');
-            if (!container) return;
-            const scrollAmount = container.offsetWidth * 0.7;
-            container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+            if (container) container.scrollBy({ left: direction * (container.offsetWidth * 0.7), behavior: 'smooth' });
         };
 
         window.cambiaFase = function(faseTarget, stato) {
@@ -200,7 +146,7 @@
         };
 
         // ==========================================
-        // 3. GENERAZIONE HTML DOM
+        // 3. GENERAZIONE HTML: Flashcards + Nuovo Gioco Lavagne
         // ==========================================
         let htmlDinamico = "";
 
@@ -224,9 +170,8 @@
                     <div id="flashcard-slider" class="flashcard-slider">
                         ${ConfigLezione.elicitazione.vocabolario ? ConfigLezione.elicitazione.vocabolario.map(item => `
                             <div class="flashcard-item" onclick="new Audio('${item.audio}').play()">
-                                <img src="${item.img}" alt="${item.parolaC || item.parola || ''}">
-                                <div style="font-size:1.2rem; font-weight:bold; margin-top:10px;">${item.parolaC || item.parola || ''}</div>
-                                <small style="color:#777;">(clicca per ascoltare)</small>
+                                <img src="${item.img}" alt="${item.parola}">
+                                <div style="font-size:1.2rem; font-weight:bold; margin-top:10px;">${item.parola}</div>
                             </div>
                         `).join('') : ''}
                     </div>
@@ -235,57 +180,63 @@
 
                 <hr style="margin: 30px 0; border: 0; border-top: 2px solid #ddd;">
                 
-                <div class="question-title">🎮 Ora mettiti alla prova!</div>
-                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center; border: 2px solid #cbd5e0;">
-                    <div id="game-status-bar" class="status-badge" style="margin-bottom: 15px; display: inline-block;">Libero 🟢</div>
-                    <button id="btn-gioca" onclick="prendiControlloGioco()" style="background: #f1c40f; color: #1a202c; border:none; padding: 5px 15px; border-radius:20px; cursor:pointer; font-weight:bold; margin-left:10px;">Rispondo io 🙋‍♂️</button>
-
-                    <div style="margin: 20px 0;">
-                        <img id="game-main-img" src="" style="width: 100%; max-width: 300px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display:none;">
-                    </div>
-
-                    <button onclick="playGameAudio()" style="background: #2196F3; color: white; padding: 10px 20px; border-radius: 50px; border:none; margin-bottom: 20px; cursor:pointer;">🔊 Ascolta</button>
-                    <audio id="game-audio" src=""></audio>
-
-                    <div style="display: flex; gap: 15px; justify-content: center; margin-bottom: 20px;">
-                        <button id="game-btn-1" onclick="selezionaParola(1)" style="flex: 1; padding: 15px; font-size: 1.2rem; background: white; border: 2px solid #cbd5e0; border-radius: 8px; cursor: pointer; color: #2c3e50; font-weight:bold; transition: all 0.2s;"></button>
-                        <button id="game-btn-2" onclick="selezionaParola(2)" style="flex: 1; padding: 15px; font-size: 1.2rem; background: white; border: 2px solid #cbd5e0; border-radius: 8px; cursor: pointer; color: #2c3e50; font-weight:bold; transition: all 0.2s;"></button>
-                    </div>
-
-                    <button id="game-conferma-btn" onclick="confermaSceltaGioco()" style="display: none; background: #9b59b6; color: white; font-size: 1.2rem; padding: 10px 30px; border-radius: 6px; cursor:pointer; margin: 0 auto; border:none; font-weight:bold;">Conferma Scelta ✔️</button>
-                    <div id="game-feedback" style="font-size: 1.5rem; font-weight: bold; margin-top: 20px; min-height: 40px;"></div>
-
-                    <button id="game-next-btn" onclick="nextGameRound()" style="background: var(--primary-color); color: white; border:none; font-size: 1rem; padding: 10px; margin-top: 15px; width: 100%; border-radius:6px; cursor:pointer;">Prossima Parola ➡️</button>
+                <div class="question-title">🎮 Mettiti alla prova: scrivi le parole!</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; background: #f8f9fa; padding: 20px; border-radius: 8px; border: 2px solid #cbd5e0;">
+                    ${ConfigLezione.elicitazione.vocabolario ? ConfigLezione.elicitazione.vocabolario.map((item, index) => {
+                        const parolaSafe = item.parola.replace(/'/g, "\\'"); 
+                        return `
+                        <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; width: 100%; max-width: 320px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                            <img src="${item.img}" style="width: 100%; height: 180px; object-fit: contain; border-radius: 6px; margin-bottom: 10px; cursor: pointer;" onclick="new Audio('${item.audio}').play()">
+                            <div style="text-align: left; margin-bottom: 10px;">
+                                ${creaLavagna(`gioco_${index}`, 'Scrivi la parola...')}
+                            </div>
+                            <button onclick="verificaParola(${index}, '${parolaSafe}')" style="background: var(--primary-color); color: white; padding: 10px; border-radius: 6px; border:none; cursor:pointer; width: 100%; font-weight: bold;">Controlla ✔️</button>
+                            <div id="feedback_gioco_${index}" style="margin-top: 10px; font-weight: bold; min-height: 24px; font-size: 1.2rem;"></div>
+                        </div>`;
+                    }).join('') : ''}
                 </div>
-            </div>
-            <button id="btn_fase_ascolto" class="btn-invia-fase" onclick="cambiaFase('fase_ascolto', true)">Passa alla fase di Ascolto 🚀</button>`;
-        }
-        
-        if (ConfigLezione && ConfigLezione.ascolto) {
-            htmlDinamico += `
-            <div id="sezione-fase_ascolto" style="display: none;">
-                <div class="didactic-block fase-ascolto">
-                    <div class="fase-label">Fase 2</div>
-                    <div class="question-title">${ConfigLezione.ascolto.titolo || ""}</div>
-                    <p>${ConfigLezione.ascolto.istruzioni || ""}</p>
-                    <div style="text-align: center; margin: 20px 0;">
-                        <audio src="${ConfigLezione.ascolto.tracciaAudio || ""}" controls style="width: 100%; max-width: 400px CONTAINER;"></audio>
-                    </div>
-                    ${creaLavagna('ascolto', 'Cosa avete capito?...')}
-                </div>
-                <button id="btn_fase_lettura" class="btn-invia-fase" onclick="cambiaFase('fase_lettura', true)">Passa alla Lettura 📖</button>
             </div>`;
         }
-
+        
         const contDyn = document.getElementById('contenitore-dinamico');
         if (contDyn) contDyn.innerHTML = htmlDinamico;
 
         // ==========================================
-        // 4. LOGICA LOGIN E LAVAGNE
+        // 4. LOGICA DI VALIDAZIONE PAROLE (No articoli/maiuscole)
+        // ==========================================
+        window.verificaParola = function(index, parolaCorretta) {
+            const board = document.getElementById(`board_gioco_${index}`);
+            const feedback = document.getElementById(`feedback_gioco_${index}`);
+            if (!board || !feedback) return;
+
+            let input = board.innerText.trim().toLowerCase();
+            let target = parolaCorretta.trim().toLowerCase();
+
+            const rimuoviArticolo = (str) => {
+                const articoli = ["il ", "lo ", "la ", "l'", "i ", "gli ", "le ", "un ", "uno ", "una ", "un'"];
+                for (let art of articoli) {
+                    if (str.startsWith(art)) return str.substring(art.length).trim();
+                }
+                return str;
+            };
+
+            input = rimuoviArticolo(input);
+            target = rimuoviArticolo(target);
+
+            if (input === target && input.length > 0) {
+                feedback.innerHTML = "✅ Corretto!";
+                feedback.style.color = "#27ae60";
+            } else {
+                feedback.innerHTML = "❌ Riprova!";
+                feedback.style.color = "#c0392b";
+            }
+        };
+
+        // ==========================================
+        // 5. LOGICA FIREBASE: LOGIN E SINCRONIZZAZIONE LAVAGNE
         // ==========================================
         const mySessionId = "user_" + Math.random().toString(36).substr(2, 9);
         let myUserName = localStorage.getItem('parlo_italiano_username') || "";
-
         const logOverlay = document.getElementById('login-overlay');
         if (myUserName && logOverlay) logOverlay.style.display = 'none';
 
@@ -295,8 +246,7 @@
             const nameInput = usrInp.value.trim();
             if (nameInput.length < 2) return alert("Inserisci il tuo nome.");
             myUserName = nameInput; localStorage.setItem('parlo_italiano_username', myUserName); 
-            const overlay = document.getElementById('login-overlay');
-            if (overlay) overlay.style.display = 'none';
+            if (logOverlay) logOverlay.style.display = 'none';
         };
 
         const boards = {}; const currentWriters = {}; const currentWriterNames = {};
@@ -366,147 +316,6 @@
                 const btn = document.getElementById(`btn_${fase}`); if (btn) { btn.style.opacity = isActive ? '0.5' : '1'; btn.disabled = isActive; }
             });
         });
-
-        // ==========================================
-        // 5. LOGICA GIOCO FLASHCARD
-        // ==========================================
-        if (ConfigLezione && ConfigLezione.elicitazione && ConfigLezione.elicitazione.gioco) {
-            window.currentRound = 0; window.correctOption = 1;
-            let gameTokenWriter = ""; let gameTokenName = "";
-            let currentSelection = null; let isConfirmed = false;
-
-            const nodeGameState = ref(db, `${ID_LEZIONE}/game_state`);
-            const nodeGameToken = ref(db, `${ID_LEZIONE}/game_token`);
-
-            onValue(nodeGameToken, (snap) => {
-                const data = snap.val();
-                if (data) { gameTokenWriter = data.id; gameTokenName = data.name; } 
-                else { gameTokenWriter = ""; gameTokenName = ""; }
-                aggiornaUIGioco();
-            });
-
-            onValue(nodeGameState, (snap) => {
-                const data = snap.val() || { round: 0, selezione: null, confermato: false };
-                window.currentRound = data.round || 0;
-                currentSelection = data.selezione;
-                isConfirmed = data.confermato || false;
-
-                window.loadGameRound();
-                aggiornaSelezioneVisiva();
-                aggiornaUIGioco();
-            });
-
-            window.loadGameRound = function() {
-                const gameImgEl = document.getElementById('game-main-img');
-                const btn1 = document.getElementById('game-btn-1');
-                const btn2 = document.getElementById('game-btn-2');
-                if (!gameImgEl || !btn1 || !btn2) return;
-
-                if (window.currentRound >= ConfigLezione.elicitazione.gioco.length) {
-                    gameImgEl.style.display = 'none'; btn1.style.display = 'none'; btn2.style.display = 'none';
-                    const feedback = document.getElementById('game-feedback'); if (feedback) feedback.innerHTML = "🎉 Bravissimi! Gioco Finito.";
-                    return;
-                }
-
-                btn1.style.display = 'inline-block'; btn2.style.display = 'inline-block';
-                const rd = ConfigLezione.elicitazione.gioco[window.currentRound];
-                if (!rd) return;
-
-                gameImgEl.src = rd.img || ""; gameImgEl.style.display = 'inline-block';
-                const gAud = document.getElementById('game-audio'); if (gAud) gAud.src = rd.audio || "";
-
-                window.correctOption = (window.currentRound % 2 === 0) ? 1 : 2;
-                if (window.correctOption === 1) {
-                    btn1.innerText = rd.parolaC || ""; btn2.innerText = rd.parolaS || "";
-                } else {
-                    btn1.innerText = rd.parolaS || ""; btn2.innerText = rd.parolaC || "";
-                }
-            };
-
-            window.playGameAudio = function() { 
-                const gAud = document.getElementById('game-audio'); 
-                if (gAud) gAud.play().catch(e => console.log("Audio bloccato dai browser:", e)); 
-            };
-
-            window.prendiControlloGioco = function() {
-                if (gameTokenWriter === "") set(nodeGameToken, { id: mySessionId, name: myUserName });
-            };
-
-            window.selezionaParola = function(sel) {
-                if (gameTokenWriter === mySessionId && !isConfirmed) {
-                    set(nodeGameState, { round: window.currentRound, selezione: sel, confermato: false });
-                }
-            };
-
-            window.confermaSceltaGioco = function() {
-                if (gameTokenWriter === mySessionId && currentSelection !== null) {
-                    set(nodeGameState, { round: window.currentRound, selezione: currentSelection, confermato: true });
-                    setTimeout(() => { set(nodeGameToken, null); }, 2000);
-                }
-            };
-
-            window.nextGameRound = function() {
-                const nextRound = (window.currentRound + 1) % ConfigLezione.elicitazione.gioco.length;
-                set(nodeGameState, { round: nextRound, selezione: null, confermato: false });
-                set(nodeGameToken, null);
-            };
-
-            function aggiornaSelezioneVisiva() {
-                const b1 = document.getElementById('game-btn-1'); const b2 = document.getElementById('game-btn-2');
-                const feedback = document.getElementById('game-feedback');
-                if (!b1 || !b2) return;
-
-                b1.style.borderColor = "#cbd5e0"; b1.style.backgroundColor = "white"; b1.style.color = "#2c3e50"; b1.style.borderWidth = "2px";
-                b2.style.borderColor = "#cbd5e0"; b2.style.backgroundColor = "white"; b2.style.color = "#2c3e50"; b2.style.borderWidth = "2px";
-                if (feedback) feedback.innerHTML = "";
-
-                if (currentSelection === 1 || currentSelection === 2) {
-                    const btnSelez = document.getElementById(`game-btn-${currentSelection}`);
-                    if (btnSelez) {
-                        btnSelez.style.borderColor = "#3498db"; btnSelez.style.backgroundColor = "#eaf2f8";
-                        if (isConfirmed) {
-                            if (currentSelection === window.correctOption) {
-                                btnSelez.style.borderColor = "#2ecc71"; btnSelez.style.backgroundColor = "#2ecc71"; btnSelez.style.color = "white";
-                                if (feedback) { feedback.innerHTML = "✅ Esatto!"; feedback.style.color = "#27ae60"; }
-                            } else {
-                                btnSelez.style.borderColor = "#e74c3c"; btnSelez.style.backgroundColor = "#e74c3c"; btnSelez.style.color = "white";
-                                const btnCorretto = document.getElementById(`game-btn-${window.correctOption}`);
-                                if (btnCorretto) { btnCorretto.style.borderColor = "#2ecc71"; btnCorretto.style.borderWidth = "4px"; }
-                                if (feedback) { feedback.innerHTML = "❌ Sbagliato!"; feedback.style.color = "#c0392b"; }
-                            }
-                        }
-                    }
-                }
-            }
-
-            function aggiornaUIGioco() {
-                const status = document.getElementById('game-status-bar'); const btnGioca = document.getElementById('btn-gioca');
-                const b1 = document.getElementById('game-btn-1'); const b2 = document.getElementById('game-btn-2');
-                const btnConferma = document.getElementById('game-conferma-btn');
-                if (!status || !btnGioca || !btnConferma || !b1 || !b2) return;
-
-                if (isConfirmed) {
-                    status.innerHTML = "Round terminato 🏁"; status.className = "status-badge";
-                    btnGioca.style.display = "none"; btnConferma.style.display = "none";
-                    b1.style.pointerEvents = "none"; b2.style.pointerEvents = "none";
-                    return;
-                }
-
-                if (gameTokenWriter === "") {
-                    status.innerHTML = "Libero 🟢"; status.className = "status-badge status-reading";
-                    btnGioca.style.display = "inline-block"; btnConferma.style.display = "none";
-                    b1.style.pointerEvents = "none"; b2.style.pointerEvents = "none";
-                } else if (gameTokenWriter === mySessionId) {
-                    status.innerHTML = "Tocca a te! ✍️"; status.className = "status-badge status-writing";
-                    btnGioca.style.display = "none"; b1.style.pointerEvents = "auto"; b2.style.pointerEvents = "auto";
-                    btnConferma.style.display = currentSelection !== null ? "block" : "none";
-                } else {
-                    status.innerHTML = `⏳ Sceglie ${gameTokenName}...`; status.className = "status-badge";
-                    btnGioca.style.display = "none"; btnConferma.style.display = "none";
-                    b1.style.pointerEvents = "none"; b2.style.pointerEvents = "none";
-                }
-            }
-        }
     </script>
-    </body>
+</body>
 </html>
