@@ -22,7 +22,7 @@ export const ConfigLezione = {
             // LUOGHI
             { parola: "L'albergo", audio: "audio/albergo.mp3", img: "img/albergo.webp" },
             { parola: "Il centro", audio: "audio/centro.mp3", img: "img/centro.webp" },
-            { parola: "Le camere", audio: "audio/camere.mp3", img: "img/camere.webp" },
+            { parola: "La camera", audio: "audio/camera.mp3", img: "img/camera.webp" },
             // PROFESSIONI
             { parola: "L'avvocato", audio: "audio/avvocato.mp3", img: "img/avvocato.webp" },
             { parola: "Lo studente", audio: "audio/studente.mp3", img: "img/studente.webp" },
@@ -40,7 +40,7 @@ export const ConfigLezione = {
             { parola: "L'albergo", audio: "audio/albergo.mp3", imgC: "img/albergo.webp", imgS: "img/scuola.webp" },
             { parola: "Firenze", audio: "audio/firenze.mp3", imgC: "img/firenze.webp", imgS: "img/roma.webp" },
             { parola: "Il centro", audio: "audio/centro.mp3", imgC: "img/centro.webp", imgS: "img/periferia.webp" },
-            { parola: "La camera", audio: "audio/camere.mp3", imgC: "img/camere.webp", imgS: "img/bagno.webp" },
+            { parola: "La camera", audio: "audio/camera.mp3", imgC: "img/camera.webp", imgS: "img/bagno.webp" },
             { parola: "L'avvocato", audio: "audio/avvocato.mp3", imgC: "img/avvocato.webp", imgS: "img/medico.webp" },
             { parola: "Lo studente", audio: "audio/studente.mp3", imgC: "img/studente.webp", imgS: "img/insegnante.webp" },
             { parola: "L'insegnante", audio: "audio/insegnante.mp3", imgC: "img/insegnante.webp", imgS: "img/meccanico.webp" },
