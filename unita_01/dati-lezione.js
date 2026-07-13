@@ -35,22 +35,21 @@ export const ConfigLezione = {
             { parola: "Occupato", audio: "audio/occupato.mp3", img: "img/occupato.webp" }
         ],
 
-        // Dati per la modalità "Gioco delle scelte"
+         // Dati per la modalità "Gioco delle scelte"
         gioco: [
-            { parola: "L'albergo", audio: "audio/albergo.mp3", imgC: "img/albergo.webp", imgS: "img/scuola.webp" },
-            { parola: "Firenze", audio: "audio/firenze.mp3", imgC: "img/firenze.webp", imgS: "img/roma.webp" },
-            { parola: "Il centro", audio: "audio/centro.mp3", imgC: "img/centro.webp", imgS: "img/periferia.webp" },
-            { parola: "La camera", audio: "audio/camera.mp3", imgC: "img/camera.webp", imgS: "img/bagno.webp" },
-            { parola: "L'avvocato", audio: "audio/avvocato.mp3", imgC: "img/avvocato.webp", imgS: "img/medico.webp" },
-            { parola: "Lo studente", audio: "audio/studente.mp3", imgC: "img/studente.webp", imgS: "img/insegnante.webp" },
-            { parola: "L'insegnante", audio: "audio/insegnante.mp3", imgC: "img/insegnante.webp", imgS: "img/meccanico.webp" },
-            { parola: "Il dentista", audio: "audio/dentista.mp3", imgC: "img/dentista.webp", imgS: "img/cuoco.webp" },
-            { parola: "Il direttore", audio: "audio/direttore.mp3", imgC: "img/direttore.webp", imgS: "img/cameriere.webp" },
-            { parola: "Grande", audio: "audio/grande.mp3", imgC: "img/grande.webp", imgS: "img/piccolo.webp" },
-            { parola: "Comodo", audio: "audio/comodo.mp3", imgC: "img/comodo.webp", imgS: "img/scomodo.webp" },
-            { parola: "Occupato", audio: "audio/occupato.mp3", imgC: "img/occupato.webp", imgS: "img/libero.webp" }
+            { img: "img/albergo.webp", parolaC: "L'albergo", parolaS: "La scuola", audio: "audio/albergo.mp3" },
+            { img: "img/firenze.webp", parolaC: "Firenze", parolaS: "Roma", audio: "audio/firenze.mp3" },
+            { img: "img/centro.webp", parolaC: "Il centro", parolaS: "La periferia", audio: "audio/centro.mp3" },
+            { img: "img/camera.webp", parolaC: "La camera", parolaS: "Il bagno", audio: "audio/camera.mp3" },
+            { img: "img/avvocato.webp", parolaC: "L'avvocato", parolaS: "Il medico", audio: "audio/avvocato.mp3" },
+            { img: "img/studente.webp", parolaC: "Lo studente", parolaS: "L'insegnante", audio: "audio/studente.mp3" },
+            { img: "img/insegnante.webp", parolaC: "L'insegnante", parolaS: "Il meccanico", audio: "audio/insegnante.mp3" },
+            { img: "img/dentista.webp", parolaC: "Il dentista", parolaS: "Il cuoco", audio: "audio/dentista.mp3" },
+            { img: "img/direttore.webp", parolaC: "Il direttore", parolaS: "Il cameriere", audio: "audio/direttore.mp3" },
+            { img: "img/grande.webp", parolaC: "Grande", parolaS: "Piccolo", audio: "audio/grande.mp3" },
+            { img: "img/comodo.webp", parolaC: "Comodo", parolaS: "Scomodo", audio: "audio/comodo.mp3" },
+            { img: "img/occupato.webp", parolaC: "Occupato", parolaS: "Libero", audio: "audio/occupato.mp3" }
         ]
-    },
 
     // 4. SCHEDA 2: ASCOLTO
     ascolto: {
