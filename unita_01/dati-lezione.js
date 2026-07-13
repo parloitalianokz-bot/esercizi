@@ -34,8 +34,8 @@ export const ConfigLezione = {
     // 4. SCHEDA 2: ASCOLTO
     ascolto: {
         titolo: "🎧 Ascolto",
-        tracciaAudio: "audio/traccia.mp3",
-        istruzioni: "Inserisci qui le istruzioni per l'ascolto."
+        videoUrl: "5FpbKA_i074", // <--- Inserisci solo l'ID qui
+        istruzioni: "Guarda il video e ascolta attentamente la pronuncia."
     },
 
     // 5. SCHEDA 3: LETTURA
