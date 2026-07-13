@@ -65,6 +65,29 @@
         .slider-wrapper { position: relative; display: flex; align-items: center; }
         .arrow-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(44, 62, 80, 0.8); color: white; border: none; padding: 10px; cursor: pointer; z-index: 10; border-radius: 50%; font-size: 1.5rem; }
         .prev-btn { left: -15px; } .next-btn { right: -15px; }
+
+        /* Stile per la fisarmonica */
+.accordion-header {
+    background-color: #ecf0f1;
+    padding: 15px;
+    cursor: pointer;
+    border: 1px solid #bdc3c7;
+    margin-top: 10px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 5px;
+}
+.accordion-header:hover { background-color: #dcdde1; }
+.accordion-content {
+    display: none; /* Inizialmente chiuso */
+    padding: 15px;
+    border: 1px solid #bdc3c7;
+    border-top: none;
+    background: white;
+}
+        
     </style>
 </head>
 <body>
@@ -110,7 +133,7 @@
         }
 
         // ==========================================
-        // 2. FUNZIONI DI SUPPORTO LAVAGNE
+        // 2. FUNZIONI DI SUPPORTO E FISARMONICA
         // ==========================================
         function creaLavagna(id, placeholder) {
             return `
@@ -133,6 +156,18 @@
             </div>`;
         }
 
+        window.toggleAccordion = function(id) {
+            const content = document.getElementById('content_' + id);
+            const arrow = content.previousElementSibling.querySelector('span');
+            if (content.style.display === "block") {
+                content.style.display = "none";
+                arrow.innerText = "▼";
+            } else {
+                content.style.display = "block";
+                arrow.innerText = "▲";
+            }
+        };
+
         window.scrollSlider = function(direction) {
             const container = document.getElementById('flashcard-slider');
             if (container) container.scrollBy({ left: direction * (container.offsetWidth * 0.7), behavior: 'smooth' });
@@ -146,60 +181,92 @@
         };
 
         // ==========================================
-        // 3. GENERAZIONE HTML: Flashcards + Nuovo Gioco Lavagne
-        // ==========================================
-        let htmlDinamico = "";
+// 3. GENERAZIONE HTML DOM
+// ==========================================
 
-        if (ConfigLezione && ConfigLezione.elicitazione) {
-            htmlDinamico += `
-            <div class="didactic-block fase-elicitazione">
-                <div class="fase-label">Fase 1</div>
-                <div class="question-title">${ConfigLezione.elicitazione.titolo || ""}</div>
-                <p>${ConfigLezione.elicitazione.intro || ""}</p>
-                
-                ${ConfigLezione.elicitazione.immagineMappa ? `<div style="text-align: center; margin: 20px 0;"><img src="${ConfigLezione.elicitazione.immagineMappa}" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" alt="Mappa"></div>` : ''}
-                
-                <div class="question-title" style="margin-top:20px;">✍️ Scrivete qui le parole che conoscete già:</div>
-                ${creaLavagna('elicit', 'Scrivete qui le parole italiane che conoscete...')}
-                
-                <hr style="margin: 40px 0; border: 0; border-top: 2px dashed #ccc;">
+// 1. Definiamo la funzione helper per le fisarmoniche
+window.creaSezioneFisarmonica = function(titolo, id, contenuto) {
+    return `
+    <div class="accordion-header" onclick="toggleAccordion('${id}')">
+        ${titolo} <span>▼</span>
+    </div>
+    <div id="content_${id}" class="accordion-content">
+        ${contenuto}
+    </div>`;
+};
 
-                <div class="question-title">📚 Studiamo i nuovi vocaboli:</div>
-                <div class="slider-wrapper">
-                    <button class="arrow-btn prev-btn" onclick="scrollSlider(-1)">❮</button>
-                    <div id="flashcard-slider" class="flashcard-slider">
-                        ${ConfigLezione.elicitazione.vocabolario ? ConfigLezione.elicitazione.vocabolario.map(item => `
-                            <div class="flashcard-item" onclick="new Audio('${item.audio}').play()">
-                                <img src="${item.img}" alt="${item.parola}">
-                                <div style="font-size:1.2rem; font-weight:bold; margin-top:10px;">${item.parola}</div>
-                            </div>
-                        `).join('') : ''}
-                    </div>
-                    <button class="arrow-btn next-btn" onclick="scrollSlider(1)">❯</button>
-                </div>
+let htmlDinamico = "";
 
-                <hr style="margin: 30px 0; border: 0; border-top: 2px solid #ddd;">
-                
-                <div class="question-title">🎮 Mettiti alla prova: scrivi le parole!</div>
-                <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; background: #f8f9fa; padding: 20px; border-radius: 8px; border: 2px solid #cbd5e0;">
-                    ${ConfigLezione.elicitazione.vocabolario ? ConfigLezione.elicitazione.vocabolario.map((item, index) => {
-                        const parolaSafe = item.parola.replace(/'/g, "\\'"); 
-                        return `
-                        <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; width: 100%; max-width: 320px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                            <img src="${item.img}" style="width: 100%; height: 180px; object-fit: contain; border-radius: 6px; margin-bottom: 10px; cursor: pointer;" onclick="new Audio('${item.audio}').play()">
-                            <div style="text-align: left; margin-bottom: 10px;">
-                                ${creaLavagna(`gioco_${index}`, 'Scrivi la parola...')}
-                            </div>
-                            <button onclick="verificaParola(${index}, '${parolaSafe}')" style="background: var(--primary-color); color: white; padding: 10px; border-radius: 6px; border:none; cursor:pointer; width: 100%; font-weight: bold;">Controlla ✔️</button>
-                            <div id="feedback_gioco_${index}" style="margin-top: 10px; font-weight: bold; min-height: 24px; font-size: 1.2rem;"></div>
-                        </div>`;
-                    }).join('') : ''}
-                </div>
-            </div>`;
-        }
+// 2. Costruiamo Fase 1 (Elicitazione + Gioco scrittura) - Sempre visibile
+if (ConfigLezione && ConfigLezione.elicitazione) {
+    htmlDinamico += `
+    <div class="didactic-block fase-elicitazione">
+        <div class="fase-label">Fase 1</div>
+        <div class="question-title">${ConfigLezione.elicitazione.titolo || ""}</div>
+        <p>${ConfigLezione.elicitazione.intro || ""}</p>
         
-        const contDyn = document.getElementById('contenitore-dinamico');
-        if (contDyn) contDyn.innerHTML = htmlDinamico;
+        ${ConfigLezione.elicitazione.immagineMappa ? `<div style="text-align: center; margin: 20px 0;"><img src="${ConfigLezione.elicitazione.immagineMappa}" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" alt="Mappa"></div>` : ''}
+        
+        <div class="question-title" style="margin-top:20px;">✍️ Scrivete qui le parole che conoscete già:</div>
+        ${creaLavagna('elicit', 'Scrivete qui le parole italiane che conoscete...')}
+        
+        <hr style="margin: 40px 0; border: 0; border-top: 2px dashed #ccc;">
+
+        <div class="question-title">📚 Studiamo i nuovi vocaboli:</div>
+        <div class="slider-wrapper">
+            <button class="arrow-btn prev-btn" onclick="scrollSlider(-1)">❮</button>
+            <div id="flashcard-slider" class="flashcard-slider">
+                ${ConfigLezione.elicitazione.vocabolario ? ConfigLezione.elicitazione.vocabolario.map(item => `
+                    <div class="flashcard-item" onclick="new Audio('${item.audio}').play()">
+                        <img src="${item.img}" alt="${item.parola}">
+                        <div style="font-size:1.2rem; font-weight:bold; margin-top:10px;">${item.parola}</div>
+                    </div>
+                `).join('') : ''}
+            </div>
+            <button class="arrow-btn next-btn" onclick="scrollSlider(1)">❯</button>
+        </div>
+
+        <hr style="margin: 30px 0; border: 0; border-top: 2px solid #ddd;">
+        
+        <div class="question-title">🎮 Mettiti alla prova: scrivi le parole!</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; background: #f8f9fa; padding: 20px; border-radius: 8px; border: 2px solid #cbd5e0;">
+            ${ConfigLezione.elicitazione.vocabolario ? ConfigLezione.elicitazione.vocabolario.map((item, index) => {
+                const parolaSafe = item.parola.replace(/'/g, "\\'"); 
+                return `
+                <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; width: 100%; max-width: 320px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    <img src="${item.img}" style="width: 100%; height: 180px; object-fit: contain; border-radius: 6px; margin-bottom: 10px; cursor: pointer;" onclick="new Audio('${item.audio}').play()">
+                    <div style="text-align: left; margin-bottom: 10px;">
+                        ${creaLavagna(`gioco_${index}`, 'Scrivi la parola...')}
+                    </div>
+                    <button onclick="verificaParola(${index}, '${parolaSafe}')" style="background: var(--primary-color); color: white; padding: 10px; border-radius: 6px; border:none; cursor:pointer; width: 100%; font-weight: bold;">Controlla ✔️</button>
+                    <div id="feedback_gioco_${index}" style="margin-top: 10px; font-weight: bold; min-height: 24px; font-size: 1.2rem;"></div>
+                </div>`;
+            }).join('') : ''}
+        </div>
+    </div>`;
+}
+
+// 3. Aggiungiamo le sezioni Fisarmonica
+if (ConfigLezione.ascolto) {
+    htmlDinamico += creaSezioneFisarmonica(ConfigLezione.ascolto.titolo, 'ascolto', `
+        <p>${ConfigLezione.ascolto.istruzioni || ""}</p>
+        <div style="text-align: center; margin: 20px 0;">
+            <audio src="${ConfigLezione.ascolto.tracciaAudio || ""}" controls style="width: 100%; max-width: 400px;"></audio>
+        </div>
+        ${creaLavagna('ascolto', 'Cosa avete capito?...')}
+    `);
+}
+
+if (ConfigLezione.lettura) {
+    const testoHtml = ConfigLezione.lettura.testo.map(p => `<p>${p}</p>`).join('');
+    htmlDinamico += creaSezioneFisarmonica(ConfigLezione.lettura.titolo, 'lettura', `
+        ${testoHtml}
+        ${creaLavagna('lettura', 'Scrivi un commento al testo...')}
+    `);
+}
+
+// 4. Iniezione finale nel DOM
+document.getElementById('contenitore-dinamico').innerHTML = htmlDinamico;
 
         // ==========================================
         // 4. LOGICA DI VALIDAZIONE PAROLE (No articoli/maiuscole)
@@ -241,14 +308,15 @@
         if (myUserName && logOverlay) logOverlay.style.display = 'none';
 
         window.entraInClasse = function() {
-            const usrInp = document.getElementById('username-input');
-            if (!usrInp) return;
-            const nameInput = usrInp.value.trim();
-            if (nameInput.length < 2) return alert("Inserisci il tuo nome.");
-            myUserName = nameInput; localStorage.setItem('parlo_italiano_username', myUserName); 
-            if (logOverlay) logOverlay.style.display = 'none';
-        };
-
+    const usrInp = document.getElementById('username-input');
+    if (!usrInp) return;
+    const nameInput = usrInp.value.trim();
+    if (nameInput.length < 2) return alert("Inserisci il tuo nome.");
+    myUserName = nameInput; 
+    localStorage.setItem('parlo_italiano_username', myUserName); 
+    const overlay = document.getElementById('login-overlay');
+    if (overlay) overlay.style.display = 'none';
+};
         const boards = {}; const currentWriters = {}; const currentWriterNames = {};
         document.querySelectorAll('.editable-board').forEach(board => {
             if (!board) return;
