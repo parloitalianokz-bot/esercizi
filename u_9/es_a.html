@@ -3,116 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Percorso del CSS alla radice del repository -->
+    <!-- Importazione di un font stile gessetto da Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../style.css">
-    <title>Unità 9 - Esercizio A: Il mistero dello Zio Gustavo</title>
+    <title>Unità 9 - Esercizio A</title>
+    <style>
+        body {
+            background-color: #1b261c; /* Sfondo tipico da lavagna scolastica */
+            color: #f0f3f1;
+            font-family: 'Caveat', cursive, Arial, sans-serif; /* Effetto scrittura a mano */
+            font-size: 1.25rem;
+            margin: 0;
+            padding: 20px;
+        }
+        .main-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.03);
+            border: 3px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        h1, h2 {
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-align: center;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .domanda-card {
+            background: rgba(255, 255, 255, 0.05);
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        label {
+            display: block;
+            margin-top: 8px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        label:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        input[type="radio"] {
+            transform: scale(1.2);
+            margin-right: 10px;
+            accent-color: #f1c40f;
+        }
+    </style>
 </head>
 <body>
 
-    <!-- CONTENITORE PRINCIPALE -->
-    <div class="main-container" style="max-width: 800px; margin: 30px auto; padding: 20px; font-family: Arial, sans-serif;">
-        
-        <div class="header" style="text-align: center; margin-bottom: 30px;">
-            <h1>Unità 9: Che disordine! 🔍</h1>
-            <h2 style="color: #2c3e50; font-size: 1.4rem;">Lavagna Condivisa: Esercizio A</h2>
-            <p class="subtitle" style="color: #555;">Gestione orale a turni. Clicca sull'opzione scelta per aggiornare la lavagna in tempo reale[span_2](start_span)[span_2](end_span).</p>
+    <div class="main-container">
+        <div class="header">
+            <h1>Unità 9 — Esercizio A</h1>
+            <h2 style="font-size: 1.5rem; color: #f1c40f; margin-bottom: 30px;">Il mistero dello Zio Gustavo</h2>
         </div>
 
-        <!-- CONTENITORE ESERCIZIO -->
-        <div id="esercizio-container" style="background: #f9f9f9; padding: 25px; border-radius: 8px; border: 1px solid #e1e8ed; margin-bottom: 30px;">
+        <div id="esercizio-container">
             
             <!-- Domanda 1 -->
-            <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
-                <p style="font-weight: bold; margin-bottom: 10px;">1. Lo zio Gustavo abita[span_3](start_span)[span_3](end_span)</p>
-                <label id="label_q1_a" style="display: block; margin-bottom: 8px; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q1" value="a" onclick="selezionaRisposta('q1', 'a')"> a. vicino al mare[span_4](start_span)[span_4](end_span)[span_5](start_span)[span_5](end_span)
+            <div class="domanda-card">
+                <p><b>1.</b> Lo zio Gustavo abita[span_0](start_span)[span_0](end_span)[span_1](start_span)[span_1](end_span)</p>
+                <label id="label_q1_a">
+                    <input type="radio" name="q1" value="a" onclick="selezionaRisposta('q1', 'a')"> a. vicino al mare[span_2](start_span)[span_2](end_span)[span_3](start_span)[span_3](end_span)
                 </label>
-                <label id="label_q1_b" style="display: block; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q1" value="b" onclick="selezionaRisposta('q1', 'b')"> b. lontano dal mare[span_6](start_span)[span_6](end_span)[span_7](start_span)[span_7](end_span)
+                <label id="label_q1_b">
+                    <input type="radio" name="q1" value="b" onclick="selezionaRisposta('q1', 'b')"> b. lontano dal mare[span_4](start_span)[span_4](end_span)[span_5](start_span)[span_5](end_span)
                 </label>
             </div>
 
             <!-- Domanda 2 -->
-            <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
-                <p style="font-weight: bold; margin-bottom: 10px;">2. Abita[span_8](start_span)[span_8](end_span)</p>
-                <label id="label_q2_a" style="display: block; margin-bottom: 8px; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q2" value="a" onclick="selezionaRisposta('q2', 'a')"> a. in una casa con giardino[span_9](start_span)[span_9](end_span)[span_10](start_span)[span_10](end_span)
+            <div class="domanda-card">
+                <p><b>2.</b> Abita[span_6](start_span)[span_6](end_span)[span_7](start_span)[span_7](end_span)</p>
+                <label id="label_q2_a">
+                    <input type="radio" name="q2" value="a" onclick="selezionaRisposta('q2', 'a')"> a. in una casa con giardino[span_8](start_span)[span_8](end_span)[span_9](start_span)[span_9](end_span)
                 </label>
-                <label id="label_q2_b" style="display: block; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q2" value="b" onclick="selezionaRisposta('q2', 'b')"> b. in un appartamento[span_11](start_span)[span_11](end_span)[span_12](start_span)[span_12](end_span)
+                <label id="label_q2_b">
+                    <input type="radio" name="q2" value="b" onclick="selezionaRisposta('q2', 'b')"> b. in un appartamento[span_10](start_span)[span_10](end_span)[span_11](start_span)[span_11](end_span)
                 </label>
             </div>
 
             <!-- Domanda 3 -->
-            <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
-                <p style="font-weight: bold; margin-bottom: 10px;">3. In giardino ci sono[span_13](start_span)[span_13](end_span)</p>
-                <label id="label_q3_a" style="display: block; margin-bottom: 8px; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
+            <div class="domanda-card">
+                <p><b>3.</b> In giardino ci sono[span_12](start_span)[span_12](end_span)[span_13](start_span)[span_13](end_span)</p>
+                <label id="label_q3_a">
                     <input type="radio" name="q3" value="a" onclick="selezionaRisposta('q3', 'a')"> a. molte piante[span_14](start_span)[span_14](end_span)[span_15](start_span)[span_15](end_span)
                 </label>
-                <label id="label_q3_b" style="display: block; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
+                <label id="label_q3_b">
                     <input type="radio" name="q3" value="b" onclick="selezionaRisposta('q3', 'b')"> b. molte buche[span_16](start_span)[span_16](end_span)[span_17](start_span)[span_17](end_span)
                 </label>
             </div>
 
             <!-- Domanda 4 -->
-            <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
-                <p style="font-weight: bold; margin-bottom: 10px;">4. Lo zio scava in giardino[span_18](start_span)[span_18](end_span)</p>
-                <label id="label_q4_a" style="display: block; margin-bottom: 8px; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q4" value="a" onclick="selezionaRisposta('q4', 'a')"> a. perché spera di diventare ricco[span_19](start_span)[span_19](end_span)[span_20](start_span)[span_20](end_span)
+            <div class="domanda-card">
+                <p><b>4.</b> Lo zio scava in giardino[span_18](start_span)[span_18](end_span)[span_19](start_span)[span_19](end_span)</p>
+                <label id="label_q4_a">
+                    <input type="radio" name="q4" value="a" onclick="selezionaRisposta('q4', 'a')"> a. perché spera di diventare ricco[span_20](start_span)[span_20](end_span)[span_21](start_span)[span_21](end_span)
                 </label>
-                <label id="label_q4_b" style="display: block; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q4" value="b" onclick="selezionaRisposta('q4', 'b')"> b. per fare un po’ di sport[span_21](start_span)[span_21](end_span)[span_22](start_span)[span_22](end_span)
+                <label id="label_q4_b">
+                    <input type="radio" name="q4" value="b" onclick="selezionaRisposta('q4', 'b')"> b. per fare un po’ di sport[span_22](start_span)[span_22](end_span)[span_23](start_span)[span_23](end_span)
                 </label>
             </div>
 
             <!-- Domanda 5 -->
-            <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
-                <p style="font-weight: bold; margin-bottom: 10px;">5. Lo zio dorme[span_23](start_span)[span_23](end_span)</p>
-                <label id="label_q5_a" style="display: block; margin-bottom: 8px; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q5" value="a" onclick="selezionaRisposta('q5', 'a')"> a. in frigorifero[span_24](start_span)[span_24](end_span)[span_25](start_span)[span_25](end_span)
+            <div class="domanda-card">
+                <p><b>5.</b> Lo zio dorme[span_24](start_span)[span_24](end_span)[span_25](start_span)[span_25](end_span)</p>
+                <label id="label_q5_a">
+                    <input type="radio" name="q5" value="a" onclick="selezionaRisposta('q5', 'a')"> a. in frigorifero[span_26](start_span)[span_26](end_span)[span_27](start_span)[span_27](end_span)
                 </label>
-                <label id="label_q5_b" style="display: block; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q5" value="b" onclick="selezionaRisposta('q5', 'b')"> b. sul tappeto[span_26](start_span)[span_26](end_span)[span_27](start_span)[span_27](end_span)
+                <label id="label_q5_b">
+                    <input type="radio" name="q5" value="b" onclick="selezionaRisposta('q5', 'b')"> b. sul tappeto[span_28](start_span)[span_28](end_span)[span_29](start_span)[span_29](end_span)
                 </label>
             </div>
 
             <!-- Domanda 6 -->
-            <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
-                <p style="font-weight: bold; margin-bottom: 10px;">6. La domenica lo zio Gustavo[span_28](start_span)[span_28](end_span)</p>
-                <label id="label_q6_a" style="display: block; margin-bottom: 8px; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q6" value="a" onclick="selezionaRisposta('q6', 'a')"> a. riceve visite[span_29](start_span)[span_29](end_span)
+            <div class="domanda-card">
+                <p><b>6.</b> La domenica lo zio Gustavo[span_30](start_span)[span_30](end_span)</p>
+                <label id="label_q6_a">
+                    <input type="radio" name="q6" value="a" onclick="selezionaRisposta('q6', 'a')"> a. riceve visite[span_31](start_span)[span_31](end_span)
                 </label>
-                <label id="label_q6_b" style="display: block; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q6" value="b" onclick="selezionaRisposta('q6', 'b')"> b. mette in ordine la casa[span_30](start_span)[span_30](end_span)
+                <label id="label_q6_b">
+                    <input type="radio" name="q6" value="b" onclick="selezionaRisposta('q6', 'b')"> b. mette in ordine la casa[span_32](start_span)[span_32](end_span)
                 </label>
             </div>
 
             <!-- Domanda 7 -->
-            <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
-                <p style="font-weight: bold; margin-bottom: 10px;">7. Quando hanno sete, lo zio Gustavo e lo zio Augusto bevono[span_31](start_span)[span_31](end_span)</p>
-                <label id="label_q7_a" style="display: block; margin-bottom: 8px; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q7" value="a" onclick="selezionaRisposta('q7', 'a')"> a. una tazza di vodka[span_32](start_span)[span_32](end_span)[span_33](start_span)[span_33](end_span)
+            <div class="domanda-card">
+                <p><b>7.</b> Quando hanno sete, lo zio Gustavo e lo zio Augusto bevono[span_33](start_span)[span_33](end_span)[span_34](start_span)[span_34](end_span)</p>
+                <label id="label_q7_a">
+                    <input type="radio" name="q7" value="a" onclick="selezionaRisposta('q7', 'a')"> a. una tazza di vodka[span_35](start_span)[span_35](end_span)[span_36](start_span)[span_36](end_span)
                 </label>
-                <label id="label_q7_b" style="display: block; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q7" value="b" onclick="selezionaRisposta('q7', 'b')"> b. una tazza di olio[span_34](start_span)[span_34](end_span)[span_35](start_span)[span_35](end_span)
+                <label id="label_q7_b">
+                    <input type="radio" name="q7" value="b" onclick="selezionaRisposta('q7', 'b')"> b. una tazza di olio[span_37](start_span)[span_37](end_span)[span_38](start_span)[span_38](end_span)
                 </label>
             </div>
 
             <!-- Domanda 8 -->
-            <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
-                <p style="font-weight: bold; margin-bottom: 10px;">8. Quando esce, lo zio dimentica sempre a casa[span_36](start_span)[span_36](end_span)</p>
-                <label id="label_q8_a" style="display: block; margin-bottom: 8px; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q8" value="a" onclick="selezionaRisposta('q8', 'a')"> a. la borsa[span_37](start_span)[span_37](end_span)
+            <div class="domanda-card">
+                <p><b>8.</b> Quando esce, lo zio dimentica sempre a casa[span_39](start_span)[span_39](end_span)</p>
+                <label id="label_q8_a">
+                    <input type="radio" name="q8" value="a" onclick="selezionaRisposta('q8', 'a')"> a. la borsa[span_40](start_span)[span_40](end_span)
                 </label>
-                <label id="label_q8_b" style="display: block; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q8" value="b" onclick="selezionaRisposta('q8', 'b')"> b. le chiavi[span_38](start_span)[span_38](end_span)
+                <label id="label_q8_b">
+                    <input type="radio" name="q8" value="b" onclick="selezionaRisposta('q8', 'b')"> b. le chiavi[span_41](start_span)[span_41](end_span)
                 </label>
             </div>
 
         </div>
     </div>
 
-    <!-- SCRIPT FIREBASE E LAVAGNA CONDIVISA IN TEMPO REALE -->
+    <!-- SCRIPT FIREBASE E SINCRONIZZAZIONE LAVAGNA -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -126,32 +174,29 @@
 
         const BASE_PATH = `unita_09/lavagna_orale_a`;
 
-        // Soluzioni corrette dell'Esercizio A
+        // Soluzioni corrette basate sul testo dell'Unità 9
         const soluzioniCorrette = {
-            q1: "b",[span_39](start_span)[span_39](end_span)
-            q2: "a",[span_40](start_span)[span_40](end_span)
-            q3: "b",[span_41](start_span)[span_41](end_span)
-            q4: "a",[span_42](start_span)[span_42](end_span)
-            q5: "b",[span_43](start_span)[span_43](end_span)
-            q6: "a",[span_44](start_span)[span_44](end_span)
-            q7: "b",[span_45](start_span)[span_45](end_span)
-            q8: "a[span_46](start_span)"[span_46](end_span)
+            q1: "b",[span_42](start_span)[span_42](end_span)
+            q2: "a",[span_43](start_span)[span_43](end_span)
+            q3: "b",[span_44](start_span)[span_44](end_span)
+            q4: "a",[span_45](start_span)[span_45](end_span)
+            q5: "b",[span_46](start_span)[span_46](end_span)
+            q6: "a",[span_47](start_span)[span_47](end_span)
+            q7: "b",[span_48](start_span)[span_48](end_span)
+            q8: "a[span_49](start_span)"[span_49](end_span)
         };
 
-        // Quando viene cliccata un'opzione, viene salvata globalmente per tutta la classe
         window.selezionaRisposta = function(qKey, val) {
             set(ref(db, `${BASE_PATH}/scelte_globali/${qKey}`), val);
         };
 
-        // Ascoltatore in tempo reale: aggiorna la lavagna per tutti all'istante
         onValue(ref(db, `${BASE_PATH}/scelte_globali`), (snapshot) => {
-            // Pulisce prima tutti i colori delle etichette
             for (let i = 1; i <= 8; i++) {
                 ['a', 'b'].forEach(opt => {
                     const label = document.getElementById(`label_q${i}_${opt}`);
                     if (label) {
-                        label.style.backgroundColor = "#fff";
-                        label.style.borderColor = "#ddd";
+                        label.style.backgroundColor = "rgba(0, 0, 0, 0.2)";
+                        label.style.borderColor = "rgba(255, 255, 255, 0.2)";
                     }
                     const radio = document.querySelector(`input[name="q${i}"][value="${opt}"]`);
                     if (radio) radio.checked = false;
@@ -162,7 +207,6 @@
 
             const scelte = snapshot.val();
 
-            // Applica le scelte globali e colora in base alla correttezza
             Object.keys(scelte).forEach(qKey => {
                 const valScelto = scelte[qKey];
                 const radio = document.querySelector(`input[name="${qKey}"][value="${valScelto}"]`);
@@ -171,8 +215,9 @@
                 const label = document.getElementById(`label_${qKey}_${valScelto}`);
                 if (label) {
                     const isCorretto = (valScelto === soluzioniCorrette[qKey]);
-                    label.style.backgroundColor = isCorretto ? "#d4edda" : "#f8d7da";
-                    label.style.borderColor = isCorretto ? "#28a745" : "#dc3545";
+                    // Colori stile gessetto acceso su lavagna
+                    label.style.backgroundColor = isCorretto ? "rgba(46, 204, 113, 0.3)" : "rgba(231, 76, 60, 0.3)";
+                    label.style.borderColor = isCorretto ? "#2ecc71" : "#e74c3c";
                 }
             });
         });
