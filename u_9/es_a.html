@@ -14,8 +14,12 @@
         
         <div class="header" style="text-align: center; margin-bottom: 30px;">
             <h1>Unità 9: Che disordine! 🔍</h1>
-            <h2 style="color: #2c3e50; font-size: 1.4rem;">Esercizio A: Scegli la risposta corretta</h2>
-            <p class="subtitle" style="color: #555;">Gestione orale a turni. Clicca sull'opzione scelta per aggiornare la lavagna in tempo reale.</p>
+            <h2 style="color: #2c3e50; font-size: 1.4rem; margin-bottom: 15px;">Esercizio A: Scegli la risposta corretta</h2>
+            
+            <!-- Pulsante di Reset della Lavagna -->
+            <div>
+                <button onclick="resetEsercizio()" style="background: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.9rem;">🔄 Resetta Esercizio</button>
+            </div>
         </div>
 
         <!-- CONTENITORE ESERCIZIO -->
@@ -23,89 +27,89 @@
             
             <!-- Domanda 1 -->
             <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
-                <p style="font-weight: bold; margin-bottom: 10px;">1. Lo zio Gustavo abita</p>
+                <p style="font-weight: bold; margin-bottom: 10px;">1. Lo zio Gustavo abita[span_0](start_span)[span_0](end_span)[span_1](start_span)[span_1](end_span)</p>
                 <label id="label_q1_a" style="display: block; margin-bottom: 8px; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q1" value="a" onclick="selezionaRisposta('q1', 'a')"> a. vicino al mare
+                    <input type="radio" name="q1" value="a" onclick="selezionaRisposta('q1', 'a')"> a. vicino al mare[span_2](start_span)[span_2](end_span)[span_3](start_span)[span_3](end_span)
                 </label>
                 <label id="label_q1_b" style="display: block; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q1" value="b" onclick="selezionaRisposta('q1', 'b')"> b. lontano dal mare
+                    <input type="radio" name="q1" value="b" onclick="selezionaRisposta('q1', 'b')"> b. lontano dal mare[span_4](start_span)[span_4](end_span)[span_5](start_span)[span_5](end_span)
                 </label>
             </div>
 
             <!-- Domanda 2 -->
             <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
-                <p style="font-weight: bold; margin-bottom: 10px;">2. Abita</p>
+                <p style="font-weight: bold; margin-bottom: 10px;">2. Abita[span_6](start_span)[span_6](end_span)[span_7](start_span)[span_7](end_span)</p>
                 <label id="label_q2_a" style="display: block; margin-bottom: 8px; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q2" value="a" onclick="selezionaRisposta('q2', 'a')"> a. in una casa con giardino
+                    <input type="radio" name="q2" value="a" onclick="selezionaRisposta('q2', 'a')"> a. in una casa con giardino[span_8](start_span)[span_8](end_span)[span_9](start_span)[span_9](end_span)
                 </label>
                 <label id="label_q2_b" style="display: block; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q2" value="b" onclick="selezionaRisposta('q2', 'b')"> b. in un appartamento
+                    <input type="radio" name="q2" value="b" onclick="selezionaRisposta('q2', 'b')"> b. in un appartamento[span_10](start_span)[span_10](end_span)[span_11](start_span)[span_11](end_span)
                 </label>
             </div>
 
             <!-- Domanda 3 -->
             <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
-                <p style="font-weight: bold; margin-bottom: 10px;">3. In giardino ci sono</p>
+                <p style="font-weight: bold; margin-bottom: 10px;">3. In giardino ci sono[span_12](start_span)[span_12](end_span)[span_13](start_span)[span_13](end_span)</p>
                 <label id="label_q3_a" style="display: block; margin-bottom: 8px; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q3" value="a" onclick="selezionaRisposta('q3', 'a')"> a. molte piante
+                    <input type="radio" name="q3" value="a" onclick="selezionaRisposta('q3', 'a')"> a. molte piante[span_14](start_span)[span_14](end_span)[span_15](start_span)[span_15](end_span)
                 </label>
                 <label id="label_q3_b" style="display: block; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q3" value="b" onclick="selezionaRisposta('q3', 'b')"> b. molte buche
+                    <input type="radio" name="q3" value="b" onclick="selezionaRisposta('q3', 'b')"> b. molte buche[span_16](start_span)[span_16](end_span)[span_17](start_span)[span_17](end_span)
                 </label>
             </div>
 
             <!-- Domanda 4 -->
             <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
-                <p style="font-weight: bold; margin-bottom: 10px;">4. Lo zio scava in giardino</p>
+                <p style="font-weight: bold; margin-bottom: 10px;">4. Lo zio scava in giardino[span_18](start_span)[span_18](end_span)[span_19](start_span)[span_19](end_span)</p>
                 <label id="label_q4_a" style="display: block; margin-bottom: 8px; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q4" value="a" onclick="selezionaRisposta('q4', 'a')"> a. perché spera di diventare ricco
+                    <input type="radio" name="q4" value="a" onclick="selezionaRisposta('q4', 'a')"> a. perché spera di diventare ricco[span_20](start_span)[span_20](end_span)[span_21](start_span)[span_21](end_span)
                 </label>
                 <label id="label_q4_b" style="display: block; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q4" value="b" onclick="selezionaRisposta('q4', 'b')"> b. per fare un po’ di sport
+                    <input type="radio" name="q4" value="b" onclick="selezionaRisposta('q4', 'b')"> b. per fare un po’ di sport[span_22](start_span)[span_22](end_span)[span_23](start_span)[span_23](end_span)
                 </label>
             </div>
 
             <!-- Domanda 5 -->
             <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
-                <p style="font-weight: bold; margin-bottom: 10px;">5. Lo zio dorme</p>
+                <p style="font-weight: bold; margin-bottom: 10px;">5. Lo zio dorme[span_24](start_span)[span_24](end_span)[span_25](start_span)[span_25](end_span)</p>
                 <label id="label_q5_a" style="display: block; margin-bottom: 8px; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q5" value="a" onclick="selezionaRisposta('q5', 'a')"> a. in frigorifero
+                    <input type="radio" name="q5" value="a" onclick="selezionaRisposta('q5', 'a')"> a. in frigorifero[span_26](start_span)[span_26](end_span)[span_27](start_span)[span_27](end_span)
                 </label>
                 <label id="label_q5_b" style="display: block; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q5" value="b" onclick="selezionaRisposta('q5', 'b')"> b. sul tappeto
+                    <input type="radio" name="q5" value="b" onclick="selezionaRisposta('q5', 'b')"> b. sul tappeto[span_28](start_span)[span_28](end_span)[span_29](start_span)[span_29](end_span)
                 </label>
             </div>
 
             <!-- Domanda 6 -->
             <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
-                <p style="font-weight: bold; margin-bottom: 10px;">6. La domenica lo zio Gustavo</p>
+                <p style="font-weight: bold; margin-bottom: 10px;">6. La domenica lo zio Gustavo[span_30](start_span)[span_30](end_span)</p>
                 <label id="label_q6_a" style="display: block; margin-bottom: 8px; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q6" value="a" onclick="selezionaRisposta('q6', 'a')"> a. riceve visite
+                    <input type="radio" name="q6" value="a" onclick="selezionaRisposta('q6', 'a')"> a. riceve visite[span_31](start_span)[span_31](end_span)
                 </label>
                 <label id="label_q6_b" style="display: block; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q6" value="b" onclick="selezionaRisposta('q6', 'b')"> b. mette in ordine la casa
+                    <input type="radio" name="q6" value="b" onclick="selezionaRisposta('q6', 'b')"> b. mette in ordine la casa[span_32](start_span)[span_32](end_span)
                 </label>
             </div>
 
             <!-- Domanda 7 -->
             <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
-                <p style="font-weight: bold; margin-bottom: 10px;">7. Quando hanno sete, lo zio Gustavo e lo zio Augusto bevono</p>
+                <p style="font-weight: bold; margin-bottom: 10px;">7. Quando hanno sete, lo zio Gustavo e lo zio Augusto bevono[span_33](start_span)[span_33](end_span)[span_34](start_span)[span_34](end_span)</p>
                 <label id="label_q7_a" style="display: block; margin-bottom: 8px; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q7" value="a" onclick="selezionaRisposta('q7', 'a')"> a. una tazza di vodka
+                    <input type="radio" name="q7" value="a" onclick="selezionaRisposta('q7', 'a')"> a. una tazza di vodka[span_35](start_span)[span_35](end_span)[span_36](start_span)[span_36](end_span)
                 </label>
                 <label id="label_q7_b" style="display: block; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q7" value="b" onclick="selezionaRisposta('q7', 'b')"> b. una tazza di olio
+                    <input type="radio" name="q7" value="b" onclick="selezionaRisposta('q7', 'b')"> b. una tazza di olio[span_37](start_span)[span_37](end_span)[span_38](start_span)[span_38](end_span)
                 </label>
             </div>
 
             <!-- Domanda 8 -->
             <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
-                <p style="font-weight: bold; margin-bottom: 10px;">8. Quando esce, lo zio dimentica sempre a casa</p>
+                <p style="font-weight: bold; margin-bottom: 10px;">8. Quando esce, lo zio dimentica sempre a casa[span_39](start_span)[span_39](end_span)</p>
                 <label id="label_q8_a" style="display: block; margin-bottom: 8px; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q8" value="a" onclick="selezionaRisposta('q8', 'a')"> a. la borsa
+                    <input type="radio" name="q8" value="a" onclick="selezionaRisposta('q8', 'a')"> a. la borsa[span_40](start_span)[span_40](end_span)
                 </label>
                 <label id="label_q8_b" style="display: block; padding: 8px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
-                    <input type="radio" name="q8" value="b" onclick="selezionaRisposta('q8', 'b')"> b. le chiavi
+                    <input type="radio" name="q8" value="b" onclick="selezionaRisposta('q8', 'b')"> b. le chiavi[span_41](start_span)[span_41](end_span)
                 </label>
             </div>
 
@@ -128,18 +132,24 @@
 
         // Soluzioni corrette dell'Esercizio A
         const soluzioniCorrette = {
-            q1: "b",
-            q2: "a",
-            q3: "b",
-            q4: "a",
-            q5: "b",
-            q6: "a",
-            q7: "b",
-            q8: "a"
+            q1: "b",[span_42](start_span)[span_42](end_span)
+            q2: "a",[span_43](start_span)[span_43](end_span)
+            q3: "b",[span_44](start_span)[span_44](end_span)
+            q4: "a",[span_45](start_span)[span_45](end_span)
+            q5: "b",[span_46](start_span)[span_46](end_span)
+            q6: "a",[span_47](start_span)[span_47](end_span)
+            q7: "b",[span_48](start_span)[span_48](end_span)
+            q8: "a[span_49](start_span)"[span_49](end_span)
         };
 
         window.selezionaRisposta = function(qKey, val) {
             set(ref(db, `${BASE_PATH}/scelte_globali/${qKey}`), val);
+        };
+
+        window.resetEsercizio = function() {
+            if (confirm("Vuoi azzerare tutte le risposte della lavagna?")) {
+                set(ref(db, `${BASE_PATH}/scelte_globali`), null);
+            }
         };
 
         onValue(ref(db, `${BASE_PATH}/scelte_globali`), (snapshot) => {
