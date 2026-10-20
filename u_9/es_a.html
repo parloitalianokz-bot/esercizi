@@ -3,19 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Percorso del CSS alla radice del repository -->
-    <link rel="stylesheet" href="../../style.css">
     <title>Unità 9 - Esercizio A: Il mistero dello Zio Gustavo</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f3f6fb;
+            color: #243447;
+            font-family: Arial, sans-serif;
+            line-height: 1.5;
+        }
+
+        .main-container {
+            max-width: 800px !important;
+            padding: 24px !important;
+        }
+
+        .header h1 {
+            color: #203a5b;
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            margin-bottom: 8px;
+        }
+
+        .header h2 {
+            color: #526579 !important;
+            font-size: 1.15rem !important;
+        }
+
+        .header button {
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .header button:hover {
+            background: #c0392b !important;
+            transform: translateY(-1px);
+        }
+
+        #esercizio-container {
+            padding: 20px !important;
+            background: #fff !important;
+            border: 1px solid #dce5ef !important;
+            box-shadow: 0 8px 24px rgba(35, 59, 85, 0.07);
+        }
+
+        .domanda-formulata {
+            margin: 0 !important;
+            padding: 14px 16px !important;
+            background: #edf6ff !important;
+            border: 1px solid #c8ddf2 !important;
+            border-bottom: 0 !important;
+            border-radius: 9px 9px 0 0 !important;
+        }
+
+        .domanda-formulata summary {
+            color: #285783;
+            transition: color 0.2s ease;
+        }
+
+        .domanda-formulata summary:hover {
+            color: #1478bd;
+        }
+
+        .domanda-formulata textarea {
+            min-height: 62px;
+            border: 1px solid #bfd3e6;
+            border-radius: 6px;
+            background: #fff;
+            color: #243447;
+            font: inherit;
+        }
+
+        .domanda-formulata textarea:focus {
+            outline: 3px solid rgba(52, 152, 219, 0.2);
+            border-color: #3498db;
+        }
+
+        .domanda-card {
+            margin: 0 0 20px !important;
+            padding: 18px !important;
+            background: #fff !important;
+            border: 1px solid #c8ddf2 !important;
+            border-top: 0 !important;
+            border-radius: 0 0 9px 9px !important;
+            box-shadow: 0 4px 12px rgba(35, 59, 85, 0.05);
+        }
+
+        .domanda-card p {
+            margin-top: 0 !important;
+            color: #203a5b;
+            font-size: 1.05rem;
+            line-height: 1.45;
+        }
+
+        .domanda-card label {
+            transition: box-shadow 0.18s ease, transform 0.18s ease;
+        }
+
+        .domanda-card label:hover {
+            box-shadow: 0 2px 8px rgba(35, 59, 85, 0.12);
+            transform: translateY(-1px);
+        }
+
+        .domanda-card label:focus-within {
+            outline: 3px solid rgba(52, 152, 219, 0.3);
+            outline-offset: 2px;
+        }
+
+        .domanda-card input[type="radio"] {
+            accent-color: #2878b9;
+        }
+
+        @media (max-width: 600px) {
+            .main-container {
+                margin: 12px auto !important;
+                padding: 14px !important;
+            }
+
+            #esercizio-container {
+                padding: 12px !important;
+            }
+
+            .domanda-formulata,
+            .domanda-card {
+                padding: 13px !important;
+            }
+
+            .domanda-card label {
+                line-height: 1.45;
+            }
+        }
+    </style>
 </head>
 <body>
 
     <!-- CONTENITORE PRINCIPALE -->
     <div class="main-container" style="max-width: 800px; margin: 30px auto; padding: 20px; font-family: Arial, sans-serif;">
-        
+
         <div class="header" style="text-align: center; margin-bottom: 30px;">
             <h1>Unità 9: Che disordine! 🔍</h1>
             <h2 style="color: #2c3e50; font-size: 1.4rem; margin-bottom: 15px;">Esercizio A: Scegli la risposta corretta</h2>
-            
+
             <!-- Pulsante di Reset della Lavagna -->
             <div>
                 <button onclick="resetEsercizio()" style="background: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.9rem;">🔄 Resetta Esercizio</button>
@@ -24,7 +154,13 @@
 
         <!-- CONTENITORE ESERCIZIO -->
         <div id="esercizio-container" style="background: #f9f9f9; padding: 25px; border-radius: 8px; border: 1px solid #e1e8ed; margin-bottom: 30px;">
-            
+
+            <!-- Domanda formulata, condivisa con tutti -->
+            <details class="domanda-formulata" style="margin-bottom: 12px; padding: 12px; background: #eef6ff; border: 1px solid #c8ddf2; border-radius: 6px;">
+                <summary style="cursor: pointer; font-weight: bold;">✍️ Formula una domanda</summary>
+                <textarea id="testo_q1" aria-label="Domanda formulata per l'esercizio 1" placeholder="Scrivi qui la domanda..." rows="2" style="display: block; box-sizing: border-box; width: 100%; margin-top: 10px; padding: 8px; resize: vertical;" oninput="salvaDomanda('q1', this.value)"></textarea>
+            </details>
+
             <!-- Domanda 1 -->
             <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
                 <p style="font-weight: bold; margin-bottom: 10px;">1. Lo zio Gustavo abita</p>
@@ -35,6 +171,11 @@
                     <input type="radio" name="q1" value="b" onclick="selezionaRisposta('q1', 'b')"> b. lontano dal mare
                 </label>
             </div>
+
+            <details class="domanda-formulata" style="margin-bottom: 12px; padding: 12px; background: #eef6ff; border: 1px solid #c8ddf2; border-radius: 6px;">
+                <summary style="cursor: pointer; font-weight: bold;">✍️ Formula una domanda</summary>
+                <textarea id="testo_q2" aria-label="Domanda formulata per l'esercizio 2" placeholder="Scrivi qui la domanda..." rows="2" style="display: block; box-sizing: border-box; width: 100%; margin-top: 10px; padding: 8px; resize: vertical;" oninput="salvaDomanda('q2', this.value)"></textarea>
+            </details>
 
             <!-- Domanda 2 -->
             <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
@@ -47,6 +188,11 @@
                 </label>
             </div>
 
+            <details class="domanda-formulata" style="margin-bottom: 12px; padding: 12px; background: #eef6ff; border: 1px solid #c8ddf2; border-radius: 6px;">
+                <summary style="cursor: pointer; font-weight: bold;">✍️ Formula una domanda</summary>
+                <textarea id="testo_q3" aria-label="Domanda formulata per l'esercizio 3" placeholder="Scrivi qui la domanda..." rows="2" style="display: block; box-sizing: border-box; width: 100%; margin-top: 10px; padding: 8px; resize: vertical;" oninput="salvaDomanda('q3', this.value)"></textarea>
+            </details>
+
             <!-- Domanda 3 -->
             <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
                 <p style="font-weight: bold; margin-bottom: 10px;">3. In giardino ci sono</p>
@@ -57,6 +203,11 @@
                     <input type="radio" name="q3" value="b" onclick="selezionaRisposta('q3', 'b')"> b. molte buche
                 </label>
             </div>
+
+            <details class="domanda-formulata" style="margin-bottom: 12px; padding: 12px; background: #eef6ff; border: 1px solid #c8ddf2; border-radius: 6px;">
+                <summary style="cursor: pointer; font-weight: bold;">✍️ Formula una domanda</summary>
+                <textarea id="testo_q4" aria-label="Domanda formulata per l'esercizio 4" placeholder="Scrivi qui la domanda..." rows="2" style="display: block; box-sizing: border-box; width: 100%; margin-top: 10px; padding: 8px; resize: vertical;" oninput="salvaDomanda('q4', this.value)"></textarea>
+            </details>
 
             <!-- Domanda 4 -->
             <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
@@ -69,6 +220,11 @@
                 </label>
             </div>
 
+            <details class="domanda-formulata" style="margin-bottom: 12px; padding: 12px; background: #eef6ff; border: 1px solid #c8ddf2; border-radius: 6px;">
+                <summary style="cursor: pointer; font-weight: bold;">✍️ Formula una domanda</summary>
+                <textarea id="testo_q5" aria-label="Domanda formulata per l'esercizio 5" placeholder="Scrivi qui la domanda..." rows="2" style="display: block; box-sizing: border-box; width: 100%; margin-top: 10px; padding: 8px; resize: vertical;" oninput="salvaDomanda('q5', this.value)"></textarea>
+            </details>
+
             <!-- Domanda 5 -->
             <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
                 <p style="font-weight: bold; margin-bottom: 10px;">5. Lo zio dorme</p>
@@ -79,6 +235,11 @@
                     <input type="radio" name="q5" value="b" onclick="selezionaRisposta('q5', 'b')"> b. sul tappeto
                 </label>
             </div>
+
+            <details class="domanda-formulata" style="margin-bottom: 12px; padding: 12px; background: #eef6ff; border: 1px solid #c8ddf2; border-radius: 6px;">
+                <summary style="cursor: pointer; font-weight: bold;">✍️ Formula una domanda</summary>
+                <textarea id="testo_q6" aria-label="Domanda formulata per l'esercizio 6" placeholder="Scrivi qui la domanda..." rows="2" style="display: block; box-sizing: border-box; width: 100%; margin-top: 10px; padding: 8px; resize: vertical;" oninput="salvaDomanda('q6', this.value)"></textarea>
+            </details>
 
             <!-- Domanda 6 -->
             <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
@@ -91,6 +252,11 @@
                 </label>
             </div>
 
+            <details class="domanda-formulata" style="margin-bottom: 12px; padding: 12px; background: #eef6ff; border: 1px solid #c8ddf2; border-radius: 6px;">
+                <summary style="cursor: pointer; font-weight: bold;">✍️ Formula una domanda</summary>
+                <textarea id="testo_q7" aria-label="Domanda formulata per l'esercizio 7" placeholder="Scrivi qui la domanda..." rows="2" style="display: block; box-sizing: border-box; width: 100%; margin-top: 10px; padding: 8px; resize: vertical;" oninput="salvaDomanda('q7', this.value)"></textarea>
+            </details>
+
             <!-- Domanda 7 -->
             <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
                 <p style="font-weight: bold; margin-bottom: 10px;">7. Quando hanno sete, lo zio Gustavo e lo zio Augusto bevono</p>
@@ -101,6 +267,11 @@
                     <input type="radio" name="q7" value="b" onclick="selezionaRisposta('q7', 'b')"> b. una tazza di olio
                 </label>
             </div>
+
+            <details class="domanda-formulata" style="margin-bottom: 12px; padding: 12px; background: #eef6ff; border: 1px solid #c8ddf2; border-radius: 6px;">
+                <summary style="cursor: pointer; font-weight: bold;">✍️ Formula una domanda</summary>
+                <textarea id="testo_q8" aria-label="Domanda formulata per l'esercizio 8" placeholder="Scrivi qui la domanda..." rows="2" style="display: block; box-sizing: border-box; width: 100%; margin-top: 10px; padding: 8px; resize: vertical;" oninput="salvaDomanda('q8', this.value)"></textarea>
+            </details>
 
             <!-- Domanda 8 -->
             <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
@@ -146,11 +317,26 @@
             set(ref(db, `${BASE_PATH}/scelte_globali/${qKey}`), val);
         };
 
+        window.salvaDomanda = function(qKey, testo) {
+            set(ref(db, `${BASE_PATH}/domande_globali/${qKey}`), testo || null);
+        };
+
         window.resetEsercizio = function() {
-            if (confirm("Vuoi azzerare tutte le risposte della lavagna?")) {
-                set(ref(db, `${BASE_PATH}/scelte_globali`), null);
+            if (confirm("Vuoi azzerare tutte le risposte e le domande della lavagna?")) {
+                set(ref(db, BASE_PATH), null);
             }
         };
+
+        onValue(ref(db, `${BASE_PATH}/domande_globali`), (snapshot) => {
+            const domande = snapshot.exists() ? snapshot.val() : {};
+            for (let i = 1; i <= 8; i++) {
+                const textarea = document.getElementById(`testo_q${i}`);
+                if (textarea) {
+                    const testo = domande[`q${i}`] || "";
+                    if (textarea.value !== testo) textarea.value = testo;
+                }
+            }
+        });
 
         onValue(ref(db, `${BASE_PATH}/scelte_globali`), (snapshot) => {
             for (let i = 1; i <= 8; i++) {
