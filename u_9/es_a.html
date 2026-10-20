@@ -30,7 +30,7 @@
             <div id="user-info-badge" style="font-size: 0.9rem; color: #7f8c8d; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;"></div>
             <h1>Unità 9: Che disordine! 🔍</h1>
             <h2 style="color: #2c3e50; font-size: 1.4rem;">Esercizio A: Scegli la risposta corretta</h2>
-            <p class="subtitle" style="color: #555;">Leggi le domande sullo Zio Gustavo[span_2](start_span)[span_2](end_span) e seleziona l'opzione corretta in base al testo.</p>
+            <p class="subtitle" style="color: #555;">Leggi le domande sullo Zio Gustavo[span_0](start_span)[span_0](end_span) e seleziona l'opzione corretta in base al testo.</p>
         </div>
 
         <!-- FORM ESERCIZIO -->
@@ -40,7 +40,7 @@
                 <!-- Domanda 1 -->
                 <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
                     <p style="font-weight: bold; margin-bottom: 10px;">1. Lo zio Gustavo abita</p>
-                    <label id="label_q1_a" style="display: block; margin-bottom: 8px; padding: 6px; border-radius: 4px; border: 1px solid #ddd; cursor: background: #fff;">
+                    <label id="label_q1_a" style="display: block; margin-bottom: 8px; padding: 6px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
                         <input type="radio" name="q1" value="a"> a. vicino al mare
                         <span id="studenti_q1_a" style="font-size: 0.85rem; color: #2980b9; margin-left: 10px; font-weight: bold;"></span>
                     </label>
@@ -146,7 +146,7 @@
                 </div>
             </form>
 
-            <div id="feedback-generale" style="margin-top: 20px;"></div>
+            <div id="feedback-generale" style="margin-top: 20px; text-align: center; font-weight: bold;"></div>
         </div>
     </div>
 
@@ -217,28 +217,44 @@
         };
 
         window.inviaRisposte = function() {
-            let risposteUtente = {};
-            let errori = 0;
+            try {
+                let risposteUtente = {};
+                let errori = 0;
 
-            for (let i = 1; i <= 8; i++) {
-                const qKey = `q${i}`;
-                const sel = document.querySelector(`input[name="${qKey}"]:checked`);
-                if (!sel) {
-                    alert(`Per favore rispondi alla domanda ${i}!`);
-                    return;
+                for (let i = 1; i <= 8; i++) {
+                    const qKey = `q${i}`;
+                    const sel = document.querySelector(`input[name="${qKey}"]:checked`);
+                    if (!sel) {
+                        alert(`Per favore rispondi alla domanda ${i} prima di inviare!`);
+                        return;
+                    }
+                    risposteUtente[qKey] = sel.value;
+                    if (sel.value !== soluzioniCorrette[qKey]) {
+                        errori++;
+                    }
                 }
-                risposteUtente[qKey] = sel.value;
-                if (sel.value !== soluzioniCorrette[qKey]) {
-                    errori++;
-                }
+
+                set(ref(db, `${BASE_PATH}/studenti_voti/${mySessionId}`), {
+                    author: myUserName,
+                    risposte: risposteUtente,
+                    errori: errori,
+                    timestamp: Date.now()
+                }).then(() => {
+                    const fdb = document.getElementById('feedback-generale');
+                    if (fdb) {
+                        if (errori === 0) {
+                            fdb.innerHTML = `<span style="color: #27ae60;">✅ Ottimo lavoro! Tutte le risposte sono corrette.</span>`;
+                        } else {
+                            fdb.innerHTML = `<span style="color: #e67e22;">⚠️ Hai inviato le risposte con ${errori} errore/i. Guarda i colori sulle opzioni!</span>`;
+                        }
+                    }
+                }).catch((error) => {
+                    alert("Errore di salvataggio su Firebase: " + error.message);
+                });
+            } catch (err) {
+                alert("Errore imprevisto: " + err.message);
+                console.error(err);
             }
-
-            set(ref(db, `${BASE_PATH}/studenti_voti/${mySessionId}`), {
-                author: myUserName,
-                risposte: risposteUtente,
-                errori: errori,
-                timestamp: Date.now()
-            });
         };
 
         // Ascoltatore in tempo reale per aggiornare i nomi accanto alle opzioni e colorare le risposte
@@ -304,4 +320,3 @@
     </script>
 </body>
 </html>
- 
