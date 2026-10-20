@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../style.css">
+    <!-- Percorso corretto del CSS uscendo di due cartelle (u_9 -> esercizi -> root) -->
+    <link rel="stylesheet" href="../../style.css">
     <title>Unità 9 - Esercizio A: Il mistero dello Zio Gustavo</title>
 </head>
 <body>
@@ -109,10 +110,18 @@
         </div>
     </div>
 
-    <!-- SCRIPT FIREBASE E LOGIN INDIPENDENTE -->
+    <!-- SCRIPT FIREBASE (VIA CDN) E LOGICA DELL'ESERCIZIO -->
     <script type="module">
-        import { db } from "../config-firebase.js";
-        import { ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        // Configurazione Firebase (sostituisci con i tuoi dati del progetto se necessario)
+        const firebaseConfig = {
+            databaseURL: "https://esercizi-parlo-italiano-default-rtdb.firebaseio.com"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
         // 1. ID di sessione univoco per gestire omonimie e utenti duplicati
         let mySessionId = localStorage.getItem('corso_sessionid');
@@ -153,13 +162,9 @@
             }
         };
 
-        if (!myUserName) {
-            console.log("In attesa del login dell'utente...");
-        }
-
         const BASE_PATH = `unita_09/esercizio_a`;
 
-        // Soluzioni corrette dell'Esercizio A
+        // Soluzioni corrette dell'Esercizio A (basate sul testo dello Zio Gustavo)
         const soluzioniCorrette = {
             q1: "b",
             q2: "a",
