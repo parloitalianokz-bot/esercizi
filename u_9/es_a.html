@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Percorso corretto del CSS uscendo di due cartelle (u_9 -> esercizi -> root) -->
+    <!-- Percorso del CSS alla radice del repository -->
     <link rel="stylesheet" href="../../style.css">
     <title>Unità 9 - Esercizio A: Il mistero dello Zio Gustavo</title>
 </head>
@@ -30,7 +30,7 @@
             <div id="user-info-badge" style="font-size: 0.9rem; color: #7f8c8d; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;"></div>
             <h1>Unità 9: Che disordine! 🔍</h1>
             <h2 style="color: #2c3e50; font-size: 1.4rem;">Esercizio A: Scegli la risposta corretta</h2>
-            <p class="subtitle" style="color: #555;">Leggi le domande sullo Zio Gustavo e seleziona l'opzione corretta in base al testo.</p>
+            <p class="subtitle" style="color: #555;">Leggi le domande sullo Zio Gustavo[span_2](start_span)[span_2](end_span) e seleziona l'opzione corretta in base al testo.</p>
         </div>
 
         <!-- FORM ESERCIZIO -->
@@ -40,57 +40,105 @@
                 <!-- Domanda 1 -->
                 <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
                     <p style="font-weight: bold; margin-bottom: 10px;">1. Lo zio Gustavo abita</p>
-                    <label style="display: block; margin-bottom: 5px; cursor: pointer;"><input type="radio" name="q1" value="a"> a. vicino al mare</label>
-                    <label style="display: block; cursor: pointer;"><input type="radio" name="q1" value="b"> b. lontano dal mare</label>
+                    <label id="label_q1_a" style="display: block; margin-bottom: 8px; padding: 6px; border-radius: 4px; border: 1px solid #ddd; cursor: background: #fff;">
+                        <input type="radio" name="q1" value="a"> a. vicino al mare
+                        <span id="studenti_q1_a" style="font-size: 0.85rem; color: #2980b9; margin-left: 10px; font-weight: bold;"></span>
+                    </label>
+                    <label id="label_q1_b" style="display: block; padding: 6px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
+                        <input type="radio" name="q1" value="b"> b. lontano dal mare
+                        <span id="studenti_q1_b" style="font-size: 0.85rem; color: #2980b9; margin-left: 10px; font-weight: bold;"></span>
+                    </label>
                 </div>
 
                 <!-- Domanda 2 -->
                 <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
                     <p style="font-weight: bold; margin-bottom: 10px;">2. Abita</p>
-                    <label style="display: block; margin-bottom: 5px; cursor: pointer;"><input type="radio" name="q2" value="a"> a. in una casa con giardino</label>
-                    <label style="display: block; cursor: pointer;"><input type="radio" name="q2" value="b"> b. in un appartamento</label>
+                    <label id="label_q2_a" style="display: block; margin-bottom: 8px; padding: 6px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
+                        <input type="radio" name="q2" value="a"> a. in una casa con giardino
+                        <span id="studenti_q2_a" style="font-size: 0.85rem; color: #2980b9; margin-left: 10px; font-weight: bold;"></span>
+                    </label>
+                    <label id="label_q2_b" style="display: block; padding: 6px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
+                        <input type="radio" name="q2" value="b"> b. in un appartamento
+                        <span id="studenti_q2_b" style="font-size: 0.85rem; color: #2980b9; margin-left: 10px; font-weight: bold;"></span>
+                    </label>
                 </div>
 
                 <!-- Domanda 3 -->
                 <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
                     <p style="font-weight: bold; margin-bottom: 10px;">3. In giardino ci sono</p>
-                    <label style="display: block; margin-bottom: 5px; cursor: pointer;"><input type="radio" name="q3" value="a"> a. molte piante</label>
-                    <label style="display: block; cursor: pointer;"><input type="radio" name="q3" value="b"> b. molte buche</label>
+                    <label id="label_q3_a" style="display: block; margin-bottom: 8px; padding: 6px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
+                        <input type="radio" name="q3" value="a"> a. molte piante
+                        <span id="studenti_q3_a" style="font-size: 0.85rem; color: #2980b9; margin-left: 10px; font-weight: bold;"></span>
+                    </label>
+                    <label id="label_q3_b" style="display: block; padding: 6px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
+                        <input type="radio" name="q3" value="b"> b. molte buche
+                        <span id="studenti_q3_b" style="font-size: 0.85rem; color: #2980b9; margin-left: 10px; font-weight: bold;"></span>
+                    </label>
                 </div>
 
                 <!-- Domanda 4 -->
                 <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
                     <p style="font-weight: bold; margin-bottom: 10px;">4. Lo zio scava in giardino</p>
-                    <label style="display: block; margin-bottom: 5px; cursor: pointer;"><input type="radio" name="q4" value="a"> a. perché spera di diventare ricco</label>
-                    <label style="display: block; cursor: pointer;"><input type="radio" name="q4" value="b"> b. per fare un po’ di sport</label>
+                    <label id="label_q4_a" style="display: block; margin-bottom: 8px; padding: 6px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
+                        <input type="radio" name="q4" value="a"> a. perché spera di diventare ricco
+                        <span id="studenti_q4_a" style="font-size: 0.85rem; color: #2980b9; margin-left: 10px; font-weight: bold;"></span>
+                    </label>
+                    <label id="label_q4_b" style="display: block; padding: 6px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
+                        <input type="radio" name="q4" value="b"> b. per fare un po’ di sport
+                        <span id="studenti_q4_b" style="font-size: 0.85rem; color: #2980b9; margin-left: 10px; font-weight: bold;"></span>
+                    </label>
                 </div>
 
                 <!-- Domanda 5 -->
                 <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
                     <p style="font-weight: bold; margin-bottom: 10px;">5. Lo zio dorme</p>
-                    <label style="display: block; margin-bottom: 5px; cursor: pointer;"><input type="radio" name="q5" value="a"> a. in frigorifero</label>
-                    <label style="display: block; cursor: pointer;"><input type="radio" name="q5" value="b"> b. sul tappeto</label>
+                    <label id="label_q5_a" style="display: block; margin-bottom: 8px; padding: 6px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
+                        <input type="radio" name="q5" value="a"> a. in frigorifero
+                        <span id="studenti_q5_a" style="font-size: 0.85rem; color: #2980b9; margin-left: 10px; font-weight: bold;"></span>
+                    </label>
+                    <label id="label_q5_b" style="display: block; padding: 6px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
+                        <input type="radio" name="q5" value="b"> b. sul tappeto
+                        <span id="studenti_q5_b" style="font-size: 0.85rem; color: #2980b9; margin-left: 10px; font-weight: bold;"></span>
+                    </label>
                 </div>
 
                 <!-- Domanda 6 -->
                 <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
                     <p style="font-weight: bold; margin-bottom: 10px;">6. La domenica lo zio Gustavo</p>
-                    <label style="display: block; margin-bottom: 5px; cursor: pointer;"><input type="radio" name="q6" value="a"> a. riceve visite</label>
-                    <label style="display: block; cursor: pointer;"><input type="radio" name="q6" value="b"> b. mette in ordine la casa</label>
+                    <label id="label_q6_a" style="display: block; margin-bottom: 8px; padding: 6px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
+                        <input type="radio" name="q6" value="a"> a. riceve visite
+                        <span id="studenti_q6_a" style="font-size: 0.85rem; color: #2980b9; margin-left: 10px; font-weight: bold;"></span>
+                    </label>
+                    <label id="label_q6_b" style="display: block; padding: 6px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
+                        <input type="radio" name="q6" value="b"> b. mette in ordine la casa
+                        <span id="studenti_q6_b" style="font-size: 0.85rem; color: #2980b9; margin-left: 10px; font-weight: bold;"></span>
+                    </label>
                 </div>
 
                 <!-- Domanda 7 -->
                 <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
                     <p style="font-weight: bold; margin-bottom: 10px;">7. Quando hanno sete, lo zio Gustavo e lo zio Augusto bevono</p>
-                    <label style="display: block; margin-bottom: 5px; cursor: pointer;"><input type="radio" name="q7" value="a"> a. una tazza di vodka</label>
-                    <label style="display: block; cursor: pointer;"><input type="radio" name="q7" value="b"> b. una tazza di olio</label>
+                    <label id="label_q7_a" style="display: block; margin-bottom: 8px; padding: 6px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
+                        <input type="radio" name="q7" value="a"> a. una tazza di vodka
+                        <span id="studenti_q7_a" style="font-size: 0.85rem; color: #2980b9; margin-left: 10px; font-weight: bold;"></span>
+                    </label>
+                    <label id="label_q7_b" style="display: block; padding: 6px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
+                        <input type="radio" name="q7" value="b"> b. una tazza di olio
+                        <span id="studenti_q7_b" style="font-size: 0.85rem; color: #2980b9; margin-left: 10px; font-weight: bold;"></span>
+                    </label>
                 </div>
 
                 <!-- Domanda 8 -->
                 <div class="domanda-card" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #ddd;">
                     <p style="font-weight: bold; margin-bottom: 10px;">8. Quando esce, lo zio dimentica sempre a casa</p>
-                    <label style="display: block; margin-bottom: 5px; cursor: pointer;"><input type="radio" name="q8" value="a"> a. la borsa</label>
-                    <label style="display: block; cursor: pointer;"><input type="radio" name="q8" value="b"> b. le chiavi</label>
+                    <label id="label_q8_a" style="display: block; margin-bottom: 8px; padding: 6px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
+                        <input type="radio" name="q8" value="a"> a. la borsa
+                        <span id="studenti_q8_a" style="font-size: 0.85rem; color: #2980b9; margin-left: 10px; font-weight: bold;"></span>
+                    </label>
+                    <label id="label_q8_b" style="display: block; padding: 6px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #fff;">
+                        <input type="radio" name="q8" value="b"> b. le chiavi
+                        <span id="studenti_q8_b" style="font-size: 0.85rem; color: #2980b9; margin-left: 10px; font-weight: bold;"></span>
+                    </label>
                 </div>
 
                 <div style="text-align: center; margin-top: 25px;">
@@ -100,14 +148,6 @@
 
             <div id="feedback-generale" style="margin-top: 20px;"></div>
         </div>
-
-        <!-- BACHECA CLASSE (RISULTATI DI TUTTI) -->
-        <div id="bacheca-classe" style="background: white; padding: 25px; border-radius: 8px; border: 1px solid #e1e8ed;">
-            <h3 style="margin-top: 0; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px;">📊 Risultati della Classe (In tempo reale)</h3>
-            <div id="lista-risultati-classe" style="margin-top: 15px;">
-                <p style="color: #7f8c8d; font-style: italic;">In attesa di risposte dagli studenti...</p>
-            </div>
-        </div>
     </div>
 
     <!-- SCRIPT FIREBASE (VIA CDN) E LOGICA DELL'ESERCIZIO -->
@@ -115,7 +155,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // Configurazione Firebase (sostituisci con i tuoi dati del progetto se necessario)
+        // Configurazione Firebase Realtime Database
         const firebaseConfig = {
             databaseURL: "https://esercizi-parlo-italiano-default-rtdb.firebaseio.com"
         };
@@ -164,7 +204,7 @@
 
         const BASE_PATH = `unita_09/esercizio_a`;
 
-        // Soluzioni corrette dell'Esercizio A (basate sul testo dello Zio Gustavo)
+        // Soluzioni corrette dell'Esercizio A
         const soluzioniCorrette = {
             q1: "b",
             q2: "a",
@@ -193,7 +233,7 @@
                 }
             }
 
-            set(ref(db, `${BASE_PATH}/risposte/${mySessionId}`), {
+            set(ref(db, `${BASE_PATH}/studenti_voti/${mySessionId}`), {
                 author: myUserName,
                 risposte: risposteUtente,
                 errori: errori,
@@ -201,74 +241,64 @@
             });
         };
 
-        // Ascoltatore in tempo reale per la bacheca classe
-        onValue(ref(db, `${BASE_PATH}/risposte`), (snapshot) => {
-            const container = document.getElementById('lista-risultati-classe');
-            if (!container) return;
-
-            if (!snapshot.exists()) {
-                container.innerHTML = "<p style='color: #7f8c8d; font-style: italic;'>Ancora nessuna risposta inviata.</p>";
-                return;
+        // Ascoltatore in tempo reale per aggiornare i nomi accanto alle opzioni e colorare le risposte
+        onValue(ref(db, `${BASE_PATH}/studenti_voti`), (snapshot) => {
+            // Pulisce prima tutti i testi e i colori delle etichette
+            for (let i = 1; i <= 8; i++) {
+                ['a', 'b'].forEach(opt => {
+                    const span = document.getElementById(`studenti_q${i}_${opt}`);
+                    if (span) span.innerText = "";
+                    const label = document.getElementById(`label_q${i}_${opt}`);
+                    if (label) {
+                        label.style.backgroundColor = "#fff";
+                        label.style.borderColor = "#ddd";
+                    }
+                });
             }
 
-            let html = "";
+            if (!snapshot.exists()) return;
+
+            // Organizza i voti per domanda e opzione
+            let questionVotes = {
+                q1: {a: [], b: []}, q2: {a: [], b: []}, q3: {a: [], b: []}, q4: {a: [], b: []},
+                q5: {a: [], b: []}, q6: {a: [], b: []}, q7: {a: [], b: []}, q8: {a: [], b: []}
+            };
+
             snapshot.forEach((childSnap) => {
                 const data = childSnap.val();
-                const nome = data.author;
+                const nome = data.author || "Anonimo";
                 const risposte = data.risposte || {};
                 const isIo = (childSnap.key === mySessionId);
-
-                let badgeStato = data.errori === 0 
-                    ? `<span style="background: #d4edda; color: #155724; padding: 3px 8px; border-radius: 4px; font-weight: bold;">🟢 Perfetto (0 errori)</span>` 
-                    : `<span style="background: #f8f9fa; color: #721c24; border: 1px solid #f5c6cb; padding: 3px 8px; border-radius: 4px; font-weight: bold;">🔴 ${data.errori} errori</span>`;
-
-                html += `
-                <div style="border-bottom: 1px solid #eee; padding: 12px 0; background: ${isIo ? '#fcf8e3' : 'transparent'}; border-radius: 4px; padding-left: 8px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                        <b>${nome} ${isIo ? '(Tu)' : ''}</b>
-                        ${badgeStato}
-                    </div>
-                    <div style="font-size: 0.9rem; color: #555; display: flex; flex-wrap: wrap; gap: 8px;">
-                `;
+                const displayName = isIo ? `${nome} (Tu)` : nome;
 
                 for (let i = 1; i <= 8; i++) {
                     const qKey = `q${i}`;
-                    const valUtente = risposte[qKey] || "-";
-                    const isCorretto = valUtente === soluzioniCorrette[qKey];
-                    const coloreBordo = isCorretto ? "#27ae60" : "#e74c3c";
-                    const icona = isCorretto ? "✅" : "❌";
+                    const scelta = risposte[qKey];
+                    if (scelta && questionVotes[qKey][scelta]) {
+                        questionVotes[qKey][scelta].push(displayName);
+                    }
 
-                    html += `<span style="border: 1px solid ${coloreBordo}; padding: 2px 6px; border-radius: 4px; background: white;">Q${i}: <b>${valUtente}</b> ${icona}</span>`;
+                    // Se è l'utente corrente, colora la sua scelta (verde se corretta, rossa se sbagliata)
+                    if (isIo && scelta) {
+                        const label = document.getElementById(`label_${qKey}_${scelta}`);
+                        if (label) {
+                            const isCorretto = (scelta === soluzioniCorrette[qKey]);
+                            label.style.backgroundColor = isCorretto ? "#d4edda" : "#f8d7da";
+                            label.style.borderColor = isCorretto ? "#28a745" : "#dc3545";
+                        }
+                    }
                 }
-
-                html += `</div></div>`;
             });
 
-            container.innerHTML = html;
-        });
-
-        // Ripristino delle risposte salvate dell'utente corrente
-        onValue(ref(db, `${BASE_PATH}/risposte/${mySessionId}`), (snapshot) => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                const risposte = data.risposte || {};
-                
-                for (let i = 1; i <= 8; i++) {
-                    const qKey = `q${i}`;
-                    if (risposte[qKey]) {
-                        const radio = document.querySelector(`input[name="${qKey}"][value="${risposte[qKey]}"]`);
-                        if (radio) radio.checked = true;
+            // Scrive i nomi degli studenti accanto a ciascuna opzione
+            for (let i = 1; i <= 8; i++) {
+                const qKey = `q${i}`;
+                ['a', 'b'].forEach(opt => {
+                    const span = document.getElementById(`studenti_q${i}_${opt}`);
+                    if (span && questionVotes[qKey][opt].length > 0) {
+                        span.innerText = `👤 ${questionVotes[qKey][opt].join(', ')}`;
                     }
-                }
-
-                const fdb = document.getElementById('feedback-generale');
-                if (fdb) {
-                    if (data.errori === 0) {
-                        fdb.innerHTML = `<div class="feedback-box feedback-success" role="alert"><span class="feedback-icon">✅</span> <span>Ottimo lavoro! Tutte le risposte sono corrette.</span></div>`;
-                    } else {
-                        fdb.innerHTML = `<div class="feedback-box feedback-error" role="alert"><span class="feedback-icon">⚠️</span> <span>Hai inviato le risposte (Errori: ${data.errori}). Puoi ricontrollare e correggere!</span></div>`;
-                    }
-                }
+                });
             }
         });
     </script>
