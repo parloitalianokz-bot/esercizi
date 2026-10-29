@@ -3,80 +3,55 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f5f3ff" />
   <title>Comprensione — Lo zio Gustavo</title>
   <style>
     :root {
       color-scheme: light;
-      font-family: 'Outfit', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: 'Segoe UI', Inter, system-ui, -apple-system, sans-serif;
       --primary: #6556bd;
       --primary-light: #f0edff;
-      --primary-dark: #4c3e99;
-      --accent: #ffb703;
       --bg-main: #f7f6fb;
-      --card-bg: #ffffff;
       --text: #24213a;
       --text-muted: #68667a;
       --success: #20a16b;
       --success-bg: #d9f4e8;
       --border: #ebe9f2;
     }
-
     * { box-sizing: border-box; }
-
     body {
       min-height: 100vh;
       margin: 0;
       padding: 32px 16px;
-      background: radial-gradient(ellipse at 10% 0%, #e9e5ff 0%, transparent 50%),
-                  radial-gradient(ellipse at 90% 100%, #f0edff 0%, transparent 50%),
-                  var(--bg-main);
+      background: radial-gradient(ellipse at 12% 0%, #e9e5ff 0, transparent 40%), var(--bg-main);
       color: var(--text);
     }
-
-    .container { width: min(100%, 800px); margin: 0 auto; }
-
-    /* Header e Banner */
-    .hero { margin-bottom: 24px; text-align: center; }
-    .eyebrow {
-      display: inline-block;
-      color: var(--primary);
-      font-size: .8rem;
-      font-weight: 800;
-      letter-spacing: .15em;
-      text-transform: uppercase;
-      background: var(--primary-light);
-      padding: 4px 12px;
-      border-radius: 20px;
-      margin-bottom: 8px;
-    }
-    h1 {
-      margin: 4px 0;
-      font-size: clamp(2.2rem, 5vw, 3rem);
-      letter-spacing: -.03em;
-      color: var(--text);
-    }
-
-    /* Barra controlli superiore */
+    .container { width: min(100%, 780px); margin: 0 auto; }
+    .hero { margin-bottom: 20px; text-align: center; }
+    .eyebrow { color: var(--primary); font-size: .8rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { margin: 6px 0; font-size: clamp(2rem, 5vw, 2.6rem); letter-spacing: -.03em; }
+    
+    /* Barra Superiore controlli e stato */
     .top-controls {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      margin-bottom: 24px;
-      padding: 14px 20px;
+      margin: 16px 0 24px;
+      padding: 14px 18px;
       border: 1px solid var(--border);
-      border-radius: 18px;
-      background: var(--card-bg);
-      box-shadow: 0 10px 25px rgba(50, 38, 94, 0.03);
+      border-radius: 16px;
+      background: #fff;
+      font-size: .88rem;
+      box-shadow: 0 4px 12px rgba(50, 38, 94, 0.03);
     }
     .status-indicator {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       color: var(--text-muted);
       font-weight: 600;
-      font-size: .9rem;
     }
     .status-indicator::before {
       width: 10px;
@@ -99,59 +74,29 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: .88rem;
+      font-size: .85rem;
       color: var(--text-muted);
       cursor: pointer;
       font-weight: 600;
-      user-select: none;
     }
-    .teacher-toggle input { cursor: pointer; }
-    
     button.reset-btn {
-      padding: 6px 14px;
+      padding: 6px 12px;
       border: 1px solid #fca5a5;
-      border-radius: 10px;
+      border-radius: 8px;
       background: #fff;
       color: #dc2626;
       font: inherit;
       font-size: .8rem;
       font-weight: 700;
       cursor: pointer;
-      transition: background 0.2s;
     }
     button.reset-btn:hover { background: #fef2f2; }
-
-    /* Box del Testo (Storia) */
-    .story-card {
-      background: linear-gradient(135deg, #ffffff 0%, #fcfaff 100%);
-      border: 1px solid var(--border);
-      border-left: 6px solid var(--primary);
-      border-radius: 20px;
-      padding: 24px clamp(20px, 4vw, 32px);
-      margin-bottom: 28px;
-      box-shadow: 0 12px 30px rgba(101, 86, 189, 0.05);
-    }
-    .story-card h3 {
-      margin-top: 0;
-      margin-bottom: 12px;
-      color: var(--primary-dark);
-      font-size: 1.25rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .story-text {
-      line-height: 1.7;
-      color: #383452;
-      font-size: 1.05rem;
-    }
-
-    /* Card Esercizio */
+    
     .card {
       padding: clamp(20px, 4vw, 32px);
       border: 1px solid var(--border);
       border-radius: 24px;
-      background: var(--card-bg);
+      background: #fff;
       box-shadow: 0 16px 40px rgba(50, 38, 94, 0.05);
     }
     .card-heading {
@@ -163,7 +108,7 @@
       padding-bottom: 16px;
       border-bottom: 1px solid var(--border);
     }
-    h2 { margin: 0; font-size: 1.3rem; }
+    h2 { margin: 0; font-size: 1.25rem; }
     .progress-badge {
       background: var(--primary-light);
       color: var(--primary);
@@ -173,18 +118,17 @@
       font-size: .85rem;
     }
 
-    /* Struttura Domande */
     .question {
       padding: 20px;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       border: 1px solid var(--border);
-      border-radius: 18px;
+      border-radius: 16px;
       background: #fff;
-      transition: all .25s ease;
+      transition: all .2s ease;
     }
     .question.active {
       border-color: var(--primary);
-      box-shadow: 0 0 0 4px rgba(101, 86, 189, 0.12);
+      box-shadow: 0 0 0 3px rgba(101, 86, 189, 0.15);
       background: #ffffff;
     }
     .question.locked {
@@ -200,35 +144,28 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
-    label {
-      font-weight: 650;
-      font-size: 1.05rem;
-      line-height: 1.4;
-      display: flex;
-      align-items: center;
-    }
+    label { font-weight: 650; font-size: 1rem; line-height: 1.4; display: flex; align-items: center; }
     .number {
       display: inline-grid;
-      width: 30px;
-      height: 30px;
+      width: 28px;
+      height: 28px;
       place-items: center;
-      margin-right: 12px;
-      border-radius: 10px;
+      margin-right: 10px;
+      border-radius: 8px;
       background: var(--primary-light);
       color: var(--primary);
-      font-size: .9rem;
+      font-size: .85rem;
       font-weight: 800;
       flex-shrink: 0;
     }
     .badge {
       font-size: .75rem;
       font-weight: 700;
-      padding: 5px 10px;
-      border-radius: 8px;
+      padding: 4px 8px;
+      border-radius: 6px;
       text-transform: uppercase;
-      letter-spacing: .03em;
     }
     .badge-locked { background: #e5e7eb; color: #6b7280; }
     .badge-active { background: #ffe4e6; color: #e11d48; }
@@ -237,48 +174,35 @@
     textarea {
       display: block;
       width: 100%;
-      min-height: 64px;
+      min-height: 60px;
       resize: vertical;
-      padding: 14px;
-      border: 1.5px solid #d1d5db;
-      border-radius: 12px;
+      padding: 12px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
       outline: none;
       font: inherit;
-      font-size: .98rem;
-      line-height: 1.5;
-      transition: border-color .15s, box-shadow .15s;
+      line-height: 1.45;
+      transition: border-color .15s;
     }
-    textarea:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(101, 86, 189, 0.15);
-    }
-    textarea:disabled {
-      background: #f3f4f6;
-      color: #374151;
-      cursor: not-allowed;
-    }
+    textarea:focus { border-color: var(--primary); }
+    textarea:disabled { background: #f3f4f6; color: #374151; cursor: not-allowed; }
 
     .teacher-action {
-      margin-top: 14px;
+      margin-top: 12px;
       display: flex;
       justify-content: flex-end;
+      gap: 10px;
     }
     .btn-approve {
       background: var(--primary);
       color: white;
       border: none;
-      padding: 10px 18px;
-      border-radius: 10px;
+      padding: 8px 16px;
+      border-radius: 8px;
       font-weight: 700;
-      font-size: .9rem;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(101, 86, 189, 0.2);
-      transition: transform 0.15s, background 0.2s;
     }
-    .btn-approve:hover {
-      background: var(--primary-dark);
-      transform: translateY(-1px);
-    }
+    .btn-approve:hover { opacity: .9; }
 
     @media (max-width: 520px) {
       body { padding: 16px 8px; }
@@ -291,13 +215,12 @@
 
   <main class="container">
     <header class="hero">
-      <span class="eyebrow">Italiano · Comprensione Guidata</span>
+      <div class="eyebrow">Italiano · Comprensione Guidata</div>
       <h1>Lo zio Gustavo</h1>
     </header>
 
-    <!-- Controlli Superiore Insegnante -->
-    <div id="status" class="top-controls">
-      <span class="status-indicator">Esercizio Collaborativo</span>
+    <!-- BARRA CONTROLLI SUPERIORE -->
+    <div id="status" class="top-controls"> 
       <div class="teacher-controls">
         <label class="teacher-toggle">
           <input type="checkbox" id="teacher-mode">
@@ -307,18 +230,9 @@
       </div>
     </div>
 
-    <!-- Box della Storia -->
-    <section class="story-card">
-      <h3>📖 Leggi il testo</h3>
-      <div class="story-text">
-        Lo zio Gustavo abita in una grande casa in campagna. È un tipo molto originale: dorme sul divano in salotto perché sul suo letto ci sono centinaia di libri stacked. Sul comodino tiene sempre una sveglia a forma di gatto e sulla tavola da pranzo c'è un plastico della città di Roma. Nella sua borsa di pelle porta sempre un binocolo e tre mele. I suoi vestiti sono ordinati nell'armadio, mentre il suo cane dorme in una cuccia in cucina. I soldi li tiene nascosti dentro una vecchia scarpa in soffitta. La domenica, lo zio Gustavo e suo fratello Augusto scavano in giardino per cercare antichi tesori romani e, quando sono stanchi, si riposano sulla amaca mangiando pizza fredda per cena.
-      </div>
-    </section>
-
-    <!-- Card dell'Esercizio -->
     <section class="card">
       <div class="card-heading">
-        <h2>Rispondi alle domande</h2>
+        <h2>Rispondi insieme alla classe</h2>
         <span id="progress-badge" class="progress-badge">0 di 15</span>
       </div>
 
@@ -362,7 +276,7 @@
     const resetButton = document.getElementById("reset");
 
     let answersRef = null;
-    let currentActiveStep = -1;
+    let currentActiveStep = -1; // Partiamo con tutte le domande bloccate
     let isTeacher = false;
     const inputs = [];
     const questionBoxes = [];
@@ -392,6 +306,7 @@
       input.disabled = true;
       input.placeholder = "In attesa dell'insegnante…";
 
+      // Scrittura immediata in tempo reale per chi sta compilando
       input.addEventListener("input", () => {
         if (answersRef && currentActiveStep === index) {
           answersRef.child("responses").child(String(index)).set(input.value);
@@ -437,12 +352,14 @@
         box.classList.remove("active", "locked", "approved");
 
         if (i < currentActiveStep) {
+          // Domanda già approvata e completata
           box.classList.add("approved");
           badge.className = "badge badge-approved";
           badge.textContent = "Approvata";
           input.disabled = true;
           actionDiv.style.display = "none";
         } else if (i === currentActiveStep) {
+          // Domanda Attualmente Attiva (Visibile e compilabile da chiunque in tempo reale)
           box.classList.add("active");
           badge.className = "badge badge-active";
           badge.textContent = "In corso";
@@ -456,6 +373,7 @@
             actionDiv.style.display = "none";
           }
         } else {
+          // Domande successive ancora bloccate
           box.classList.add("locked");
           badge.className = "badge badge-locked";
           badge.textContent = "Bloccata";
@@ -475,6 +393,7 @@
       progressBadge.textContent = `${Math.min(completedCount, questions.length)} di ${questions.length}`;
     }
 
+    // Inizializzazione Firebase
     if (window.firebase) {
       try {
         firebase.initializeApp(firebaseConfig);
@@ -486,6 +405,7 @@
           
           currentActiveStep = (data.activeStep !== undefined) ? data.activeStep : -1;
 
+          // Sincronizzazione visiva istantanea di tutte le risposte
           inputs.forEach((input, index) => {
             if (document.activeElement !== input) {
               input.value = responses[index] || "";
