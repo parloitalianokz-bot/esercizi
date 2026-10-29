@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verbi Fare e Avere — Lo zio Gustavo</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: 'Segoe UI', Inter, system-ui, -apple-system, sans-serif;
+      --primary: #6556bd;
+      --primary-light: #f0edff;
+      --primary-dark: #4c3e99;
+      --accent: #ffb703;
+      --bg-main: #f7f6fb;
+      --card-bg: #ffffff;
+      --text: #24213a;
+      --text-muted: #68667a;
+      --success: #20a16b;
+      --success-bg: #d9f4e8;
+      --border: #ebe9f2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 16px;
+      background: radial-gradient(ellipse at 10% 0%, #e9e5ff 0%, transparent 50%),
+                  radial-gradient(ellipse at 90% 100%, #f0edff 0%, transparent 50%),
+                  var(--bg-main);
+      color: var(--text);
+    }
+
+    .container { width: min(100%, 820px); margin: 0 auto; }
+
+    .hero { margin-bottom: 20px; text-align: center; }
+    .eyebrow {
+      display: inline-block;
+      color: var(--primary);
+      font-size: .8rem;
+      font-weight: 800;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      background: var(--primary-light);
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+    h1 {
+      margin: 4px 0;
+      font-size: clamp(2rem, 5vw, 2.6rem);
+      letter-spacing: -.03em;
+      color: var(--text);
+    }
+
+    /* Barra controlli superiore */
+    .top-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding: 14px 20px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--card-bg);
+      box-shadow: 0 10px 25px rgba(50, 38, 94, 0.03);
+    }
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: .9rem;
+    }
+    .status-indicator::before {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #aaa6b8;
+      content: "";
+      transition: background 0.3s;
+    }
+    .top-controls.connected .status-indicator::before {
+      background: var(--success);
+      box-shadow: 0 0 0 3px var(--success-bg);
+    }
+    .teacher-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .teacher-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .88rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: 600;
+      user-select: none;
+    }
+    
+    button.reset-btn {
+      padding: 6px 14px;
+      border: 1px solid #fca5a5;
+      border-radius: 10px;
+      background: #fff;
+      color: #dc2626;
+      font: inherit;
+      font-size: .8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button.reset-btn:hover { background: #fef2f2; }
+
+    /* Card Esercizio */
+    .card {
+      padding: clamp(20px, 4vw, 32px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: var(--card-bg);
+      box-shadow: 0 16px 40px rgba(50, 38, 94, 0.05);
+    }
+    .card-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    h2 { margin: 0; font-size: 1.25rem; }
+    .progress-badge {
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: .85rem;
+    }
+
+    /* Elementi dell'Esercizio */
+    .phrase-box {
+      padding: 20px;
+      margin-bottom: 18px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: #fff;
+      transition: all .25s ease;
+      line-height: 2.2;
+      font-size: 1.05rem;
+    }
+    .phrase-box.active {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(101, 86, 189, 0.12);
+      background: #ffffff;
+    }
+    .phrase-box.locked {
+      opacity: .5;
+      background: #fafafc;
+    }
+    .phrase-box.approved {
+      border-color: #d1fae5;
+      background: #f0fdf4;
+    }
+
+    .phrase-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      line-height: 1;
+    }
+    .number {
+      display: inline-grid;
+      width: 30px;
+      height: 30px;
+      place-items: center;
+      border-radius: 10px;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: .9rem;
+      font-weight: 800;
+    }
+    .badge {
+      font-size: .75rem;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 8px;
+      text-transform: uppercase;
+    }
+    .badge-locked { background: #e5e7eb; color: #6b7280; }
+    .badge-active { background: #ffe4e6; color: #e11d48; }
+    .badge-writing { background: #fef3c7; color: #d97706; }
+    .badge-approved { background: var(--success-bg); color: #047857; }
+
+    /* Stile Input Verbi inline */
+    input.verb-input {
+      display: inline-block;
+      width: 120px;
+      padding: 4px 8px;
+      margin: 0 4px;
+      border: 1.5px solid #d1d5db;
+      border-radius: 8px;
+      font: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+      text-align: center;
+      background: #fcfdfe;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    input.verb-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(101, 86, 189, 0.15);
+      outline: none;
+      background: #fff;
+    }
+    input.verb-input:disabled {
+      background: #f8fafc;
+      border-color: #e2e8f0;
+      color: #334155;
+      cursor: not-allowed;
+    }
+
+    /* Controlli Turno e Token */
+    .token-controls {
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-token {
+      background: var(--accent);
+      color: #24213a;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: .85rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-token:hover { background: #e0a200; }
+    .btn-token.release {
+      background: #e2e8f0;
+      color: #475569;
+    }
+
+    .teacher-action {
+      margin-top: 12px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .btn-approve {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: .9rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(101, 86, 189, 0.2);
+      transition: transform 0.15s, background 0.2s;
+    }
+    .btn-approve:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 520px) {
+      body { padding: 16px 8px; }
+      .top-controls { flex-direction: column; align-items: flex-start; }
+      .teacher-controls { width: 100%; justify-content: space-between; }
+      input.verb-input { width: 90px; }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <header class="hero">
+      <span class="eyebrow">Italiano · Verbi Fare e Avere</span>
+      <h1>Дополните фразы глаголами fare и avere</h1>
+    </header>
+
+    <!-- Barra Controlli Superiore -->
+    <div id="status" class="top-controls">
+      <span class="status-indicator">Esercizio Collaborativo</span>
+      <div class="teacher-controls">
+        <label class="teacher-toggle">
+          <input type="checkbox" id="teacher-mode">
+          Modalità Insegnante
+        </label>
+        <button id="reset" class="reset-btn" type="button" style="display:none;">⚠️ Resetta</button>
+      </div>
+    </div>
+
+    <!-- Card dell'Esercizio -->
+    <section class="card">
+      <div class="card-heading">
+        <h2>Inserisci "fare" o "avere" nella forma corretta</h2>
+        <span id="progress-badge" class="progress-badge">0 di 10</span>
+      </div>
+
+      <form id="answers" autocomplete="off"></form>
+    </section>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "INSERISCI_API_KEY",
+      authDomain: "esercizi-parlo-italiano.firebaseapp.com",
+      databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "esercizi-parlo-italiano",
+      appId: "INSERISCI_APP_ID"
+    };
+
+    // Struttura delle frasi con segnaposto [input] dove vanno inseriti i verbi
+    const phrases = [
+      "Mio padre ___ cinquantasei anni e ___ l’insegnante.",
+      "Tutti ___ paura del professor Boffa, perché all’esame ___ molte domande agli studenti.",
+      "— ___ bisogno di aiuto, Barbara? — No, grazie; ___ da sola.",
+      "Il dottor Garbati è molto ricco: ___ due appartamenti, tre macchine e quattro mogli.",
+      "I turisti ___ le fotografie ai monumenti.",
+      "Da molto tempo i miei genitori non ___ un viaggio insieme.",
+      "— ___ una borsa di coccodrillo? — Mi dispiace, Signora, non ___ borse di coccodrillo.",
+      "I nostri vicini protestano sempre se ___ rumore.",
+      "Mia sorella ___ molto tempo libero e non ___ mai niente: ___ solo shopping.",
+      "Se ___ tempo, domani, ___ una passeggiata in centro."
+    ];
+
+    const myClientId = "user_" + Math.random().toString(36).substring(2, 9);
+
+    const form = document.getElementById("answers");
+    const statusDiv = document.getElementById("status");
+    const progressBadge = document.getElementById("progress-badge");
+    const teacherToggle = document.getElementById("teacher-mode");
+    const resetButton = document.getElementById("reset");
+
+    let answersRef = null;
+    let currentActiveStep = -1;
+    let currentWriter = null;
+    let isTeacher = false;
+    const phraseBoxes = [];
+    const badges = [];
+    const tokenControlsList = [];
+
+    phrases.forEach((phraseText, phraseIdx) => {
+      const row = document.createElement("div");
+      row.className = "phrase-box locked";
+      row.id = `phrase-${phraseIdx}`;
+
+      const header = document.createElement("div");
+      header.className = "phrase-header";
+
+      const numSpan = document.createElement("span");
+      numSpan.className = "number";
+      numSpan.textContent = phraseIdx + 1;
+
+      const badge = document.createElement("span");
+      badge.className = "badge badge-locked";
+      badge.textContent = "Bloccata";
+
+      header.append(numSpan, badge);
+      row.appendChild(header);
+
+      // Sostituisce "___" con campi <input>
+      const parts = phraseText.split("___");
+      const contentSpan = document.createElement("span");
+
+      parts.forEach((part, inputIdx) => {
+        contentSpan.appendChild(document.createTextNode(part));
+        
+        if (inputIdx < parts.length - 1) {
+          const input = document.createElement("input");
+          input.type = "text";
+          input.className = "verb-input";
+          input.dataset.phrase = phraseIdx;
+          input.dataset.input = inputIdx;
+          input.disabled = true;
+
+          input.addEventListener("input", () => {
+            if (answersRef && currentActiveStep === phraseIdx && currentWriter === myClientId) {
+              answersRef.child("responses").child(String(phraseIdx)).child(String(inputIdx)).set(input.value);
+            }
+          });
+
+          contentSpan.appendChild(input);
+        }
+      });
+
+      row.appendChild(contentSpan);
+
+      // Controlli Token (Prendi/Lascia parola)
+      const tokenDiv = document.createElement("div");
+      tokenDiv.className = "token-controls";
+      tokenDiv.style.display = "none";
+
+      const tokenBtn = document.createElement("button");
+      tokenBtn.className = "btn-token";
+      tokenBtn.type = "button";
+      tokenBtn.textContent = "✋ Prendi la parola (Scrivi)";
+      tokenBtn.onclick = () => {
+        if (answersRef && currentActiveStep === phraseIdx) {
+          if (currentWriter === myClientId) {
+            answersRef.child("currentWriter").set(null);
+          } else if (!currentWriter) {
+            answersRef.child("currentWriter").set(myClientId);
+          }
+        }
+      };
+
+      tokenDiv.appendChild(tokenBtn);
+
+      // Pulsante Azione Docente
+      const actionDiv = document.createElement("div");
+      actionDiv.className = "teacher-action";
+      actionDiv.style.display = "none";
+
+      const approveBtn = document.createElement("button");
+      approveBtn.className = "btn-approve";
+      approveBtn.type = "button";
+      approveBtn.textContent = phraseIdx === 0 ? "🔓 Sblocca Frase 1" : "Approva e sblocca successiva ➔";
+      approveBtn.onclick = () => {
+        if (answersRef) {
+          answersRef.update({
+            activeStep: phraseIdx === currentActiveStep ? phraseIdx + 1 : phraseIdx,
+            currentWriter: null
+          });
+        }
+      };
+
+      actionDiv.appendChild(approveBtn);
+      row.append(tokenDiv, actionDiv);
+
+      form.appendChild(row);
+      phraseBoxes.push(row);
+      badges.push(badge);
+      tokenControlsList.push({ tokenDiv, tokenBtn });
+    });
+
+    teacherToggle.addEventListener("change", (e) => {
+      isTeacher = e.target.checked;
+      resetButton.style.display = isTeacher ? "inline-block" : "none";
+      updateUIState();
+    });
+
+    function updateUIState() {
+      phraseBoxes.forEach((box, i) => {
+        const badge = badges[i];
+        const inputs = box.querySelectorAll("input.verb-input");
+        const actionDiv = box.querySelector(".teacher-action");
+        const btn = box.querySelector(".btn-approve");
+        const { tokenDiv, tokenBtn } = tokenControlsList[i];
+
+        box.classList.remove("active", "locked", "approved");
+
+        if (i < currentActiveStep) {
+          box.classList.add("approved");
+          badge.className = "badge badge-approved";
+          badge.textContent = "Approvata";
+          inputs.forEach(inp => inp.disabled = true);
+          tokenDiv.style.display = "none";
+          actionDiv.style.display = "none";
+        } else if (i === currentActiveStep) {
+          box.classList.add("active");
+
+          if (!currentWriter) {
+            badge.className = "badge badge-active";
+            badge.textContent = "In corso";
+            inputs.forEach(inp => inp.disabled = true);
+
+            tokenDiv.style.display = "flex";
+            tokenBtn.textContent = "✋ Prendi la parola (Scrivi)";
+            tokenBtn.className = "btn-token";
+            tokenBtn.disabled = false;
+          } else if (currentWriter === myClientId) {
+            badge.className = "badge badge-writing";
+            badge.textContent = "Stai scrivendo...";
+            inputs.forEach(inp => inp.disabled = false);
+
+            tokenDiv.style.display = "flex";
+            tokenBtn.textContent = "✔ Lascia la parola";
+            tokenBtn.className = "btn-token release";
+            tokenBtn.disabled = false;
+          } else {
+            badge.className = "badge badge-writing";
+            badge.textContent = "Un compagno sta scrivendo...";
+            inputs.forEach(inp => inp.disabled = true);
+
+            tokenDiv.style.display = "flex";
+            tokenBtn.textContent = "🔒 In scrittura da un compagno";
+            tokenBtn.className = "btn-token release";
+            tokenBtn.disabled = true;
+          }
+
+          if (isTeacher) {
+            actionDiv.style.display = "flex";
+            btn.textContent = "Approva e sblocca successiva ➔";
+          } else {
+            actionDiv.style.display = "none";
+          }
+        } else {
+          box.classList.add("locked");
+          badge.className = "badge badge-locked";
+          badge.textContent = "Bloccata";
+          inputs.forEach(inp => inp.disabled = true);
+          tokenDiv.style.display = "none";
+
+          if (isTeacher && i === currentActiveStep + 1) {
+            actionDiv.style.display = "flex";
+            btn.textContent = i === 0 ? "🔓 Sblocca Frase 1" : "🔓 Sblocca questa frase";
+          } else {
+            actionDiv.style.display = "none";
+          }
+        }
+      });
+
+      const completedCount = Math.max(0, currentActiveStep);
+      progressBadge.textContent = `${Math.min(completedCount, phrases.length)} di ${phrases.length}`;
+    }
+
+    if (window.firebase) {
+      try {
+        firebase.initializeApp(firebaseConfig);
+        answersRef = firebase.database().ref("esercizi/fare-avere-gustavo");
+
+        answersRef.on("value", (snapshot) => {
+          const data = snapshot.val() || {};
+          const responses = data.responses || {};
+
+          currentActiveStep = (data.activeStep !== undefined) ? data.activeStep : -1;
+          currentWriter = data.currentWriter || null;
+
+          phraseBoxes.forEach((box, pIdx) => {
+            const inputs = box.querySelectorAll("input.verb-input");
+            const phraseData = responses[pIdx] || {};
+
+            inputs.forEach((input, iIdx) => {
+              if (currentWriter !== myClientId) {
+                input.value = phraseData[iIdx] || "";
+              }
+            });
+          });
+
+          updateUIState();
+          statusDiv.classList.add("connected");
+        });
+      } catch (e) {
+        console.error("Errore Firebase:", e);
+      }
+    }
+
+    resetButton.addEventListener("click", () => {
+      if (confirm("Vuoi azzerare tutte le risposte e bloccare nuovamente l'esercizio?")) {
+        answersRef.set({
+          activeStep: -1,
+          currentWriter: null,
+          responses: {}
+        });
+      }
+    });
+  </script>
+</body>
+</html>
