@@ -253,4 +253,183 @@
       appId: "INSERISCI_APP_ID"
     };
 
-    const questions =
+    const questions = [
+      "Dove abita lo zio Gustavo?",
+      "Dove dorme lo zio Gustavo?",
+      "Perché non dorme sul letto?",
+      "Che cosa c’è sul comodino?",
+      "Che cosa c’è sulla tavola in sala da pranzo?",
+      "Cosa c’è nella borsa dello zio Gustavo?",
+      "Dove sono i suoi vestiti?",
+      "Dov’è il suo cane?",
+      "Dove sono i soldi?",
+      "Dove sono le sue scarpe?",
+      "Dove sono i piatti sporchi?",
+      "Che cosa fanno lo zio Gustavo e lo zio Augusto la domenica?",
+      "Perché scavano in giardino?",
+      "Che cosa fanno quando sono stanchi?",
+      "Che cosa mangiano per cena?"
+    ];
+
+    const form = document.getElementById("answers");
+    const statusDiv = document.getElementById("status");
+    const progressBadge = document.getElementById("progress-badge");
+    const teacherToggle = document.getElementById("teacher-mode");
+    const resetButton = document.getElementById("reset");
+
+    let answersRef = null;
+    let currentActiveStep = -1; // Partiamo con tutte le domande bloccate
+    let isTeacher = false;
+    const inputs = [];
+    const questionBoxes = [];
+    const badges = [];
+
+    questions.forEach((question, index) => {
+      const row = document.createElement("div");
+      row.className = "question locked";
+      row.id = `box-${index}`;
+
+      const header = document.createElement("div");
+      header.className = "question-header";
+
+      const label = document.createElement("label");
+      label.htmlFor = `answer-${index}`;
+      label.innerHTML = `<span class="number">${index + 1}</span>${question}`;
+
+      const badge = document.createElement("span");
+      badge.className = "badge badge-locked";
+      badge.textContent = "Bloccata";
+
+      header.append(label, badge);
+
+      const input = document.createElement("textarea");
+      input.id = `answer-${index}`;
+      input.rows = 2;
+      input.disabled = true;
+      input.placeholder = "In attesa dell'insegnante…";
+
+      // Scrittura immediata in tempo reale per chi sta compilando
+      input.addEventListener("input", () => {
+        if (answersRef && currentActiveStep === index) {
+          answersRef.child("responses").child(String(index)).set(input.value);
+        }
+      });
+
+      const actionDiv = document.createElement("div");
+      actionDiv.className = "teacher-action";
+      actionDiv.style.display = "none";
+
+      const approveBtn = document.createElement("button");
+      approveBtn.className = "btn-approve";
+      approveBtn.type = "button";
+      approveBtn.textContent = index === 0 ? "🔓 Sblocca Domanda 1" : "Approva e sblocca successiva ➔";
+      approveBtn.onclick = () => {
+        if (answersRef) {
+          answersRef.child("activeStep").set(index === currentActiveStep ? index + 1 : index);
+        }
+      };
+
+      actionDiv.appendChild(approveBtn);
+      row.append(header, input, actionDiv);
+      form.appendChild(row);
+
+      inputs.push(input);
+      questionBoxes.push(row);
+      badges.push(badge);
+    });
+
+    teacherToggle.addEventListener("change", (e) => {
+      isTeacher = e.target.checked;
+      resetButton.style.display = isTeacher ? "inline-block" : "none";
+      updateUIState();
+    });
+
+    function updateUIState() {
+      questionBoxes.forEach((box, i) => {
+        const input = inputs[i];
+        const badge = badges[i];
+        const actionDiv = box.querySelector(".teacher-action");
+        const btn = box.querySelector(".btn-approve");
+
+        box.classList.remove("active", "locked", "approved");
+
+        if (i < currentActiveStep) {
+          // Domanda già approvata e completata
+          box.classList.add("approved");
+          badge.className = "badge badge-approved";
+          badge.textContent = "Approvata";
+          input.disabled = true;
+          actionDiv.style.display = "none";
+        } else if (i === currentActiveStep) {
+          // Domanda Attualmente Attiva (Visibile e compilabile da chiunque in tempo reale)
+          box.classList.add("active");
+          badge.className = "badge badge-active";
+          badge.textContent = "In corso";
+          input.disabled = false;
+          input.placeholder = "Scrivi la risposta qui…";
+          
+          if (isTeacher) {
+            actionDiv.style.display = "flex";
+            btn.textContent = "Approva e sblocca successiva ➔";
+          } else {
+            actionDiv.style.display = "none";
+          }
+        } else {
+          // Domande successive ancora bloccate
+          box.classList.add("locked");
+          badge.className = "badge badge-locked";
+          badge.textContent = "Bloccata";
+          input.disabled = true;
+          input.placeholder = "In attesa dell'insegnante…";
+          
+          if (isTeacher && i === currentActiveStep + 1) {
+            actionDiv.style.display = "flex";
+            btn.textContent = i === 0 ? "🔓 Sblocca Domanda 1" : "🔓 Sblocca questa domanda";
+          } else {
+            actionDiv.style.display = "none";
+          }
+        }
+      });
+
+      const completedCount = Math.max(0, currentActiveStep);
+      progressBadge.textContent = `${Math.min(completedCount, questions.length)} di ${questions.length}`;
+    }
+
+    // Inizializzazione Firebase
+    if (window.firebase) {
+      try {
+        firebase.initializeApp(firebaseConfig);
+        answersRef = firebase.database().ref("esercizi/zio-gustavo");
+
+        answersRef.on("value", (snapshot) => {
+          const data = snapshot.val() || {};
+          const responses = data.responses || {};
+          
+          currentActiveStep = (data.activeStep !== undefined) ? data.activeStep : -1;
+
+          // Sincronizzazione visiva istantanea di tutte le risposte
+          inputs.forEach((input, index) => {
+            if (document.activeElement !== input) {
+              input.value = responses[index] || "";
+            }
+          });
+
+          updateUIState();
+          statusDiv.classList.add("connected");
+        });
+      } catch (e) {
+        console.error("Errore Firebase:", e);
+      }
+    }
+
+    resetButton.addEventListener("click", () => {
+      if (confirm("Vuoi azzerare tutte le risposte e bloccare nuovamente l'esercizio?")) {
+        answersRef.set({
+          activeStep: -1,
+          responses: {}
+        });
+      }
+    });
+  </script>
+</body>
+</html>
