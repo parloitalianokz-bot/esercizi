@@ -228,6 +228,7 @@
     }
     .badge-locked { background: #e5e7eb; color: #6b7280; }
     .badge-active { background: #ffe4e6; color: #e11d48; }
+    .badge-writing { background: #fef3c7; color: #d97706; }
     .badge-approved { background: var(--success-bg); color: #047857; }
 
     textarea {
@@ -249,9 +250,34 @@
       box-shadow: 0 0 0 3px rgba(101, 86, 189, 0.15);
     }
     textarea:disabled {
-      background: #f3f4f6;
-      color: #374151;
+      background: #f8fafc;
+      color: #334155;
       cursor: not-allowed;
+    }
+
+    /* Controlli Turno e Token */
+    .token-controls {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-token {
+      background: var(--accent);
+      color: #24213a;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: .85rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-token:hover { background: #e0a200; }
+    .btn-token.release {
+      background: #e2e8f0;
+      color: #475569;
     }
 
     .teacher-action {
@@ -325,7 +351,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
   <script>
-    // CONFIGURAZIONE FIREBASE
     const firebaseConfig = {
       apiKey: "INSERISCI_API_KEY",
       authDomain: "esercizi-parlo-italiano.firebaseapp.com",
@@ -334,23 +359,14 @@
       appId: "INSERISCI_APP_ID"
     };
 
-    // Lista delle parole guida per la composizione
     const items = [
-      "Frigorifero",
-      "Armadio",
-      "Cassetto",
-      "Borsa",
-      "Tavola",
-      "Pavimento",
-      "Televisione",
-      "Comodino",
-      "Divano",
-      "Letto",
-      "Libreria",
-      "Scrivania",
-      "Piatto",
-      "Bottiglia"
+      "Frigorifero", "Armadio", "Cassetto", "Borsa", "Tavola", "Pavimento",
+      "Televisione", "Comodino", "Divano", "Letto", "Libreria", "Scrivania",
+      "Piatto", "Bottiglia"
     ];
+
+    // ID univoco temporaneo per identificare questo specifico dispositivo/browser
+    const myClientId = "user_" + Math.random().toString(36).substring(2, 9);
 
     const form = document.getElementById("answers");
     const statusDiv = document.getElementById("status");
@@ -360,10 +376,12 @@
 
     let answersRef = null;
     let currentActiveStep = -1;
+    let currentWriter = null; // ID di chi possiede il Token di Scrittura
     let isTeacher = false;
     const inputs = [];
     const itemBoxes = [];
     const badges = [];
+    const tokenControlsList = [];
 
     items.forEach((word, index) => {
       const row = document.createElement("div");
@@ -389,13 +407,37 @@
       input.disabled = true;
       input.placeholder = "In attesa dell'insegnante…";
 
-      // Salvataggio in tempo reale su Firebase
+      // Invio scrittura solo se questo dispositivo possiede il Token
       input.addEventListener("input", () => {
-        if (answersRef && currentActiveStep === index) {
+        if (answersRef && currentActiveStep === index && currentWriter === myClientId) {
           answersRef.child("responses").child(String(index)).set(input.value);
         }
       });
 
+      // Controlli Token (Prendi/Lascia parola)
+      const tokenDiv = document.createElement("div");
+      tokenDiv.className = "token-controls";
+      tokenDiv.style.display = "none";
+
+      const tokenBtn = document.createElement("button");
+      tokenBtn.className = "btn-token";
+      tokenBtn.type = "button";
+      tokenBtn.textContent = "✋ Prendi la parola (Scrivi)";
+      tokenBtn.onclick = () => {
+        if (answersRef && currentActiveStep === index) {
+          if (currentWriter === myClientId) {
+            // Lascia il token
+            answersRef.child("currentWriter").set(null);
+          } else if (!currentWriter) {
+            // Prendi il token
+            answersRef.child("currentWriter").set(myClientId);
+          }
+        }
+      };
+
+      tokenDiv.appendChild(tokenBtn);
+
+      // Pulsante Azione Docente
       const actionDiv = document.createElement("div");
       actionDiv.className = "teacher-action";
       actionDiv.style.display = "none";
@@ -406,17 +448,22 @@
       approveBtn.textContent = index === 0 ? "🔓 Sblocca Punto 1" : "Approva e sblocca successiva ➔";
       approveBtn.onclick = () => {
         if (answersRef) {
-          answersRef.child("activeStep").set(index === currentActiveStep ? index + 1 : index);
+          // L'approvazione resetta anche il Token di Scrittura per il punto successivo
+          answersRef.update({
+            activeStep: index === currentActiveStep ? index + 1 : index,
+            currentWriter: null
+          });
         }
       };
 
       actionDiv.appendChild(approveBtn);
-      row.append(header, input, actionDiv);
+      row.append(header, input, tokenDiv, actionDiv);
       form.appendChild(row);
 
       inputs.push(input);
       itemBoxes.push(row);
       badges.push(badge);
+      tokenControlsList.push({ tokenDiv, tokenBtn });
     });
 
     teacherToggle.addEventListener("change", (e) => {
@@ -431,6 +478,7 @@
         const badge = badges[i];
         const actionDiv = box.querySelector(".teacher-action");
         const btn = box.querySelector(".btn-approve");
+        const { tokenDiv, tokenBtn } = tokenControlsList[i];
 
         box.classList.remove("active", "locked", "approved");
 
@@ -439,14 +487,46 @@
           badge.className = "badge badge-approved";
           badge.textContent = "Approvata";
           input.disabled = true;
+          tokenDiv.style.display = "none";
           actionDiv.style.display = "none";
         } else if (i === currentActiveStep) {
           box.classList.add("active");
-          badge.className = "badge badge-active";
-          badge.textContent = "In corso";
-          input.disabled = false;
-          input.placeholder = "Scrivi la frase qui…";
-          
+
+          if (!currentWriter) {
+            // Nessuno sta scrivendo: la casella attende che uno studente prenda la parola
+            badge.className = "badge badge-active";
+            badge.textContent = "In corso";
+            input.disabled = true;
+            input.placeholder = "Clicca 'Prendi la parola' per rispondere…";
+
+            tokenDiv.style.display = "flex";
+            tokenBtn.textContent = "✋ Prendi la parola (Scrivi)";
+            tokenBtn.className = "btn-token";
+            tokenBtn.disabled = false;
+          } else if (currentWriter === myClientId) {
+            // QUESTO dispositivo sta digitando
+            badge.className = "badge badge-writing";
+            badge.textContent = "Stai scrivendo...";
+            input.disabled = false;
+            input.placeholder = "Scrivi la frase qui…";
+
+            tokenDiv.style.display = "flex";
+            tokenBtn.textContent = "✔ Lascia la parola";
+            tokenBtn.className = "btn-token release";
+            tokenBtn.disabled = false;
+          } else {
+            // UN ALTRO compagno sta digitando
+            badge.className = "badge badge-writing";
+            badge.textContent = "Un compagno sta scrivendo...";
+            input.disabled = true;
+            input.placeholder = "Un compagno sta scrivendo la risposta in tempo reale…";
+
+            tokenDiv.style.display = "flex";
+            tokenBtn.textContent = "🔒 In scrittura da un compagno";
+            tokenBtn.className = "btn-token release";
+            tokenBtn.disabled = true;
+          }
+
           if (isTeacher) {
             actionDiv.style.display = "flex";
             btn.textContent = "Approva e sblocca successiva ➔";
@@ -459,7 +539,8 @@
           badge.textContent = "Bloccata";
           input.disabled = true;
           input.placeholder = "In attesa dell'insegnante…";
-          
+          tokenDiv.style.display = "none";
+
           if (isTeacher && i === currentActiveStep + 1) {
             actionDiv.style.display = "flex";
             btn.textContent = i === 0 ? "🔓 Sblocca Punto 1" : "🔓 Sblocca questo punto";
@@ -476,17 +557,18 @@
     if (window.firebase) {
       try {
         firebase.initializeApp(firebaseConfig);
-        // Nodo separato per questo esercizio
         answersRef = firebase.database().ref("esercizi/frasi-gustavo");
 
         answersRef.on("value", (snapshot) => {
           const data = snapshot.val() || {};
           const responses = data.responses || {};
-          
+
           currentActiveStep = (data.activeStep !== undefined) ? data.activeStep : -1;
+          currentWriter = data.currentWriter || null;
 
           inputs.forEach((input, index) => {
-            if (document.activeElement !== input) {
+            // Aggiorna il testo per tutti (tranne chi sta attivamente digitando)
+            if (currentWriter !== myClientId) {
               input.value = responses[index] || "";
             }
           });
@@ -503,6 +585,7 @@
       if (confirm("Vuoi azzerare tutte le risposte e bloccare nuovamente l'esercizio?")) {
         answersRef.set({
           activeStep: -1,
+          currentWriter: null,
           responses: {}
         });
       }
