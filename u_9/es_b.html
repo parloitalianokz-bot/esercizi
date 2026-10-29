@@ -73,7 +73,6 @@
       font-size: .85rem;
     }
 
-    /* Stile domande e stati */
     .question {
       padding: 20px;
       margin-bottom: 16px;
@@ -90,7 +89,6 @@
     .question.locked {
       opacity: .5;
       background: #fafafc;
-      pointer-events: none;
     }
     .question.approved {
       border-color: #d1fae5;
@@ -148,6 +146,7 @@
       margin-top: 12px;
       display: flex;
       justify-content: flex-end;
+      gap: 10px;
     }
     .btn-approve {
       background: var(--primary);
@@ -160,7 +159,6 @@
     }
     .btn-approve:hover { opacity: .9; }
 
-    /* Footer & Controlli Docente */
     .footer {
       margin-top: 28px;
       padding-top: 20px;
@@ -208,7 +206,7 @@
     </header>
 
     <div id="status" class="status">
-      <span id="status-text" class="status-indicator">Connessione a Firebase…</span>
+      <span id="status-text" class="status-indicator">In attesa dell'insegnante…</span>
       <span id="progress-badge" class="progress-badge">0 di 15</span>
     </div>
 
@@ -222,7 +220,7 @@
       <div class="footer">
         <label class="teacher-toggle">
           <input type="checkbox" id="teacher-mode">
-          <b>Modalità Insegnante</b> (abilita il controllo avanzamento)
+          <b>Modalità Insegnante</b> (abilita il sblocco domande)
         </label>
         <button id="reset" class="reset-btn" type="button" style="display:none;">⚠️ Resetta intero esercizio</button>
       </div>
@@ -232,7 +230,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
   <script>
-    // CONFIGURAZIONE FIREBASE
     const firebaseConfig = {
       apiKey: "INSERISCI_API_KEY",
       authDomain: "esercizi-parlo-italiano.firebaseapp.com",
@@ -267,16 +264,15 @@
     const resetButton = document.getElementById("reset");
 
     let answersRef = null;
-    let currentActiveStep = 0; // Di default parte dalla prima domanda
+    let currentActiveStep = -1; // Partiamo da -1 (nessuna sbloccata) o 0
     let isTeacher = false;
     const inputs = [];
     const questionBoxes = [];
     const badges = [];
 
-    // Generazione dinamica dell'interfaccia
     questions.forEach((question, index) => {
       const row = document.createElement("div");
-      row.className = "question locked"; // Bloccate di default
+      row.className = "question locked";
       row.id = `box-${index}`;
 
       const header = document.createElement("div");
@@ -298,14 +294,12 @@
       input.disabled = true;
       input.placeholder = "In attesa che l'insegnante sblocchi questa domanda…";
 
-      // Evento di scrittura in tempo reale
       input.addEventListener("input", () => {
         if (answersRef && currentActiveStep === index) {
           answersRef.child("responses").child(String(index)).set(input.value);
         }
       });
 
-      // Botone Sblocco (visibile solo in modalità docente)
       const actionDiv = document.createElement("div");
       actionDiv.className = "teacher-action";
       actionDiv.style.display = "none";
@@ -313,10 +307,10 @@
       const approveBtn = document.createElement("button");
       approveBtn.className = "btn-approve";
       approveBtn.type = "button";
-      approveBtn.textContent = "Approva e sblocca successiva ➔";
+      approveBtn.textContent = index === 0 ? "🔓 Sblocca Domanda 1" : "Approva e sblocca successiva ➔";
       approveBtn.onclick = () => {
         if (answersRef) {
-          answersRef.child("activeStep").set(index + 1);
+          answersRef.child("activeStep").set(index === currentActiveStep ? index + 1 : index);
         }
       };
 
@@ -329,55 +323,63 @@
       badges.push(badge);
     });
 
-    // Gestione attivazione Modalità Insegnante
     teacherToggle.addEventListener("change", (e) => {
       isTeacher = e.target.checked;
       resetButton.style.display = isTeacher ? "block" : "none";
       updateUIState();
     });
 
-    // Aggiornamento visivo dello stato delle domande
     function updateUIState() {
       questionBoxes.forEach((box, i) => {
         const input = inputs[i];
         const badge = badges[i];
-        const actionBtn = box.querySelector(".teacher-action");
+        const actionDiv = box.querySelector(".teacher-action");
+        const btn = box.querySelector(".btn-approve");
 
         box.classList.remove("active", "locked", "approved");
 
         if (i < currentActiveStep) {
-          // Domanda completata/approvata
           box.classList.add("approved");
           badge.className = "badge badge-approved";
           badge.textContent = "Approvata";
           input.disabled = true;
-          actionBtn.style.display = "none";
+          actionDiv.style.display = "none";
         } else if (i === currentActiveStep) {
-          // Domanda Corrente Sbloccata
           box.classList.add("active");
           badge.className = "badge badge-active";
           badge.textContent = "In corso";
           input.disabled = false;
           input.placeholder = "Scrivi la risposta qui…";
-          actionBtn.style.display = isTeacher ? "flex" : "none";
+          
+          if (isTeacher) {
+            actionDiv.style.display = "flex";
+            btn.textContent = "Approva e sblocca successiva ➔";
+          } else {
+            actionDiv.style.display = "none";
+          }
         } else {
-          // Domande successive ancora bloccate
           box.classList.add("locked");
           badge.className = "badge badge-locked";
           badge.textContent = "Bloccata";
           input.disabled = true;
           input.placeholder = "In attesa che l'insegnante sblocchi questa domanda…";
-          actionBtn.style.display = "none";
+          
+          // Se la domanda è bloccata ma è la prima da sbloccare, mostra il pulsante in modalità docente
+          if (isTeacher && i === currentActiveStep + 1) {
+            actionDiv.style.display = "flex";
+            btn.textContent = i === 0 ? "🔓 Sblocca Domanda 1" : "🔓 Sblocca questa domanda";
+          } else {
+            actionDiv.style.display = "none";
+          }
         }
       });
 
-      progressBadge.textContent = `${Math.min(currentActiveStep, questions.length)} di ${questions.length}`;
+      const completedCount = Math.max(0, currentActiveStep);
+      progressBadge.textContent = `${Math.min(completedCount, questions.length)} di ${questions.length}`;
     }
 
     // Inizializzazione Firebase
-    const hasConfig = firebaseConfig.apiKey !== "INSERISCI_API_KEY" && firebaseConfig.appId !== "INSERISCI_APP_ID";
-
-    if (hasConfig && window.firebase) {
+    if (window.firebase) {
       try {
         firebase.initializeApp(firebaseConfig);
         answersRef = firebase.database().ref("esercizi/zio-gustavo");
@@ -385,9 +387,10 @@
         answersRef.on("value", (snapshot) => {
           const data = snapshot.val() || {};
           const responses = data.responses || {};
-          currentActiveStep = data.activeStep || 0;
+          
+          // Se activeStep non esiste ancora sul server, parte da -1 (tutto bloccato finché l'insegnante non clicca)
+          currentActiveStep = (data.activeStep !== undefined) ? data.activeStep : -1;
 
-          // Aggiornamento campi di testo
           inputs.forEach((input, index) => {
             if (document.activeElement !== input) {
               input.value = responses[index] || "";
@@ -396,20 +399,17 @@
 
           updateUIState();
           statusDiv.classList.add("connected");
-          statusText.textContent = "Connesso: sincronizzazione a turni attiva!";
+          statusText.textContent = "Connesso: esercizio in tempo reale attivo.";
         });
       } catch (e) {
-        statusText.textContent = "Errore di connessione a Firebase.";
+        statusText.textContent = "Errore durante la connessione.";
       }
-    } else {
-      statusText.textContent = "Modalità offline: Inserisci le chiavi Firebase per attivare il controllo a turni.";
     }
 
-    // Reset dell'esercizio per tutta la classe
     resetButton.addEventListener("click", () => {
-      if (confirm("Vuoi azzerare tutte le risposte e riportare la classe alla prima domanda?")) {
+      if (confirm("Vuoi azzerare tutte le risposte e bloccare nuovamente tutte le domande?")) {
         answersRef.set({
-          activeStep: 0,
+          activeStep: -1,
           responses: {}
         });
       }
