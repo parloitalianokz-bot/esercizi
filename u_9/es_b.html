@@ -31,7 +31,7 @@
     .eyebrow { color: var(--primary); font-size: .8rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
     h1 { margin: 6px 0; font-size: clamp(2rem, 5vw, 2.6rem); letter-spacing: -.03em; }
     
-    .status {
+    .status-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -43,9 +43,25 @@
       font-size: .88rem;
       box-shadow: 0 4px 12px rgba(50, 38, 94, 0.03);
     }
-    .status-indicator { display: flex; align-items: center; gap: 8px; color: var(--text-muted); }
-    .status-indicator::before { width: 10px; height: 10px; border-radius: 50%; background: #aaa6b8; content: ""; }
-    .status.connected .status-indicator::before { background: var(--success); box-shadow: 0 0 0 3px var(--success-bg); }
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .status-indicator::before {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #aaa6b8;
+      content: "";
+      transition: background 0.3s;
+    }
+    .status-bar.connected .status-indicator::before {
+      background: var(--success);
+      box-shadow: 0 0 0 3px var(--success-bg);
+    }
     
     .card {
       padding: clamp(20px, 4vw, 32px);
@@ -205,8 +221,8 @@
       <h1>Lo zio Gustavo</h1>
     </header>
 
-    <div id="status" class="status">
-      <span id="status-text" class="status-indicator">In attesa dell'insegnante…</span>
+    <div id="status" class="status-bar">
+      <span class="status-indicator">Esercizio Collaborativo</span>
       <span id="progress-badge" class="progress-badge">0 di 15</span>
     </div>
 
@@ -220,7 +236,7 @@
       <div class="footer">
         <label class="teacher-toggle">
           <input type="checkbox" id="teacher-mode">
-          <b>Modalità Insegnante</b> (abilita il sblocco domande)
+          <b>Modalità Insegnante</b> (abilita sblocco avanzamento)
         </label>
         <button id="reset" class="reset-btn" type="button" style="display:none;">⚠️ Resetta intero esercizio</button>
       </div>
@@ -258,13 +274,12 @@
 
     const form = document.getElementById("answers");
     const statusDiv = document.getElementById("status");
-    const statusText = document.getElementById("status-text");
     const progressBadge = document.getElementById("progress-badge");
     const teacherToggle = document.getElementById("teacher-mode");
     const resetButton = document.getElementById("reset");
 
     let answersRef = null;
-    let currentActiveStep = -1; // Partiamo da -1 (nessuna sbloccata) o 0
+    let currentActiveStep = -1; // Partiamo con tutte le domande bloccate
     let isTeacher = false;
     const inputs = [];
     const questionBoxes = [];
@@ -292,8 +307,9 @@
       input.id = `answer-${index}`;
       input.rows = 2;
       input.disabled = true;
-      input.placeholder = "In attesa che l'insegnante sblocchi questa domanda…";
+      input.placeholder = "In attesa dell'insegnante…";
 
+      // Scrittura immediata in tempo reale per chi sta compilando
       input.addEventListener("input", () => {
         if (answersRef && currentActiveStep === index) {
           answersRef.child("responses").child(String(index)).set(input.value);
@@ -339,12 +355,14 @@
         box.classList.remove("active", "locked", "approved");
 
         if (i < currentActiveStep) {
+          // Domanda già approvata e completata
           box.classList.add("approved");
           badge.className = "badge badge-approved";
           badge.textContent = "Approvata";
           input.disabled = true;
           actionDiv.style.display = "none";
         } else if (i === currentActiveStep) {
+          // Domanda Attualmente Attiva (Visibile e compilabile da chiunque in tempo reale)
           box.classList.add("active");
           badge.className = "badge badge-active";
           badge.textContent = "In corso";
@@ -358,13 +376,13 @@
             actionDiv.style.display = "none";
           }
         } else {
+          // Domande successive ancora bloccate
           box.classList.add("locked");
           badge.className = "badge badge-locked";
           badge.textContent = "Bloccata";
           input.disabled = true;
-          input.placeholder = "In attesa che l'insegnante sblocchi questa domanda…";
+          input.placeholder = "In attesa dell'insegnante…";
           
-          // Se la domanda è bloccata ma è la prima da sbloccare, mostra il pulsante in modalità docente
           if (isTeacher && i === currentActiveStep + 1) {
             actionDiv.style.display = "flex";
             btn.textContent = i === 0 ? "🔓 Sblocca Domanda 1" : "🔓 Sblocca questa domanda";
@@ -388,9 +406,9 @@
           const data = snapshot.val() || {};
           const responses = data.responses || {};
           
-          // Se activeStep non esiste ancora sul server, parte da -1 (tutto bloccato finché l'insegnante non clicca)
           currentActiveStep = (data.activeStep !== undefined) ? data.activeStep : -1;
 
+          // Sincronizzazione visiva istantanea di tutte le risposte
           inputs.forEach((input, index) => {
             if (document.activeElement !== input) {
               input.value = responses[index] || "";
@@ -399,15 +417,14 @@
 
           updateUIState();
           statusDiv.classList.add("connected");
-          statusText.textContent = "Connesso: esercizio in tempo reale attivo.";
         });
       } catch (e) {
-        statusText.textContent = "Errore durante la connessione.";
+        console.error("Errore Firebase:", e);
       }
     }
 
     resetButton.addEventListener("click", () => {
-      if (confirm("Vuoi azzerare tutte le risposte e bloccare nuovamente tutte le domande?")) {
+      if (confirm("Vuoi azzerare tutte le risposte e bloccare nuovamente l'esercizio?")) {
         answersRef.set({
           activeStep: -1,
           responses: {}
