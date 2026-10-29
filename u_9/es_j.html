@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dove sono le cose a casa tua? — Italiano</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: 'Segoe UI', Inter, system-ui, -apple-system, sans-serif;
+      --primary: #6556bd;
+      --primary-light: #f0edff;
+      --primary-dark: #4c3e99;
+      --accent: #ffb703;
+      --bg-main: #f7f6fb;
+      --card-bg: #ffffff;
+      --text: #24213a;
+      --text-muted: #68667a;
+      --success: #20a16b;
+      --success-bg: #d9f4e8;
+      --border: #ebe9f2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 16px;
+      background: radial-gradient(ellipse at 10% 0%, #e9e5ff 0%, transparent 50%),
+                  radial-gradient(ellipse at 90% 100%, #f0edff 0%, transparent 50%),
+                  var(--bg-main);
+      color: var(--text);
+    }
+
+    .container { width: min(100%, 820px); margin: 0 auto; }
+
+    .hero { margin-bottom: 20px; text-align: center; }
+    .eyebrow {
+      display: inline-block;
+      color: var(--primary);
+      font-size: .8rem;
+      font-weight: 800;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      background: var(--primary-light);
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+    h1 {
+      margin: 4px 0;
+      font-size: clamp(2rem, 5vw, 2.6rem);
+      letter-spacing: -.03em;
+      color: var(--text);
+    }
+
+    /* Barra controlli superiore */
+    .top-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding: 14px 20px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--card-bg);
+      box-shadow: 0 10px 25px rgba(50, 38, 94, 0.03);
+    }
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: .9rem;
+    }
+    .status-indicator::before {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #aaa6b8;
+      content: "";
+      transition: background 0.3s;
+    }
+    .top-controls.connected .status-indicator::before {
+      background: var(--success);
+      box-shadow: 0 0 0 3px var(--success-bg);
+    }
+    .teacher-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .teacher-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .88rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: 600;
+      user-select: none;
+    }
+    
+    button.reset-btn {
+      padding: 6px 14px;
+      border: 1px solid #fca5a5;
+      border-radius: 10px;
+      background: #fff;
+      color: #dc2626;
+      font: inherit;
+      font-size: .8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button.reset-btn:hover { background: #fef2f2; }
+
+    /* Box Guida Oggetti */
+    .guide-card {
+      background: linear-gradient(135deg, #ffffff 0%, #fcfaff 100%);
+      border: 1px solid var(--border);
+      border-left: 6px solid var(--primary);
+      border-radius: 18px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 20px rgba(101, 86, 189, 0.04);
+    }
+    .guide-card h3 {
+      margin: 0 0 10px 0;
+      color: var(--primary-dark);
+      font-size: 1.05rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .words-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .tag {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      padding: 5px 12px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: .9rem;
+    }
+
+    /* Form Scrittura Studente */
+    .student-card {
+      padding: clamp(20px, 4vw, 32px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: var(--card-bg);
+      box-shadow: 0 16px 40px rgba(50, 38, 94, 0.05);
+      margin-bottom: 32px;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    input.name-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid #d1d5db;
+      border-radius: 12px;
+      font: inherit;
+      font-size: 1rem;
+      outline: none;
+    }
+    input.name-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(101, 86, 189, 0.15);
+    }
+    textarea.text-input {
+      width: 100%;
+      min-height: 120px;
+      padding: 14px;
+      border: 1.5px solid #d1d5db;
+      border-radius: 12px;
+      font: inherit;
+      font-size: 1rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+    }
+    textarea.text-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(101, 86, 189, 0.15);
+    }
+    button.send-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s;
+    }
+    button.send-btn:hover { background: var(--primary-dark); }
+
+    /* Bacheca Elaborati Classe */
+    .submissions-section h2 {
+      font-size: 1.4rem;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .submission-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    }
+    .submission-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #f0f0f5;
+    }
+    .author-name {
+      font-weight: 800;
+      color: var(--primary);
+      font-size: 1.1rem;
+    }
+    .submission-body {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      color: #2d2a4a;
+    }
+
+    /* Area Correzione Docente */
+    .teacher-feedback {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px stroke #e5e7eb;
+      background: #fcfaff;
+      padding: 12px;
+      border-radius: 12px;
+    }
+    .feedback-label {
+      font-size: .85rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 6px;
+      display: block;
+    }
+    textarea.feedback-input {
+      width: 100%;
+      min-height: 50px;
+      padding: 8px 12px;
+      border: 1px solid #c7d2fe;
+      border-radius: 8px;
+      font: inherit;
+      font-size: .95rem;
+    }
+    .feedback-text {
+      color: #047857;
+      background: #f0fdf4;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: .95rem;
+      margin-top: 8px;
+      border-left: 4px solid var(--success);
+    }
+
+    @media (max-width: 520px) {
+      body { padding: 16px 8px; }
+      .top-controls { flex-direction: column; align-items: flex-start; }
+      .teacher-controls { width: 100%; justify-content: space-between; }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <header class="hero">
+      <span class="eyebrow">Italiano · Produzione Scritta Libera</span>
+      <h1>Учимся говорить: La tua casa</h1>
+    </header>
+
+    <!-- Barra Controlli Superiore -->
+    <div id="status" class="top-controls">
+      <span class="status-indicator">Esercizio Collaborativo</span>
+      <div class="teacher-controls">
+        <label class="teacher-toggle">
+          <input type="checkbox" id="teacher-mode">
+          Modalità Insegnante (Supervisione)
+        </label>
+        <button id="reset" class="reset-btn" type="button" style="display:none;">⚠️ Resetta Tutti i Testi</button>
+      </div>
+    </div>
+
+    <!-- Guida con la lista di oggetti -->
+    <section class="guide-card">
+      <h3>📌 Descrivete dove sono questi oggetti nella vostra casa:</h3>
+      <div class="words-tags">
+        <span class="tag">libri</span>
+        <span class="tag">zucchero</span>
+        <span class="tag">sale</span>
+        <span class="tag">tazze da tè</span>
+        <span class="tag">cuscini</span>
+        <span class="tag">telecomando della tv</span>
+        <span class="tag">chiavi di casa</span>
+        <span class="tag">pantaloni</span>
+        <span class="tag">computer</span>
+        <span class="tag">spazzolino da denti</span>
+        <span class="tag">ombrelli</span>
+      </div>
+    </section>
+
+    <!-- Area Scrittura Studente (Nascosta se l'insegnante è attivo) -->
+    <section class="student-card" id="student-editor">
+      <div class="form-group">
+        <label for="student-name">Il tuo nome (o nomi della coppia):</label>
+        <input type="text" id="student-name" class="name-input" placeholder="es: Anna / Studente 1">
+      </div>
+      <div class="form-group">
+        <label for="student-text">Descrivi la tua casa:</label>
+        <textarea id="student-text" class="text-input" placeholder="Nella mia casa i libri sono sulla libreria in salotto. Lo zucchero è in cucina..."></textarea>
+      </div>
+      <button id="send-btn" class="send-btn" type="button">🚀 Invia il mio testo alla classe</button>
+    </section>
+
+    <!-- Bacheca Lavori Inviati dalla Classe -->
+    <section class="submissions-section">
+      <h2>
+        <span>📋 Testi della classe</span>
+        <span id="submission-count" style="font-size: .9rem; color: var(--text-muted);">0 testi inviati</span>
+      </h2>
+      <div id="submissions-list">
+        <!-- I testi degli studenti compariranno qui -->
+      </div>
+    </section>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "INSERISCI_API_KEY",
+      authDomain: "esercizi-parlo-italiano.firebaseapp.com",
+      databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "esercizi-parlo-italiano",
+      appId: "INSERISCI_APP_ID"
+    };
+
+    const studentEditor = document.getElementById("student-editor");
+    const studentNameInput = document.getElementById("student-name");
+    const studentTextInput = document.getElementById("student-text");
+    const sendBtn = document.getElementById("send-btn");
+    const submissionsList = document.getElementById("submissions-list");
+    const submissionCount = document.getElementById("submission-count");
+    const teacherToggle = document.getElementById("teacher-mode");
+    const resetButton = document.getElementById("reset");
+    const statusDiv = document.getElementById("status");
+
+    let answersRef = null;
+    let isTeacher = false;
+    let myStudentId = localStorage.getItem("gustavo_student_id") || "std_" + Math.random().toString(36).substring(2, 9);
+    localStorage.setItem("gustavo_student_id", myStudentId);
+
+    // Invio Testo Studente
+    sendBtn.addEventListener("click", () => {
+      const name = studentNameInput.value.trim();
+      const text = studentTextInput.value.trim();
+
+      if (!name) {
+        alert("Inserisci il tuo nome prima di inviare!");
+        return;
+      }
+      if (!text) {
+        alert("Scrivi il tuo testo prima di inviare!");
+        return;
+      }
+
+      if (answersRef) {
+        answersRef.child("submissions").child(myStudentId).set({
+          name: name,
+          text: text,
+          timestamp: Date.now()
+        }).then(() => {
+          alert("Testo inviato con successo! Ora è visibile sulla bacheca della classe.");
+        });
+      }
+    });
+
+    // Gestione Attivazione Modalità Insegnante
+    teacherToggle.addEventListener("change", (e) => {
+      isTeacher = e.target.checked;
+      resetButton.style.display = isTeacher ? "inline-block" : "none";
+      // Nasconde l'editor di scrittura per l'insegnante
+      studentEditor.style.display = isTeacher ? "none" : "block";
+      renderSubmissions(currentSubmissionsData, currentFeedbackData);
+    });
+
+    let currentSubmissionsData = {};
+    let currentFeedbackData = {};
+
+    function renderSubmissions(submissions, feedbacks) {
+      submissionsList.innerHTML = "";
+      const keys = Object.keys(submissions);
+      submissionCount.textContent = `${keys.length} testi inviati`;
+
+      if (keys.length === 0) {
+        submissionsList.innerHTML = `<p style="color: var(--text-muted); text-align: center; padding: 20px;">In attesa che gli studenti inviino i loro testi…</p>`;
+        return;
+      }
+
+      keys.forEach(id => {
+        const item = submissions[id];
+        const feedbackText = feedbacks[id] || "";
+
+        const card = document.createElement("div");
+        card.className = "submission-card";
+
+        const header = document.createElement("div");
+        header.className = "submission-header";
+        header.innerHTML = `<span class="author-name">👤 ${item.name}</span>`;
+
+        const body = document.createElement("div");
+        body.className = "submission-body";
+        body.textContent = item.text;
+
+        card.appendChild(header);
+        card.appendChild(body);
+
+        // Sezione Feedback / Correzione Docente
+        if (isTeacher) {
+          const feedbackDiv = document.createElement("div");
+          feedbackDiv.className = "teacher-feedback";
+          feedbackDiv.innerHTML = `<span class="feedback-label">💬 Note / Correzione dell'Insegnante:</span>`;
+
+          const feedbackInput = document.createElement("textarea");
+          feedbackInput.className = "feedback-input";
+          feedbackInput.placeholder = "Scrivi qui correzioni o commenti per questo studente...";
+          feedbackInput.value = feedbackText;
+
+          feedbackInput.addEventListener("input", () => {
+            if (answersRef) {
+              answersRef.child("feedbacks").child(id).set(feedbackInput.value);
+            }
+          });
+
+          feedbackDiv.appendChild(feedbackInput);
+          card.appendChild(feedbackDiv);
+        } else if (feedbackText) {
+          // Se lo studente legge il feedback lasciato dal docente
+          const feedbackDiv = document.createElement("div");
+          feedbackDiv.className = "feedback-text";
+          feedbackDiv.textContent = `💬 Note dell'insegnante: ${feedbackText}`;
+          card.appendChild(feedbackDiv);
+        }
+
+        submissionsList.appendChild(card);
+      });
+    }
+
+    if (window.firebase) {
+      try {
+        firebase.initializeApp(firebaseConfig);
+        answersRef = firebase.database().ref("esercizi/produzione-casa-gustavo");
+
+        answersRef.on("value", (snapshot) => {
+          const data = snapshot.val() || {};
+          currentSubmissionsData = data.submissions || {};
+          currentFeedbackData = data.feedbacks || {};
+
+          // Ripristina l'input dello studente se ha già inviato
+          if (currentSubmissionsData[myStudentId]) {
+            studentNameInput.value = currentSubmissionsData[myStudentId].name || "";
+            studentTextInput.value = currentSubmissionsData[myStudentId].text || "";
+          }
+
+          renderSubmissions(currentSubmissionsData, currentFeedbackData);
+          statusDiv.classList.add("connected");
+        });
+      } catch (e) {
+        console.error("Errore Firebase:", e);
+      }
+    }
+
+    resetButton.addEventListener("click", () => {
+      if (confirm("Vuoi cancellare tutti i testi inviati dalla classe e azzerare la bacheca?")) {
+        answersRef.set({
+          submissions: {},
+          feedbacks: {}
+        });
+      }
+    });
+  </script>
+</body>
+</html>
