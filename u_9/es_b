@@ -1,0 +1,433 @@
+Ecco il codice completo pronto all'uso.
+
+Ho ridisegnato la grafica mantenendo la palette sui toni del viola/indaco (in sintonia con il tuo tema originale), aggiungendo un **badge di stato visivo** per ciascuna domanda (Bloccata, In corso, Approvata) e la modalità **Pannello Docente** integrata.
+
+### Come funziona l'interazione:
+
+1. **Per la classe (Studenti):** Vedono solo la domanda corrente sbloccata. Non appena lo studente di turno scrive, la risposta si aggiorna **in tempo reale** su tutti gli schermi.
+2. **Per l'Insegnante:** In fondo alla pagina c'è un interruttore **"Modalità Docente"**. Attivandolo, sotto la domanda in corso compare il pulsante **"Sblocca domanda successiva"**. Cliccandolo, la risposta viene congelata/approvata e la classe passa alla domanda successiva.
+
+---
+
+```html
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f5f3ff" />
+  <title>Comprensione — Lo zio Gustavo</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: 'Segoe UI', Inter, system-ui, -apple-system, sans-serif;
+      --primary: #6556bd;
+      --primary-light: #f0edff;
+      --bg-main: #f7f6fb;
+      --text: #24213a;
+      --text-muted: #68667a;
+      --success: #20a16b;
+      --success-bg: #d9f4e8;
+      --border: #ebe9f2;
+    }
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 16px;
+      background: radial-gradient(ellipse at 12% 0%, #e9e5ff 0, transparent 40%), var(--bg-main);
+      color: var(--text);
+    }
+    .container { width: min(100%, 780px); margin: 0 auto; }
+    .hero { margin-bottom: 24px; text-align: center; }
+    .eyebrow { color: var(--primary); font-size: .8rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { margin: 6px 0; font-size: clamp(2rem, 5vw, 2.6rem); letter-spacing: -.03em; }
+    
+    .status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 16px 0 24px;
+      padding: 12px 18px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+      font-size: .88rem;
+      box-shadow: 0 4px 12px rgba(50, 38, 94, 0.03);
+    }
+    .status-indicator { display: flex; align-items: center; gap: 8px; color: var(--text-muted); }
+    .status-indicator::before { width: 10px; height: 10px; border-radius: 50%; background: #aaa6b8; content: ""; }
+    .status.connected .status-indicator::before { background: var(--success); box-shadow: 0 0 0 3px var(--success-bg); }
+    
+    .card {
+      padding: clamp(20px, 4vw, 32px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: #fff;
+      box-shadow: 0 16px 40px rgba(50, 38, 94, 0.05);
+    }
+    .card-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    h2 { margin: 0; font-size: 1.25rem; }
+    .progress-badge {
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: .85rem;
+    }
+
+    /* Stile domande e stati */
+    .question {
+      padding: 20px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: #fff;
+      transition: all .2s ease;
+    }
+    .question.active {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(101, 86, 189, 0.15);
+      background: #ffffff;
+    }
+    .question.locked {
+      opacity: .5;
+      background: #fafafc;
+      pointer-events: none;
+    }
+    .question.approved {
+      border-color: #d1fae5;
+      background: #f0fdf4;
+    }
+
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    label { font-weight: 650; font-size: 1rem; line-height: 1.4; display: flex; align-items: center; }
+    .number {
+      display: inline-grid;
+      width: 28px;
+      height: 28px;
+      place-items: center;
+      margin-right: 10px;
+      border-radius: 8px;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: .85rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .badge {
+      font-size: .75rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+    .badge-locked { background: #e5e7eb; color: #6b7280; }
+    .badge-active { background: #ffe4e6; color: #e11d48; }
+    .badge-approved { background: var(--success-bg); color: #047857; }
+
+    textarea {
+      display: block;
+      width: 100%;
+      min-height: 60px;
+      resize: vertical;
+      padding: 12px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      outline: none;
+      font: inherit;
+      line-height: 1.45;
+      transition: border-color .15s;
+    }
+    textarea:focus { border-color: var(--primary); }
+    textarea:disabled { background: #f3f4f6; color: #374151; cursor: not-allowed; }
+
+    .teacher-action {
+      margin-top: 12px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .btn-approve {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-approve:hover { opacity: .9; }
+
+    /* Footer & Controlli Docente */
+    .footer {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .teacher-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .85rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    button.reset-btn {
+      padding: 10px 16px;
+      border: 1px solid #fca5a5;
+      border-radius: 10px;
+      background: #fff;
+      color: #dc2626;
+      font: inherit;
+      font-size: .85rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button.reset-btn:hover { background: #fef2f2; }
+
+    @media (max-width: 520px) {
+      body { padding: 16px 8px; }
+      .footer { flex-direction: column; align-items: stretch; }
+      button.reset-btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <header class="hero">
+      <div class="eyebrow">Italiano · Comprensione Guidata</div>
+      <h1>Lo zio Gustavo</h1>
+    </header>
+
+    <div id="status" class="status">
+      <span id="status-text" class="status-indicator">Connessione a Firebase…</span>
+      <span id="progress-badge" class="progress-badge">0 di 15</span>
+    </div>
+
+    <section class="card">
+      <div class="card-heading">
+        <h2>Rispondi insieme alla classe</h2>
+      </div>
+
+      <form id="answers" autocomplete="off"></form>
+
+      <div class="footer">
+        <label class="teacher-toggle">
+          <input type="checkbox" id="teacher-mode">
+          <b>Modalità Insegnante</b> (abilita il controllo avanzamento)
+        </label>
+        <button id="reset" class="reset-btn" type="button" style="display:none;">⚠️ Resetta intero esercizio</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script>
+    // CONFIGURAZIONE FIREBASE
+    const firebaseConfig = {
+      apiKey: "INSERISCI_API_KEY",
+      authDomain: "esercizi-parlo-italiano.firebaseapp.com",
+      databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "esercizi-parlo-italiano",
+      appId: "INSERISCI_APP_ID"
+    };
+
+    const questions = [
+      "Dove abita lo zio Gustavo?",
+      "Dove dorme lo zio Gustavo?",
+      "Perché non dorme sul letto?",
+      "Che cosa c’è sul comodino?",
+      "Che cosa c’è sulla tavola in sala da pranzo?",
+      "Cosa c’è nella borsa dello zio Gustavo?",
+      "Dove sono i suoi vestiti?",
+      "Dov’è il suo cane?",
+      "Dove sono i soldi?",
+      "Dove sono le sue scarpe?",
+      "Dove sono i piatti sporchi?",
+      "Che cosa fanno lo zio Gustavo e lo zio Augusto la domenica?",
+      "Perché scavano in giardino?",
+      "Che cosa fanno quando sono stanchi?",
+      "Che cosa mangiano per cena?"
+    ];
+
+    const form = document.getElementById("answers");
+    const statusDiv = document.getElementById("status");
+    const statusText = document.getElementById("status-text");
+    const progressBadge = document.getElementById("progress-badge");
+    const teacherToggle = document.getElementById("teacher-mode");
+    const resetButton = document.getElementById("reset");
+
+    let answersRef = null;
+    let currentActiveStep = 0; // Di default parte dalla prima domanda
+    let isTeacher = false;
+    const inputs = [];
+    const questionBoxes = [];
+    const badges = [];
+
+    // Generazione dinamica dell'interfaccia
+    questions.forEach((question, index) => {
+      const row = document.createElement("div");
+      row.className = "question locked"; // Bloccate di default
+      row.id = `box-${index}`;
+
+      const header = document.createElement("div");
+      header.className = "question-header";
+
+      const label = document.createElement("label");
+      label.htmlFor = `answer-${index}`;
+      label.innerHTML = `<span class="number">${index + 1}</span>${question}`;
+
+      const badge = document.createElement("span");
+      badge.className = "badge badge-locked";
+      badge.textContent = "Bloccata";
+
+      header.append(label, badge);
+
+      const input = document.createElement("textarea");
+      input.id = `answer-${index}`;
+      input.rows = 2;
+      input.disabled = true;
+      input.placeholder = "In attesa che l'insegnante sblocchi questa domanda…";
+
+      // Evento di scrittura in tempo reale
+      input.addEventListener("input", () => {
+        if (answersRef && currentActiveStep === index) {
+          answersRef.child("responses").child(String(index)).set(input.value);
+        }
+      });
+
+      // Botone Sblocco (visibile solo in modalità docente)
+      const actionDiv = document.createElement("div");
+      actionDiv.className = "teacher-action";
+      actionDiv.style.display = "none";
+
+      const approveBtn = document.createElement("button");
+      approveBtn.className = "btn-approve";
+      approveBtn.type = "button";
+      approveBtn.textContent = "Approva e sblocca successiva ➔";
+      approveBtn.onclick = () => {
+        if (answersRef) {
+          answersRef.child("activeStep").set(index + 1);
+        }
+      };
+
+      actionDiv.appendChild(approveBtn);
+      row.append(header, input, actionDiv);
+      form.appendChild(row);
+
+      inputs.push(input);
+      questionBoxes.push(row);
+      badges.push(badge);
+    });
+
+    // Gestione attivazione Modalità Insegnante
+    teacherToggle.addEventListener("change", (e) => {
+      isTeacher = e.target.checked;
+      resetButton.style.display = isTeacher ? "block" : "none";
+      updateUIState();
+    });
+
+    // Aggiornamento visivo dello stato delle domande
+    function updateUIState() {
+      questionBoxes.forEach((box, i) => {
+        const input = inputs[i];
+        const badge = badges[i];
+        const actionBtn = box.querySelector(".teacher-action");
+
+        box.classList.remove("active", "locked", "approved");
+
+        if (i < currentActiveStep) {
+          // Domanda completata/approvata
+          box.classList.add("approved");
+          badge.className = "badge badge-approved";
+          badge.textContent = "Approvata";
+          input.disabled = true;
+          actionBtn.style.display = "none";
+        } else if (i === currentActiveStep) {
+          // Domanda Corrente Sbloccata
+          box.classList.add("active");
+          badge.className = "badge badge-active";
+          badge.textContent = "In corso";
+          input.disabled = false;
+          input.placeholder = "Scrivi la risposta qui…";
+          actionBtn.style.display = isTeacher ? "flex" : "none";
+        } else {
+          // Domande successive ancora bloccate
+          box.classList.add("locked");
+          badge.className = "badge badge-locked";
+          badge.textContent = "Bloccata";
+          input.disabled = true;
+          input.placeholder = "In attesa che l'insegnante sblocchi questa domanda…";
+          actionBtn.style.display = "none";
+        }
+      });
+
+      progressBadge.textContent = `${Math.min(currentActiveStep, questions.length)} di ${questions.length}`;
+    }
+
+    // Inizializzazione Firebase
+    const hasConfig = firebaseConfig.apiKey !== "INSERISCI_API_KEY" && firebaseConfig.appId !== "INSERISCI_APP_ID";
+
+    if (hasConfig && window.firebase) {
+      try {
+        firebase.initializeApp(firebaseConfig);
+        answersRef = firebase.database().ref("esercizi/zio-gustavo");
+
+        answersRef.on("value", (snapshot) => {
+          const data = snapshot.val() || {};
+          const responses = data.responses || {};
+          currentActiveStep = data.activeStep || 0;
+
+          // Aggiornamento campi di testo
+          inputs.forEach((input, index) => {
+            if (document.activeElement !== input) {
+              input.value = responses[index] || "";
+            }
+          });
+
+          updateUIState();
+          statusDiv.classList.add("connected");
+          statusText.textContent = "Connesso: sincronizzazione a turni attiva!";
+        });
+      } catch (e) {
+        statusText.textContent = "Errore di connessione a Firebase.";
+      }
+    } else {
+      statusText.textContent = "Modalità offline: Inserisci le chiavi Firebase per attivare il controllo a turni.";
+    }
+
+    // Reset dell'esercizio per tutta la classe
+    resetButton.addEventListener("click", () => {
+      if (confirm("Vuoi azzerare tutte le risposte e riportare la classe alla prima domanda?")) {
+        answersRef.set({
+          activeStep: 0,
+          responses: {}
+        });
+      }
+    });
+  </script>
+</body>
+</html>
+
+```
