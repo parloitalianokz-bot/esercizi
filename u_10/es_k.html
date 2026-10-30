@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unità 10 — Formale: Le piace? / Le piacciono?</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: 'Segoe UI', Inter, system-ui, -apple-system, sans-serif;
+      --primary: #6556bd;
+      --primary-light: #f0edff;
+      --primary-dark: #4c3e99;
+      --accent: #ffb703;
+      --bg-main: #f7f6fb;
+      --card-bg: #ffffff;
+      --text: #24213a;
+      --text-muted: #68667a;
+      --border: #ebe9f2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 16px;
+      background:
+        radial-gradient(ellipse at 50% -12%, rgba(155, 142, 240, .24), transparent 42%),
+        var(--bg-main);
+      color: var(--text);
+    }
+
+    .container { width: min(100%, 720px); margin: 0 auto; }
+
+    .hero { margin: 8px 0 20px; text-align: center; }
+    .eyebrow {
+      display: inline-block;
+      color: var(--primary);
+      font-size: .8rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      background: var(--primary-light);
+      padding: 7px 14px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+      box-shadow: inset 0 0 0 1px rgba(101, 86, 189, .08);
+    }
+    h1 {
+      margin: 4px 0;
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      letter-spacing: -.03em;
+      color: var(--primary-dark);
+      line-height: 1.15;
+    }
+    .hero-subtitle {
+      margin: 6px 0 0;
+      color: var(--text-muted);
+      font-size: .95rem;
+    }
+
+    /* Box Spiegazione Grammaticale in Russo */
+    .grammar-box {
+      background: #ffffff;
+      border: 1px solid #dcd6f7;
+      border-left: 5px solid var(--primary);
+      border-radius: 16px;
+      padding: 16px 18px;
+      margin-bottom: 20px;
+      font-size: .92rem;
+      line-height: 1.55;
+      box-shadow: 0 4px 14px rgba(50, 38, 94, .04);
+    }
+    .grammar-box h3 {
+      margin: 0 0 8px 0;
+      color: var(--primary-dark);
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .grammar-box p { margin: 0 0 8px 0; }
+    .grammar-box p:last-child { margin-bottom: 0; }
+    .grammar-box ul {
+      margin: 6px 0 8px 18px;
+      padding: 0;
+    }
+    .grammar-box li { margin-bottom: 4px; }
+    .it-highlight {
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    /* Barra controlli superiore */
+    .top-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding: 12px 18px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--card-bg);
+      box-shadow: 0 6px 18px rgba(50, 38, 94, .04);
+    }
+    .teacher-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .teacher-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .88rem;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+      user-select: none;
+    }
+    .teacher-toggle input { accent-color: var(--primary); }
+    
+    button.reset-btn {
+      padding: 6px 12px;
+      border: 1px solid #fca5a5;
+      border-radius: 10px;
+      background: #fff;
+      color: #dc2626;
+      font: inherit;
+      font-size: .8rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: none;
+    }
+    button.reset-btn:hover { background: #fef2f2; }
+
+    /* Paginatore a Schede in alto (1-7) */
+    .tabs-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+      scrollbar-width: thin;
+    }
+    .tab-btn {
+      min-width: 40px;
+      height: 40px;
+      padding: 0 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: .88rem;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      transition: all .15s ease;
+    }
+    .tab-btn:hover { border-color: #bfaee6; color: var(--primary); }
+    .tab-btn.active-tab {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(101, 86, 189, .25);
+    }
+
+    /* Card della Scheda Corrente */
+    .card {
+      padding: clamp(20px, 4vw, 28px);
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      background: var(--card-bg);
+      box-shadow: 0 20px 55px rgba(50, 38, 94, .08);
+    }
+
+    .item-box {
+      display: none;
+    }
+    .item-box.current-view {
+      display: block;
+      animation: fadeIn .25s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .item-title {
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--primary-dark);
+      text-transform: capitalize;
+    }
+
+    /* Cornice Immagine (16:9) */
+    .image-frame {
+      width: 100%;
+      max-height: 240px;
+      aspect-ratio: 16 / 9;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #f1f0f8;
+      border: 1px solid #e1deeb;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .image-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      position: relative;
+      z-index: 2;
+    }
+    .image-fallback {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: #837fa1;
+      font-size: .85rem;
+      font-weight: 600;
+    }
+    .image-fallback span.icon { font-size: 1.8rem; }
+
+    /* Sezione con due Box (Domanda Formale e Risposta) */
+    .dialogue-pair {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-label {
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    textarea.answer-input {
+      width: 100%;
+      min-height: 52px;
+      padding: 10px 12px;
+      border: 1.5px solid #d9d3ed;
+      border-radius: 12px;
+      font: inherit;
+      font-size: .98rem;
+      line-height: 1.45;
+      resize: vertical;
+      outline: none;
+      background: #fff;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    textarea.answer-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(101, 86, 189, 0.15);
+    }
+    textarea.answer-input:disabled {
+      background: #f2f0f8;
+      border-color: #e1deeb;
+      color: #334155;
+      cursor: not-allowed;
+    }
+
+    /* Controlli Token */
+    .token-row {
+      display: flex;
+      justify-content: flex-start;
+      margin-top: 4px;
+    }
+    .btn-token {
+      background: var(--accent);
+      color: #24213a;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: .8rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-token:hover { background: #e0a200; }
+    .btn-token.release { background: #e2e8f0; color: #475569; }
+
+    /* Navigazione Frecce */
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .btn-arrow {
+      background: #f0edff;
+      color: var(--primary-dark);
+      border: 1px solid #d9d3ed;
+      padding: 9px 16px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: .88rem;
+      cursor: pointer;
+    }
+    .btn-arrow:hover:not(:disabled) { background: #e2daf9; }
+    .btn-arrow:disabled { opacity: .4; cursor: not-allowed; }
+
+    @media (max-width: 520px) {
+      body { padding: 16px 8px; }
+      .card { padding: 18px 14px; border-radius: 20px; }
+      .image-frame { max-height: 180px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <header class="hero">
+      <span class="eyebrow">Unità 10 · Forma di cortesia</span>
+      <h1>Вежливая форма: Le piace...?</h1>
+      <p class="hero-subtitle">Crea i dialoghi formali a coppie (A chiede con Lei, B risponde)</p>
+    </header>
+
+    <!-- Box Spiegazione Grammaticale in Russo -->
+    <div class="grammar-box">
+      <h3>💡 Вежливая форма (Forma di cortesia)</h3>
+      <p>В отличие от неофициального вопроса <em>«Ti piace...?»</em> (Тебе нравится...?), здесь мы используем <strong>вежливую форму на «Вы» (Lei)</strong>: <span class="it-highlight">Le piace...?</span> (Вам нравится...?).</p>
+      <ul>
+        <li><span class="it-highlight">Le piace</span> — для единственного числа (<em>Вам нравится...?</em>)</li>
+        <li><span class="it-highlight">Le piacciono</span> — для множественного числа (<em>Вам нравятся...?</em>)</li>
+      </ul>
+      <p style="margin-top: 6px;"><strong>Образец / Esempio:</strong><br>
+      • <em>acqua</em> ➔ <span class="it-highlight">Le piace</span> l’acqua? Sì, <span class="it-highlight">mi piace</span>. (No, non <span class="it-highlight">mi piace</span>)<br>
+      • <em>melanzane</em> ➔ <span class="it-highlight">Le piacciono</span> le melanzane? Sì, <span class="it-highlight">mi piacciono</span>. (No, non <span class="it-highlight">mi piacciono</span>)</p>
+    </div>
+
+    <!-- Barra Controlli Superiore -->
+    <div class="top-controls">
+      <div class="teacher-controls">
+        <label class="teacher-toggle">
+          <input type="checkbox" id="teacher-mode">
+          Режим учителя · Modalità insegnante
+        </label>
+      </div>
+      <button id="reset" class="reset-btn" type="button">⚠️ Сбросить · Azzera</button>
+    </div>
+
+    <!-- Paginatore a Schede in alto (1-7) -->
+    <div id="tabs-bar" class="tabs-bar"></div>
+
+    <!-- Card dell'Alimento Corrente -->
+    <section class="card">
+      <div id="items-container"></div>
+    </section>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "INSERISCI_API_KEY",
+      authDomain: "esercizi-parlo-italiano.firebaseapp.com",
+      databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "esercizi-parlo-italiano",
+      appId: "INSERISCI_APP_ID"
+    };
+
+    const foodItems = [
+      "le melanzane",
+      "il kumis",
+      "il vino",
+      "il tiramisù",
+      "la coca cola",
+      "le caramelle",
+      "la cucina italiana"
+    ];
+
+    const myClientId = "user_" + Math.random().toString(36).substring(2, 9);
+
+    const container = document.getElementById("items-container");
+    const tabsBar = document.getElementById("tabs-bar");
+    const teacherToggle = document.getElementById("teacher-mode");
+    const resetButton = document.getElementById("reset");
+
+    let answersRef = null;
+    let currentlyViewedTab = 0;
+    let isTeacher = false;
+    let responsesData = {};
+    let writersData = {};
+
+    const itemBoxes = [];
+    const tabButtons = [];
+
+    foodItems.forEach((foodName, idx) => {
+      // 1. Tab in alto
+      const tabBtn = document.createElement("button");
+      tabBtn.className = "tab-btn";
+      tabBtn.textContent = idx + 1;
+      tabBtn.type = "button";
+      tabBtn.onclick = () => {
+        currentlyViewedTab = idx;
+        updateUIState();
+      };
+      tabsBar.appendChild(tabBtn);
+      tabButtons.push(tabBtn);
+
+      // 2. Box dell'alimento
+      const box = document.createElement("div");
+      box.className = "item-box";
+      if (idx === 0) box.classList.add("current-view");
+
+      const header = document.createElement("div");
+      header.className = "item-header";
+
+      const title = document.createElement("div");
+      title.className = "item-title";
+      title.textContent = `${idx + 1}. ${foodName}`;
+
+      header.appendChild(title);
+
+      // Immagine 16:9 (da k1.jpeg a k7.jpeg)
+      const imgFrame = document.createElement("div");
+      imgFrame.className = "image-frame";
+
+      const fileName = `k${idx + 1}.jpeg`;
+      const fallback = document.createElement("div");
+      fallback.className = "image-fallback";
+      fallback.innerHTML = `<span class="icon">🍷</span><span>img/${fileName}</span>`;
+
+      const img = document.createElement("img");
+      img.src = `img/${fileName}`;
+      img.alt = foodName;
+      img.onerror = () => { img.style.display = "none"; };
+
+      imgFrame.append(fallback, img);
+
+      // Sezione due Box separati: Domanda Formale (Студент A) e Risposta (Студент B)
+      const pairDiv = document.createElement("div");
+      pairDiv.className = "dialogue-pair";
+
+      // --- CAMPO DOMANDA FORMALE (Q) ---
+      const groupQ = document.createElement("div");
+      groupQ.className = "field-group";
+
+      const labelQ = document.createElement("div");
+      labelQ.className = "field-label";
+      labelQ.innerHTML = `<span>🗣️ Вежливый вопрос / Domanda (Студент A)</span>`;
+
+      const inputQ = document.createElement("textarea");
+      inputQ.className = "answer-input input-q";
+      inputQ.rows = 2;
+      inputQ.placeholder = "Le piace / Le piacciono... ?";
+
+      inputQ.addEventListener("input", () => {
+        if (answersRef && writersData[idx]?.q === myClientId) {
+          answersRef.child("responses").child(String(idx)).child("q").set(inputQ.value);
+        }
+      });
+
+      const tokenRowQ = document.createElement("div");
+      tokenRowQ.className = "token-row";
+
+      const tokenBtnQ = document.createElement("button");
+      tokenBtnQ.className = "btn-token btn-token-q";
+      tokenBtnQ.type = "button";
+      tokenBtnQ.textContent = "✋ Взять слово (Вопрос)";
+      tokenBtnQ.onclick = () => {
+        if (answersRef && currentlyViewedTab === idx) {
+          const currentQWriter = writersData[idx]?.q || null;
+          if (currentQWriter === myClientId) {
+            answersRef.child("writers").child(String(idx)).child("q").set(null);
+          } else if (!currentQWriter) {
+            answersRef.child("writers").child(String(idx)).child("q").set(myClientId);
+          }
+        }
+      };
+
+      tokenRowQ.appendChild(tokenBtnQ);
+      groupQ.append(labelQ, inputQ, tokenRowQ);
+
+      // --- CAMPO RISPOSTA (A) ---
+      const groupA = document.createElement("div");
+      groupA.className = "field-group";
+
+      const labelA = document.createElement("div");
+      labelA.className = "field-label";
+      labelA.innerHTML = `<span>💬 Ответ / Risposta (Студент B)</span>`;
+
+      const inputA = document.createElement("textarea");
+      inputA.className = "answer-input input-a";
+      inputA.rows = 2;
+      inputA.placeholder = "Sì, mi piace... / No, non mi piace...";
+
+      inputA.addEventListener("input", () => {
+        if (answersRef && writersData[idx]?.a === myClientId) {
+          answersRef.child("responses").child(String(idx)).child("a").set(inputA.value);
+        }
+      });
+
+      const tokenRowA = document.createElement("div");
+      tokenRowA.className = "token-row";
+
+      const tokenBtnA = document.createElement("button");
+      tokenBtnA.className = "btn-token btn-token-a";
+      tokenBtnA.type = "button";
+      tokenBtnA.textContent = "✋ Взять слово (Ответ)";
+      tokenBtnA.onclick = () => {
+        if (answersRef && currentlyViewedTab === idx) {
+          const currentAWriter = writersData[idx]?.a || null;
+          if (currentAWriter === myClientId) {
+            answersRef.child("writers").child(String(idx)).child("a").set(null);
+          } else if (!currentAWriter) {
+            answersRef.child("writers").child(String(idx)).child("a").set(myClientId);
+          }
+        }
+      };
+
+      tokenRowA.appendChild(tokenBtnA);
+      groupA.append(labelA, inputA, tokenRowA);
+
+      pairDiv.append(groupQ, groupA);
+
+      // Footer con frecce
+      const footer = document.createElement("div");
+      footer.className = "card-footer";
+
+      const prevBtn = document.createElement("button");
+      prevBtn.className = "btn-arrow";
+      prevBtn.type = "button";
+      prevBtn.textContent = "⬅️ Indietro";
+      prevBtn.onclick = () => {
+        if (currentlyViewedTab > 0) {
+          currentlyViewedTab--;
+          updateUIState();
+        }
+      };
+
+      const nextBtn = document.createElement("button");
+      nextBtn.className = "btn-arrow";
+      nextBtn.type = "button";
+      nextBtn.textContent = "Avanti ➡️";
+      nextBtn.onclick = () => {
+        if (currentlyViewedTab < foodItems.length - 1) {
+          currentlyViewedTab++;
+          updateUIState();
+        }
+      };
+
+      footer.append(prevBtn, nextBtn);
+      box.append(header, imgFrame, pairDiv, footer);
+      container.appendChild(box);
+
+      itemBoxes.push(box);
+    });
+
+    teacherToggle.addEventListener("change", (e) => {
+      isTeacher = e.target.checked;
+      resetButton.style.display = isTeacher ? "inline-block" : "none";
+      updateUIState();
+    });
+
+    function updateUIState() {
+      itemBoxes.forEach((box, i) => {
+        const tabBtn = tabButtons[i];
+        const inputQ = box.querySelector("textarea.input-q");
+        const inputA = box.querySelector("textarea.input-a");
+        const tokenBtnQ = box.querySelector(".btn-token-q");
+        const tokenBtnA = box.querySelector(".btn-token-a");
+        const prevBtn = box.querySelectorAll(".btn-arrow")[0];
+        const nextBtn = box.querySelectorAll(".btn-arrow")[1];
+
+        if (i === currentlyViewedTab) {
+          box.classList.add("current-view");
+        } else {
+          box.classList.remove("current-view");
+        }
+
+        tabBtn.className = "tab-btn";
+        if (i === currentlyViewedTab) tabBtn.classList.add("active-tab");
+
+        prevBtn.disabled = (i === 0);
+        nextBtn.disabled = (i === foodItems.length - 1);
+
+        const cardWriters = writersData[i] || {};
+        const qWriter = cardWriters.q || null;
+        const aWriter = cardWriters.a || null;
+
+        // Gestione Stato Domanda Formale (Q)
+        if (isTeacher) {
+          inputQ.disabled = false;
+          tokenBtnQ.style.display = "none";
+        } else {
+          tokenBtnQ.style.display = "inline-block";
+          if (!qWriter) {
+            inputQ.disabled = true;
+            tokenBtnQ.textContent = "✋ Взять слово (Вопрос)";
+            tokenBtnQ.className = "btn-token btn-token-q";
+            tokenBtnQ.disabled = false;
+          } else if (qWriter === myClientId) {
+            inputQ.disabled = false;
+            tokenBtnQ.textContent = "✔ Сдать слово";
+            tokenBtnQ.className = "btn-token btn-token-q release";
+            tokenBtnQ.disabled = false;
+          } else {
+            inputQ.disabled = true;
+            tokenBtnQ.textContent = "🔒 Пишет одноклассник";
+            tokenBtnQ.className = "btn-token btn-token-q release";
+            tokenBtnQ.disabled = true;
+          }
+        }
+
+        // Gestione Stato Risposta (A)
+        if (isTeacher) {
+          inputA.disabled = false;
+          tokenBtnA.style.display = "none";
+        } else {
+          tokenBtnA.style.display = "inline-block";
+          if (!aWriter) {
+            inputA.disabled = true;
+            tokenBtnA.textContent = "✋ Взять слово (Ответ)";
+            tokenBtnA.className = "btn-token btn-token-a";
+            tokenBtnA.disabled = false;
+          } else if (aWriter === myClientId) {
+            inputA.disabled = false;
+            tokenBtnA.textContent = "✔ Сдать слово";
+            tokenBtnA.className = "btn-token btn-token-a release";
+            tokenBtnA.disabled = false;
+          } else {
+            inputA.disabled = true;
+            tokenBtnA.textContent = "🔒 Пишет одноклассник";
+            tokenBtnA.className = "btn-token btn-token-a release";
+            tokenBtnA.disabled = true;
+          }
+        }
+
+        const cardResponses = responsesData[i] || {};
+        if (qWriter !== myClientId) inputQ.value = cardResponses.q || "";
+        if (aWriter !== myClientId) inputA.value = cardResponses.a || "";
+      });
+    }
+
+    if (window.firebase) {
+      try {
+        firebase.initializeApp(firebaseConfig);
+        answersRef = firebase.database().ref("esercizi/unita10-gusti-piace-formale-melanzane");
+
+        answersRef.on("value", (snapshot) => {
+          const data = snapshot.val() || {};
+          responsesData = data.responses || {};
+          writersData = data.writers || {};
+          updateUIState();
+        });
+      } catch (e) {
+        console.error("Errore Firebase:", e);
+      }
+    }
+
+    resetButton.addEventListener("click", () => {
+      if (confirm("Сбросить все ответы? · Vuoi azzerare tutte le risposte?")) {
+        answersRef.set({
+          responses: {},
+          writers: {}
+        });
+      }
+    });
+  </script>
+</body>
+</html>
