@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unità 10 — Riordina i dialoghi</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: 'Segoe UI', Inter, system-ui, -apple-system, sans-serif;
+      --primary: #6556bd;
+      --primary-light: #f0edff;
+      --primary-dark: #4c3e99;
+      --accent: #ffb703;
+      --bg-main: #f7f6fb;
+      --card-bg: #ffffff;
+      --text: #24213a;
+      --text-muted: #68667a;
+      --success: #20a16b;
+      --success-bg: #d9f4e8;
+      --border: #ebe9f2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 16px;
+      background:
+        radial-gradient(ellipse at 50% -12%, rgba(155, 142, 240, .24), transparent 42%),
+        var(--bg-main);
+      color: var(--text);
+    }
+
+    .container { width: min(100%, 720px); margin: 0 auto; }
+
+    .hero { margin: 8px 0 24px; text-align: center; }
+    .eyebrow {
+      display: inline-block;
+      color: var(--primary);
+      font-size: .8rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      background: var(--primary-light);
+      padding: 7px 14px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+      box-shadow: inset 0 0 0 1px rgba(101, 86, 189, .08);
+    }
+    h1 {
+      margin: 4px 0;
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      letter-spacing: -.03em;
+      color: var(--primary-dark);
+      line-height: 1.15;
+    }
+    .hero-subtitle {
+      width: fit-content;
+      max-width: 100%;
+      margin: 12px auto 0;
+      padding: 10px 16px;
+      border: 1px solid #ded8f7;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .8);
+      color: var(--primary-dark);
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.45;
+      box-shadow: 0 4px 14px rgba(50, 38, 94, .05);
+    }
+
+    /* Barra controlli superiore (Insegnante & Reset) */
+    .top-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding: 12px 18px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--card-bg);
+      box-shadow: 0 6px 18px rgba(50, 38, 94, .04);
+    }
+    .teacher-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .teacher-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .88rem;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+      user-select: none;
+    }
+    .teacher-toggle input { accent-color: var(--primary); }
+    
+    button.reset-btn {
+      padding: 6px 12px;
+      border: 1px solid #fca5a5;
+      border-radius: 10px;
+      background: #fff;
+      color: #dc2626;
+      font: inherit;
+      font-size: .8rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: none;
+    }
+    button.reset-btn:hover { background: #fef2f2; }
+
+    /* Paginatore a Schede in alto (A, B, C) */
+    .tabs-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .tab-btn {
+      flex: 1;
+      height: 42px;
+      padding: 0 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text-muted);
+      font-weight: 800;
+      font-size: .95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all .15s ease;
+    }
+    .tab-btn:hover { border-color: #bfaee6; color: var(--primary); }
+    .tab-icon { font-size: 1.05rem; }
+    .tab-btn.active-tab {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(101, 86, 189, .25);
+    }
+    .tab-btn.locked-tab {
+      opacity: .6;
+      background: #f4f3f9;
+      cursor: not-allowed;
+    }
+    .tab-btn.approved-tab,
+    .tab-btn.correct-tab {
+      background: var(--success-bg);
+      color: #047857;
+      border-color: #a7f3d0;
+    }
+    .tab-btn.correct-tab { opacity: 1; }
+
+    /* Card del Dialogo Corrente */
+    .card {
+      padding: clamp(20px, 4vw, 32px);
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      background: var(--card-bg);
+      box-shadow: 0 20px 55px rgba(50, 38, 94, .08);
+    }
+
+    .dialogue-box {
+      display: none;
+    }
+    .dialogue-box.current-view {
+      display: block;
+      animation: fadeIn .25s ease-in-out;
+    }
+    .dialogue-box.current-view .dialogue-header {
+      margin: -8px -8px 20px;
+      padding: 13px 16px;
+      border: 1px solid #ded8f7;
+      border-radius: 14px;
+      background: linear-gradient(110deg, var(--primary-light), #fff 85%);
+    }
+    .dialogue-box.current-view .dialogue-title {
+      font-size: 1.18rem;
+    }
+    .dialogue-box.current-view .dialogue-icon {
+      width: 40px;
+      height: 40px;
+      font-size: 1.35rem;
+    }
+    .dialogue-box.current-view .badge-active {
+      box-shadow: 0 0 0 3px rgba(225, 29, 72, .1);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dialogue-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .dialogue-heading {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
+    .dialogue-icon {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      border-radius: 11px;
+      background: rgba(255, 255, 255, .85);
+      box-shadow: 0 2px 8px rgba(50, 38, 94, .08);
+      font-size: 1.2rem;
+    }
+    .dialogue-title {
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--primary-dark);
+    }
+    .badge {
+      font-size: .75rem;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      letter-spacing: .015em;
+    }
+    .badge-locked { background: #e5e7eb; color: #6b7280; }
+    .badge-active { background: #ffe4e6; color: #e11d48; }
+    .badge-approved { background: var(--success-bg); color: #047857; }
+
+    /* Lista delle battute ordinabili */
+    .lines-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .line-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+      transition: all .2s ease;
+    }
+    .line-item.fixed-first {
+      background: #f8f7fc;
+      border-color: #dcd6f7;
+    }
+    .line-item.correct-line {
+      background: var(--success-bg);
+      border-color: #a7f3d0;
+    }
+    .line-item.correct-line .line-number {
+      background: #b8efd5;
+      color: #047857;
+    }
+    .line-item.just-moved {
+      animation: lineMoved .35s ease-out;
+    }
+    @keyframes lineMoved {
+      0% { background: #f0edff; border-color: #c4b9f0; transform: translateX(5px); }
+      100% { background: #fff; border-color: var(--border); transform: translateX(0); }
+    }
+    .order-feedback {
+      display: none;
+      margin: -8px 0 16px;
+      padding: 10px 14px;
+      border: 1px solid #a7f3d0;
+      border-radius: 12px;
+      background: var(--success-bg);
+      color: #047857;
+      font-size: .92rem;
+      font-weight: 800;
+    }
+    .order-feedback.is-visible { display: block; }
+    .line-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 800;
+      font-size: .9rem;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .line-text {
+      flex: 1;
+      font-size: .98rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .move-btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .btn-move {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid #d9d3ed;
+      background: #f0edff;
+      color: var(--primary-dark);
+      font-weight: 800;
+      font-size: .85rem;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      line-height: 1;
+      transition: background 0.15s;
+    }
+    .btn-move:hover:not(:disabled) { background: #e2daf9; }
+    .btn-move:disabled { opacity: .3; cursor: not-allowed; }
+
+    /* Footer con Approvazione Docente */
+    .card-footer {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+      border-top: 1px solid var(--border);
+      padding-top: 18px;
+    }
+
+    .btn-approve {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: .9rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(101, 86, 189, 0.2);
+    }
+    .btn-approve:hover { background: var(--primary-dark); }
+
+    @media (max-width: 520px) {
+      body { padding: 16px 8px; }
+      .hero { margin: 4px 0 18px; }
+      .hero-subtitle { padding: 9px 12px; font-size: .92rem; }
+      .top-controls {
+        gap: 8px;
+        margin-bottom: 14px;
+        padding: 10px 12px;
+      }
+      .teacher-controls { gap: 8px; }
+      .teacher-toggle { gap: 6px; font-size: .8rem; }
+      button.reset-btn { padding: 6px 9px; font-size: .75rem; }
+      .tabs-bar { gap: 6px; margin-bottom: 14px; }
+      .tab-btn { height: 40px; padding: 0 8px; font-size: .86rem; }
+      .card { padding: 18px 14px; border-radius: 20px; }
+      .dialogue-box.current-view .dialogue-header {
+        margin: -4px -4px 18px;
+        padding: 11px 12px;
+      }
+      .dialogue-box.current-view .dialogue-title { font-size: 1.05rem; }
+      .card-footer { justify-content: stretch; }
+      .btn-approve { width: 100%; text-align: center; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <header class="hero">
+      <span class="eyebrow">Unità 10 · Диалоги</span>
+      <h1>Расставьте реплики в диалогах</h1>
+      <p class="hero-subtitle">Metti in ordine le battute dei tre dialoghi</p>
+    </header>
+
+    <!-- Barra Controlli Superiore -->
+    <div class="top-controls">
+      <div class="teacher-controls">
+        <label class="teacher-toggle">
+          <input type="checkbox" id="teacher-mode">
+          Режим учителя · Modalità insegnante
+        </label>
+      </div>
+      <button id="reset" class="reset-btn" type="button">⚠️ Сбросить · Azzera</button>
+    </div>
+
+    <!-- Paginatore a Schede in alto (A, B, C) -->
+    <div id="tabs-bar" class="tabs-bar"></div>
+
+    <!-- Card del Dialogo Corrente -->
+    <section class="card">
+      <div id="dialogues-container"></div>
+    </section>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "INSERISCI_API_KEY",
+      authDomain: "esercizi-parlo-italiano.firebaseapp.com",
+      databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "esercizi-parlo-italiano",
+      appId: "INSERISCI_APP_ID"
+    };
+
+    const dialoguesData = [
+      {
+        id: "A",
+        icon: "👜",
+        title: "Диалог A",
+        firstLine: "— Scusi, quanto costa questa borsa?",
+        movableLines: [
+          "— Anche questa costa 75 euro.",
+          "— Bene, prendo tutte e due le borse. Quant’è?",
+          "— In tutto sono 150 euro, Signora.",
+          "— Costa 75 euro, Signora.",
+          "— E questa, quanto costa?"
+        ],
+        correctOrder: [3, 4, 0, 1, 2]
+      },
+      {
+        id: "B",
+        icon: "🧥",
+        title: "Диалог B",
+        firstLine: "— Buongiorno, avete una giacca sportiva di lana?",
+        movableLines: [
+          "— 280 euro.",
+          "— Sì, ma è di ottima qualità.",
+          "— Mi dispiace, non abbiamo giacche di questo colore. Va bene anche una nera?",
+          "— Sì, Signore, di che colore?",
+          "— E quanto costa quella nera?",
+          "— Grigia o bianca.",
+          "— Mi sembra un po’ cara, però."
+        ],
+        correctOrder: [3, 5, 2, 4, 0, 6, 1]
+      },
+      {
+        id: "C",
+        icon: "🧣",
+        title: "Диалог C",
+        firstLine: "— Buongiorno, cerco un cappotto nero o blu.",
+        movableLines: [
+          "— No, purtroppo non abbiamo pellicce.",
+          "— Mi sembra un po’ troppo giovanile.",
+          "— Non troppo lungo.",
+          "— Lungo o corto?",
+          "— Guardi, Signora, questo modello va bene?",
+          "— Sì, grazie. Avete anche pellicce?",
+          "— Vuole vedere un modello più elegante?"
+        ],
+        correctOrder: [3, 2, 4, 1, 6, 5, 0]
+      }
+    ];
+
+    const container = document.getElementById("dialogues-container");
+    const tabsBar = document.getElementById("tabs-bar");
+    const teacherToggle = document.getElementById("teacher-mode");
+    const resetButton = document.getElementById("reset");
+
+    let answersRef = null;
+    let currentActiveStep = 0;       // Scheda attualmente aperta
+    let currentlyViewedTab = 0;      // Scheda visualizzata a schermo
+    let isTeacher = false;
+    let currentOrders = {};          // Ordine salvato su Firebase
+    let recentMove = null;
+    let recentMoveTimer = null;
+
+    const dialogueBoxes = [];
+    const tabButtons = [];
+    const badges = [];
+    const orderFeedbacks = [];
+
+    function isDialogueCorrect(dIdx) {
+      const dialogue = dialoguesData[dIdx];
+      const order = currentOrders[dIdx] || dialogue.movableLines.map((_, index) => index);
+      return order.length === dialogue.correctOrder.length &&
+        order.every((lineIndex, position) => lineIndex === dialogue.correctOrder[position]);
+    }
+
+    // Generazione delle 3 schede
+    dialoguesData.forEach((d, dIdx) => {
+      // 1. Tab in alto
+      const tabBtn = document.createElement("button");
+      tabBtn.className = "tab-btn locked-tab";
+      const tabIcon = document.createElement("span");
+      tabIcon.className = "tab-icon";
+      tabIcon.textContent = d.icon;
+      const tabLabel = document.createElement("span");
+      tabLabel.textContent = `Диалог ${d.id}`;
+      tabBtn.append(tabIcon, tabLabel);
+      tabBtn.type = "button";
+      tabBtn.onclick = () => {
+        if (isTeacher || dIdx <= currentActiveStep) {
+          currentlyViewedTab = dIdx;
+          updateUIState();
+        }
+      };
+      tabsBar.appendChild(tabBtn);
+      tabButtons.push(tabBtn);
+
+      // 2. Box del Dialogo
+      const box = document.createElement("div");
+      box.className = "dialogue-box";
+      if (dIdx === 0) box.classList.add("current-view");
+
+      const header = document.createElement("div");
+      header.className = "dialogue-header";
+
+      const heading = document.createElement("div");
+      heading.className = "dialogue-heading";
+
+      const dialogueIcon = document.createElement("span");
+      dialogueIcon.className = "dialogue-icon";
+      dialogueIcon.textContent = d.icon;
+
+      const title = document.createElement("div");
+      title.className = "dialogue-title";
+      title.textContent = d.title;
+      heading.append(dialogueIcon, title);
+
+      const badge = document.createElement("span");
+      badge.className = "badge badge-locked";
+      badge.textContent = "Закрыта · Bloccata";
+
+      header.append(heading, badge);
+
+      const orderFeedback = document.createElement("div");
+      orderFeedback.className = "order-feedback";
+      orderFeedback.setAttribute("aria-live", "polite");
+      orderFeedback.textContent = "✅ Dialogo corretto! Ordine completato.";
+
+      const listDiv = document.createElement("div");
+      listDiv.className = "lines-list";
+      listDiv.id = `lines-list-${dIdx}`;
+
+      // Footer con il pulsante Approva del docente
+      const footer = document.createElement("div");
+      footer.className = "card-footer";
+
+      const approveBtn = document.createElement("button");
+      approveBtn.className = "btn-approve";
+      approveBtn.type = "button";
+      approveBtn.textContent = "✔️ Approva e sblocca il successivo ➔";
+      approveBtn.onclick = () => {
+        if (answersRef) {
+          const nextStep = Math.min(dialoguesData.length - 1, currentActiveStep + 1);
+          answersRef.update({
+            activeStep: nextStep
+          });
+          currentlyViewedTab = nextStep;
+        }
+      };
+
+      footer.appendChild(approveBtn);
+      box.append(header, orderFeedback, listDiv, footer);
+      container.appendChild(box);
+
+      dialogueBoxes.push(box);
+      badges.push(badge);
+      orderFeedbacks.push(orderFeedback);
+    });
+
+    teacherToggle.addEventListener("change", (e) => {
+      isTeacher = e.target.checked;
+      resetButton.style.display = isTeacher ? "inline-block" : "none";
+      updateUIState();
+    });
+
+    // Spostamento fluido delle battute
+    function moveLine(dIdx, lineIndex, direction) {
+      if (!answersRef || isDialogueCorrect(dIdx) || (currentlyViewedTab !== dIdx && !isTeacher)) return;
+
+      const d = dialoguesData[dIdx];
+      let order = currentOrders[dIdx] ? [...currentOrders[dIdx]] : [...Array(d.movableLines.length).keys()];
+      
+      const targetIndex = lineIndex + direction;
+      if (targetIndex < 0 || targetIndex >= order.length) return;
+
+      const temp = order[lineIndex];
+      order[lineIndex] = order[targetIndex];
+      order[targetIndex] = temp;
+
+      recentMove = { dialogueIndex: dIdx, position: targetIndex };
+      clearTimeout(recentMoveTimer);
+      recentMoveTimer = setTimeout(() => { recentMove = null; }, 700);
+      answersRef.child("orders").child(String(dIdx)).set(order);
+    }
+
+    // Renderizza le battute
+    function renderLines(dIdx) {
+      const listDiv = document.getElementById(`lines-list-${dIdx}`);
+      listDiv.innerHTML = "";
+      const d = dialoguesData[dIdx];
+
+      const isCorrect = isDialogueCorrect(dIdx);
+
+      // Battuta [1] fissa
+      const firstItem = document.createElement("div");
+      firstItem.className = "line-item fixed-first";
+      if (isCorrect) firstItem.classList.add("correct-line");
+      firstItem.innerHTML = `
+        <div class="line-number">1</div>
+        <div class="line-text">${d.firstLine}</div>
+      `;
+      listDiv.appendChild(firstItem);
+
+      // Battute mobili
+      const order = currentOrders[dIdx] || [...Array(d.movableLines.length).keys()];
+      const canMove = !isCorrect && (currentlyViewedTab === dIdx && (dIdx <= currentActiveStep || isTeacher));
+
+      order.forEach((lineIdx, positionIdx) => {
+        const item = document.createElement("div");
+        item.className = "line-item";
+        if (isCorrect) item.classList.add("correct-line");
+        if (!isCorrect && recentMove && recentMove.dialogueIndex === dIdx && recentMove.position === positionIdx) {
+          item.classList.add("just-moved");
+        }
+
+        const numDiv = document.createElement("div");
+        numDiv.className = "line-number";
+        numDiv.textContent = positionIdx + 2;
+
+        const textDiv = document.createElement("div");
+        textDiv.className = "line-text";
+        textDiv.textContent = d.movableLines[lineIdx];
+
+        const btnGroup = document.createElement("div");
+        btnGroup.className = "move-btn-group";
+
+        const upBtn = document.createElement("button");
+        upBtn.className = "btn-move";
+        upBtn.type = "button";
+        upBtn.textContent = "▲";
+        upBtn.disabled = !canMove || positionIdx === 0;
+        upBtn.onclick = () => moveLine(dIdx, positionIdx, -1);
+
+        const downBtn = document.createElement("button");
+        downBtn.className = "btn-move";
+        downBtn.type = "button";
+        downBtn.textContent = "▼";
+        downBtn.disabled = !canMove || positionIdx === order.length - 1;
+        downBtn.onclick = () => moveLine(dIdx, positionIdx, 1);
+
+        btnGroup.append(upBtn, downBtn);
+        item.append(numDiv, textDiv, btnGroup);
+        listDiv.appendChild(item);
+      });
+    }
+
+    function updateUIState() {
+      dialogueBoxes.forEach((box, i) => {
+        const badge = badges[i];
+        const tabBtn = tabButtons[i];
+        const approveBtn = box.querySelector(".btn-approve");
+
+        if (i === currentlyViewedTab) {
+          box.classList.add("current-view");
+        } else {
+          box.classList.remove("current-view");
+        }
+
+        tabBtn.className = "tab-btn";
+        if (isDialogueCorrect(i)) tabBtn.classList.add("correct-tab");
+        if (i === currentlyViewedTab) tabBtn.classList.add("active-tab");
+        else if (i < currentActiveStep) tabBtn.classList.add("approved-tab");
+        else if (i > currentActiveStep && !isTeacher) tabBtn.classList.add("locked-tab");
+
+        orderFeedbacks[i].classList.toggle("is-visible", isDialogueCorrect(i));
+
+        if (i < currentActiveStep) {
+          badge.className = "badge badge-approved";
+          badge.textContent = "Одобрено · Approvato";
+          approveBtn.style.display = isTeacher ? "inline-block" : "none";
+        } else if (i === currentActiveStep) {
+          badge.className = "badge badge-active";
+          badge.textContent = "Открыто · In corso";
+          approveBtn.style.display = isTeacher ? "inline-block" : "none";
+        } else {
+          badge.className = "badge badge-locked";
+          badge.textContent = "Закрыта · Bloccata";
+          approveBtn.style.display = isTeacher ? "inline-block" : "none";
+        }
+
+        renderLines(i);
+      });
+    }
+
+    if (window.firebase) {
+      try {
+        firebase.initializeApp(firebaseConfig);
+        answersRef = firebase.database().ref("esercizi/unita10-riordina-dialoghi");
+
+        answersRef.on("value", (snapshot) => {
+          const data = snapshot.val() || {};
+          currentActiveStep = (data.activeStep !== undefined) ? data.activeStep : 0;
+          currentOrders = data.orders || {};
+
+          updateUIState();
+        });
+      } catch (e) {
+        console.error("Errore Firebase:", e);
+      }
+    }
+
+    resetButton.addEventListener("click", () => {
+      if (confirm("Сбросить все диалоги? · Vuoi azzerare l'esercizio?")) {
+        answersRef.set({
+          activeStep: 0,
+          orders: {}
+        });
+        currentlyViewedTab = 0;
+      }
+    });
+  </script>
+</body>
+</html>
