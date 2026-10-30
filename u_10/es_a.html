@@ -36,6 +36,11 @@
     .container { width: min(100%, 820px); margin: 0 auto; }
 
     .hero { margin-bottom: 20px; text-align: center; }
+    .hero-subtitle {
+      margin: 8px 0 0;
+      color: var(--text-muted);
+      font-size: .98rem;
+    }
     .eyebrow {
       display: inline-block;
       color: var(--primary);
@@ -91,6 +96,7 @@
     }
     .teacher-controls {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       gap: 12px;
     }
@@ -125,24 +131,6 @@
       background: var(--card-bg);
       box-shadow: 0 16px 40px rgba(50, 38, 94, 0.05);
     }
-    .card-heading {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 12px;
-      margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--border);
-    }
-    .progress-badge {
-      background: var(--primary-light);
-      color: var(--primary);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-weight: 700;
-      font-size: .85rem;
-    }
-
     .section-box {
       padding: 22px;
       margin-bottom: 22px;
@@ -156,8 +144,8 @@
       box-shadow: 0 0 0 4px rgba(101, 86, 189, 0.12);
     }
     .section-box.locked {
-      opacity: .5;
       background: #fafafc;
+      border-color: #e3e1eb;
     }
     .section-box.approved {
       border-color: #d1fae5;
@@ -167,15 +155,28 @@
     .section-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
+      gap: 12px;
       margin-bottom: 14px;
     }
     .section-title {
+      min-width: 0;
       font-weight: 700;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
+      line-height: 1.4;
       display: flex;
       align-items: center;
     }
+    .section-name { overflow-wrap: anywhere; }
+    .section-hint {
+      margin: -4px 0 16px 44px;
+      color: var(--text-muted);
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1.45;
+    }
+    .section-box.locked .section-title { color: #555267; }
+    .section-box.approved .section-title { color: #166534; }
     .number {
       display: inline-grid;
       width: 32px;
@@ -264,13 +265,6 @@
     .options-container {
       margin-top: 14px;
     }
-    .prompt-text {
-      font-weight: 700;
-      font-size: 1.05rem;
-      color: var(--text);
-      margin-bottom: 10px;
-    }
-
     .options-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -295,12 +289,50 @@
       border-color: var(--primary);
       background: var(--primary-light);
     }
+    .option-btn:focus-visible, button:focus-visible, input:focus-visible {
+      outline: 3px solid #312e81;
+      outline-offset: 3px;
+    }
     .option-btn.selected {
+      justify-content: space-between;
+      gap: 12px;
       border-color: var(--primary);
       background: var(--primary-light);
       color: var(--primary-dark);
       font-weight: 700;
       box-shadow: 0 0 0 2px var(--primary);
+    }
+    .option-btn.selected::after {
+      content: "✓";
+      display: grid;
+      width: 24px;
+      height: 24px;
+      flex: 0 0 24px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 800;
+    }
+    .option-btn.selected.correct {
+      border-color: #15803d;
+      background: #dcfce7;
+      color: #166534;
+      box-shadow: inset 0 0 0 1px #15803d, 0 4px 12px rgba(21, 128, 61, .12);
+    }
+    .option-btn.selected.correct::after {
+      content: "✓";
+      background: #15803d;
+    }
+    .option-btn.selected.incorrect {
+      border-color: #dc2626;
+      background: #fee2e2;
+      color: #991b1b;
+      box-shadow: inset 0 0 0 1px #dc2626, 0 4px 12px rgba(220, 38, 38, .12);
+    }
+    .option-btn.selected.incorrect::after {
+      content: "×";
+      background: #dc2626;
     }
     .option-btn:disabled {
       cursor: not-allowed;
@@ -320,6 +352,8 @@
       padding: 10px 18px;
       border-radius: 10px;
       font-weight: 700;
+      max-width: 100%;
+      line-height: 1.4;
       font-size: .9rem;
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(101, 86, 189, 0.2);
@@ -330,10 +364,114 @@
       transform: translateY(-1px);
     }
 
+    /* Rifiniture visive */
+    body {
+      background:
+        radial-gradient(ellipse at 50% -12%, rgba(155, 142, 240, .24), transparent 42%),
+        var(--bg-main);
+    }
+    .container { width: min(100%, 760px); }
+    .hero { margin: 8px 0 28px; }
+    .eyebrow {
+      letter-spacing: .08em;
+      padding: 7px 14px;
+      box-shadow: inset 0 0 0 1px rgba(101, 86, 189, .08);
+    }
+    h1 {
+      color: var(--primary-dark);
+      line-height: 1.15;
+    }
+    .hero-subtitle { margin-top: 10px; }
+    .top-controls {
+      justify-content: flex-start;
+      border-radius: 14px;
+      box-shadow: 0 6px 18px rgba(50, 38, 94, .04);
+    }
+    .teacher-toggle { color: var(--text); }
+    .teacher-toggle input { accent-color: var(--primary); }
+    .card {
+      border-radius: 26px;
+      box-shadow: 0 20px 55px rgba(50, 38, 94, .08);
+    }
+    .section-box {
+      position: relative;
+      overflow: hidden;
+      padding: 22px;
+      border-radius: 18px;
+      box-shadow: 0 5px 16px rgba(50, 38, 94, .035);
+    }
+    .section-box.active {
+      border-color: #8b7ce0;
+      background: linear-gradient(145deg, #fff 55%, #faf9ff);
+      box-shadow: 0 0 0 3px rgba(101, 86, 189, .11), 0 10px 24px rgba(50, 38, 94, .06);
+    }
+    .section-box.active::before,
+    .section-box.approved::before {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 5px;
+      background: var(--primary);
+      content: "";
+    }
+    .section-box.approved::before { background: var(--success); }
+    .section-box.locked { background: #fbfaff; }
+    .section-header { align-items: center; }
+    .number {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+    }
+    .badge { letter-spacing: .015em; }
+    .question-form-card {
+      padding: 16px;
+      border-color: #e4defa;
+      background: #faf9ff;
+    }
+    .question-form-card label {
+      color: var(--primary-dark);
+      font-size: .92rem;
+    }
+    textarea.question-input {
+      border-color: #d9d3ed;
+      background: #fff;
+      line-height: 1.5;
+    }
+    textarea.question-input:disabled { background: #f2f0f8; }
+    .section-hint {
+      margin: 0 0 16px;
+      padding: 0 0 0 12px;
+      border-left: 3px solid #d8d1f5;
+      color: #50496c;
+    }
+    .options-container { margin-top: 0; }
+    .option-btn {
+      min-height: 48px;
+      border-color: #e1deeb;
+      box-shadow: 0 2px 5px rgba(36, 33, 58, .025);
+    }
+    .option-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 12px rgba(101, 86, 189, .1);
+    }
+    .option-btn.selected {
+      box-shadow: inset 0 0 0 1px var(--primary), 0 4px 12px rgba(101, 86, 189, .1);
+    }
+    .btn-token, .btn-approve, button.reset-btn { min-height: 42px; }
+    .btn-approve { border-radius: 12px; }
+
     @media (max-width: 520px) {
       body { padding: 16px 8px; }
       .top-controls { flex-direction: column; align-items: flex-start; }
       .teacher-controls { width: 100%; justify-content: space-between; }
+      .card { padding: 18px 14px; border-radius: 20px; }
+      .section-box { padding: 16px 13px; border-radius: 16px; }
+      .section-header { flex-direction: row; align-items: center; }
+      .badge { align-self: auto; font-size: .68rem; padding: 5px 7px; }
+      .section-title { font-size: 1rem; }
+      .option-btn { padding: 11px 12px; font-size: .95rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
     }
   </style>
 </head>
@@ -342,27 +480,23 @@
   <main class="container">
     <header class="hero">
       <span class="eyebrow">Unità 10 · Lettura e Comprensione</span>
-      <h1>Выберите правильный вариант</h1>
+      <h1>Выберите правильный ответ</h1>
+      <p class="hero-subtitle">Scegli la risposta corretta</p>
     </header>
 
     <!-- Barra Controlli Superiore -->
     <div id="status" class="top-controls">
-      <span class="status-indicator">Esercizio Collaborativo</span>
       <div class="teacher-controls">
         <label class="teacher-toggle">
           <input type="checkbox" id="teacher-mode">
-          Modalità Insegnante
+          Режим учителя · Modalità insegnante
         </label>
-        <button id="reset" class="reset-btn" type="button" style="display:none;">⚠️ Resetta</button>
+        <button id="reset" class="reset-btn" type="button" style="display:none;">⚠️ Сбросить · Azzera</button>
       </div>
     </div>
 
     <!-- Card dell'Esercizio -->
     <section class="card">
-      <div class="card-heading">
-        <span id="progress-badge" class="progress-badge">0 di 10</span>
-      </div>
-
       <form id="answers" autocomplete="off"></form>
     </section>
   </main>
@@ -379,23 +513,22 @@
     };
 
     const sectionsData = [
-      { hint: "La signora cerca...", options: ["una borsa piccola e nera", "una borsa piccola e rossa"] },
-      { hint: "Dietro al bancone...", options: ["c’è una ragazza giovane", "c’è un ragazzo giovane"] },
-      { hint: "Il commesso...", options: ["è elegante", "è giovane"] },
-      { hint: "La signora...", options: ["è bella", "è elegante"] },
-      { hint: "Nel primo negozio...", options: ["non ci sono borse rosse", "non ci sono borse"] },
-      { hint: "È un negozio...", options: ["di frutta e verdura", "di abbigliamento"] },
-      { hint: "Il primo giorno la signora...", options: ["compra una borsa", "fa la spesa"] },
-      { hint: "Il negozio che la signora visita il secondo giorno...", options: ["è un negozio di frutta e verdura", "è un negozio di borse"] },
-      { hint: "Il commesso del negozio di borse...", options: ["è lo stesso commesso del giorno prima", "è un altro ragazzo"] },
-      { hint: "Alla fine la signora...", options: ["non compra niente", "compra una borsa"] }
+      { hint: "La signora cerca...", options: ["una borsa piccola e nera", "una borsa piccola e rossa"], correctOption: 1 },
+      { hint: "Dietro al bancone...", options: ["c’è una ragazza giovane", "c’è un ragazzo giovane"], correctOption: 1 },
+      { hint: "Il commesso...", options: ["è elegante", "è giovane"], correctOption: 1 },
+      { hint: "La signora...", options: ["è bella", "è elegante"], correctOption: 1 },
+      { hint: "Nel primo negozio...", options: ["non ci sono borse rosse", "non ci sono borse"], correctOption: 1 },
+      { hint: "È un negozio...", options: ["di frutta e verdura", "di abbigliamento"], correctOption: 0 },
+      { hint: "Il primo giorno la signora...", options: ["compra una borsa", "fa la spesa"], correctOption: 1 },
+      { hint: "Il negozio che la signora visita il secondo giorno...", options: ["è un negozio di frutta e verdura", "è un negozio di borse"], correctOption: 1 },
+      { hint: "Il commesso del negozio di borse...", options: ["è lo stesso commesso del giorno prima", "è un altro ragazzo"], correctOption: 0 },
+      { hint: "Alla fine la signora...", options: ["non compra niente", "compra una borsa"], correctOption: 1 }
     ];
 
     const myClientId = "user_" + Math.random().toString(36).substring(2, 9);
 
     const form = document.getElementById("answers");
     const statusDiv = document.getElementById("status");
-    const progressBadge = document.getElementById("progress-badge");
     const teacherToggle = document.getElementById("teacher-mode");
     const resetButton = document.getElementById("reset");
 
@@ -417,24 +550,25 @@
 
       const title = document.createElement("div");
       title.className = "section-title";
-      title.innerHTML = `<span class="number">${index + 1}</span>Domanda e Risposta`;
+      title.innerHTML = `<span class="number">${index + 1}</span>`;
 
       const badge = document.createElement("span");
       badge.className = "badge badge-locked";
-      badge.textContent = "Bloccata";
+      badge.textContent = "Закрыта · Bloccata";
 
       header.append(title, badge);
 
       // Box Testo Formulazione Domanda (In alto)
       const qCard = document.createElement("div");
       qCard.className = "question-form-card";
-      qCard.innerHTML = `<label>✍️ Domanda della classe:</label>`;
+      qCard.innerHTML = `<label for="question-input-${index}">✍️ Вопрос · Domanda:</label>`;
 
       const qInput = document.createElement("textarea");
+      qInput.id = `question-input-${index}`;
       qInput.className = "question-input";
       qInput.rows = 2;
       qInput.disabled = true;
-      qInput.placeholder = "In attesa dell'insegnante per sbloccare...";
+      qInput.placeholder = "In attesa dell'insegnante · Ждём, пока учитель откроет блок...";
 
       qInput.addEventListener("input", () => {
         if (answersRef && currentActiveStep === index && currentWriter === myClientId) {
@@ -450,7 +584,7 @@
       const tokenBtn = document.createElement("button");
       tokenBtn.className = "btn-token";
       tokenBtn.type = "button";
-      tokenBtn.textContent = "✋ Prendi la parola";
+      tokenBtn.textContent = "✋ Взять слово · Prendi la parola";
       tokenBtn.onclick = () => {
         if (answersRef && currentActiveStep === index) {
           if (currentWriter === myClientId) {
@@ -464,13 +598,13 @@
       tokenDiv.appendChild(tokenBtn);
       qCard.append(qInput, tokenDiv);
 
+      const hint = document.createElement("div");
+      hint.className = "section-hint";
+      hint.textContent = sec.hint;
+
       // Frase guida e Opzioni (Sotto)
       const optContainer = document.createElement("div");
       optContainer.className = "options-container";
-
-      const promptHeading = document.createElement("div");
-      promptHeading.className = "prompt-text";
-      promptHeading.textContent = sec.hint;
 
       const optGrid = document.createElement("div");
       optGrid.className = "options-grid";
@@ -481,10 +615,10 @@
         btn.type = "button";
         btn.className = "option-btn";
         btn.textContent = `${optIdx + 1}. ${optText}`;
-        btn.disabled = true;
+        btn.setAttribute("aria-pressed", "false");
 
         btn.onclick = () => {
-          if (answersRef && currentActiveStep === index && currentWriter === myClientId) {
+          if (answersRef && index <= currentActiveStep) {
             answersRef.child("responses").child(String(index)).child("selectedOption").set(optIdx);
           }
         };
@@ -493,7 +627,7 @@
         optButtons.push(btn);
       });
 
-      optContainer.append(promptHeading, optGrid);
+      optContainer.appendChild(optGrid);
 
       // Pulsante Unico Insegnante
       const actionDiv = document.createElement("div");
@@ -523,7 +657,7 @@
       };
 
       actionDiv.appendChild(actionBtn);
-      box.append(header, qCard, optContainer, actionDiv);
+      box.append(header, qCard, hint, optContainer, actionDiv);
       form.appendChild(box);
 
       sectionElements.push({
@@ -550,9 +684,8 @@
           // Blocco Approvato
           box.classList.add("approved");
           badge.className = "badge badge-approved";
-          badge.textContent = "Approvata";
+          badge.textContent = "Одобрено · Approvata";
           qInput.disabled = true;
-          optButtons.forEach(b => b.disabled = true);
           tokenDiv.style.display = "none";
           actionDiv.style.display = "none";
         } else if (i === currentActiveStep) {
@@ -561,42 +694,39 @@
 
           if (!currentWriter) {
             badge.className = "badge badge-active";
-            badge.textContent = "In corso";
+            badge.textContent = "Открыто · In corso";
             qInput.disabled = true;
-            qInput.placeholder = "Scrivi la risposta";
-            optButtons.forEach(b => b.disabled = true);
-
+            qInput.placeholder = "Напишите здесь вопрос · Scrivi qui la domanda";
+  
             tokenDiv.style.display = "flex";
-            tokenBtn.textContent = "✋ Prendi la parola";
+            tokenBtn.textContent = "✋ Взять слово · Prendi la parola";
             tokenBtn.className = "btn-token";
             tokenBtn.disabled = false;
           } else if (currentWriter === myClientId) {
             badge.className = "badge badge-writing";
-            badge.textContent = "Stai scrivendo...";
+            badge.textContent = "Вы пишете · Stai scrivendo";
             qInput.disabled = false;
-            qInput.placeholder = "Scrivi la risposta";
-            optButtons.forEach(b => b.disabled = false);
+            qInput.placeholder = "Напишите здесь вопрос · Scrivi qui la domanda";
 
             tokenDiv.style.display = "flex";
-            tokenBtn.textContent = "✔ Lascia la parola";
+            tokenBtn.textContent = "✔ Передать слово · Lascia la parola";
             tokenBtn.className = "btn-token release";
             tokenBtn.disabled = false;
           } else {
             badge.className = "badge badge-writing";
-            badge.textContent = "Un compagno sta scrivendo...";
+            badge.textContent = "Пишет одноклассник · Un compagno sta scrivendo";
             qInput.disabled = true;
-            qInput.placeholder = "Un compagno sta scrivendo...";
-            optButtons.forEach(b => b.disabled = true);
-
+            qInput.placeholder = "Пишет одноклассник · Un compagno sta scrivendo";
+  
             tokenDiv.style.display = "flex";
-            tokenBtn.textContent = "🔒 In corso da un compagno";
+            tokenBtn.textContent = "🔒 Пишет одноклассник · Un compagno sta scrivendo";
             tokenBtn.className = "btn-token release";
             tokenBtn.disabled = true;
           }
 
           if (isTeacher) {
             actionDiv.style.display = "flex";
-            actionBtn.textContent = "✔️ Approva e Sblocca Successivo ➔";
+            actionBtn.textContent = "✔️ Одобрить и открыть следующий · Approva e apri il successivo ➔";
           } else {
             actionDiv.style.display = "none";
           }
@@ -604,15 +734,16 @@
           // Blocco Bloccato
           box.classList.add("locked");
           badge.className = "badge badge-locked";
-          badge.textContent = "Bloccata";
+          badge.textContent = "Закрыта · Bloccata";
           qInput.disabled = true;
-          qInput.placeholder = "In attesa dell'insegnante per sbloccare...";
-          optButtons.forEach(b => b.disabled = true);
+          qInput.placeholder = "In attesa dell'insegnante · Ждём, пока учитель откроет блок...";
           tokenDiv.style.display = "none";
 
           if (isTeacher && i === currentActiveStep + 1) {
             actionDiv.style.display = "flex";
-            actionBtn.textContent = i === 0 ? "🔓 Sblocca Primo Blocco" : "🔓 Sblocca questo blocco";
+            actionBtn.textContent = i === 0
+              ? "🔓 Открыть первый блок · Sblocca il primo blocco"
+              : "🔓 Открыть этот блок · Sblocca questo blocco";
           } else {
             actionDiv.style.display = "none";
           }
@@ -620,16 +751,15 @@
 
         // Evidenzia opzione selezionata
         optButtons.forEach((b, idx) => {
-          if (res.selectedOption === idx) {
-            b.classList.add("selected");
-          } else {
-            b.classList.remove("selected");
-          }
+          const isSelected = res.selectedOption === idx;
+          b.disabled = i > currentActiveStep;
+          b.classList.toggle("selected", isSelected);
+          b.classList.toggle("correct", isSelected && idx === sectionsData[i].correctOption);
+          b.classList.toggle("incorrect", isSelected && idx !== sectionsData[i].correctOption);
+          b.setAttribute("aria-pressed", String(isSelected));
         });
       });
 
-      const completedCount = Math.max(0, currentActiveStep);
-      progressBadge.textContent = `${Math.min(completedCount, sectionsData.length)} di ${sectionsData.length}`;
     }
 
     if (window.firebase) {
@@ -660,7 +790,7 @@
     }
 
     resetButton.addEventListener("click", () => {
-      if (confirm("Vuoi azzerare tutte le risposte e bloccare nuovamente l'esercizio?")) {
+      if (confirm("Сбросить все ответы и снова заблокировать упражнение? · Vuoi azzerare tutte le risposte e bloccare nuovamente l'esercizio?")) {
         answersRef.set({
           activeStep: -1,
           currentWriter: null,
