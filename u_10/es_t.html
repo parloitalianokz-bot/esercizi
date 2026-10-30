@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unità 10 — Ascolto e Video (Esercizio T)</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: 'Segoe UI', Inter, system-ui, -apple-system, sans-serif;
+      --primary: #6556bd;
+      --primary-light: #f0edff;
+      --primary-dark: #4c3e99;
+      --accent: #ffb703;
+      --bg-main: #f7f6fb;
+      --card-bg: #ffffff;
+      --text: #24213a;
+      --text-muted: #68667a;
+      --success: #20a16b;
+      --success-bg: #d9f4e8;
+      --border: #ebe9f2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 16px;
+      background:
+        radial-gradient(ellipse at 50% -12%, rgba(155, 142, 240, .24), transparent 42%),
+        var(--bg-main);
+      color: var(--text);
+    }
+
+    .container { width: min(100%, 780px); margin: 0 auto; }
+
+    .hero { margin: 8px 0 20px; text-align: center; }
+    .eyebrow {
+      display: inline-block;
+      color: var(--primary);
+      font-size: .8rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      background: var(--primary-light);
+      padding: 7px 14px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+      box-shadow: inset 0 0 0 1px rgba(101, 86, 189, .08);
+    }
+    h1 {
+      margin: 4px 0;
+      font-size: clamp(1.8rem, 4.5vw, 2.4rem);
+      letter-spacing: -.03em;
+      color: var(--primary-dark);
+      line-height: 1.15;
+    }
+    .hero-subtitle {
+      margin: 8px 0 0;
+      color: var(--text-muted);
+      font-size: .98rem;
+    }
+
+    /* Видеоплеер */
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+      height: 0;
+      overflow: hidden;
+      border-radius: 20px;
+      box-shadow: 0 12px 30px rgba(50, 38, 94, .12);
+      margin-bottom: 24px;
+      background: #000;
+    }
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    /* Панель управления учителя */
+    .top-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding: 14px 20px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--card-bg);
+      box-shadow: 0 6px 18px rgba(50, 38, 94, .04);
+    }
+    .teacher-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+    .teacher-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .88rem;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+      user-select: none;
+    }
+    .teacher-toggle input { accent-color: var(--primary); }
+    
+    button.reset-btn {
+      padding: 6px 14px;
+      border: 1px solid #fca5a5;
+      border-radius: 10px;
+      background: #fff;
+      color: #dc2626;
+      font: inherit;
+      font-size: .8rem;
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 42px;
+    }
+    button.reset-btn:hover { background: #fef2f2; }
+
+    /* Форма студента */
+    .card {
+      padding: clamp(20px, 4vw, 32px);
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      background: var(--card-bg);
+      box-shadow: 0 20px 55px rgba(50, 38, 94, .08);
+      margin-bottom: 32px;
+    }
+    body.teacher-mode #student-form-section { display: none; }
+
+    .login-box {
+      margin-bottom: 20px;
+      padding: 16px;
+      background: var(--primary-light);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .login-box label {
+      font-weight: 700;
+      font-size: .9rem;
+      color: var(--primary-dark);
+      white-space: nowrap;
+    }
+    .login-box input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1.5px solid #d9d3ed;
+      border-radius: 10px;
+      font: inherit;
+      font-size: .95rem;
+      outline: none;
+    }
+    .login-box input:focus { border-color: var(--primary); }
+
+    .q-item {
+      margin-bottom: 20px;
+    }
+    .q-label {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text);
+      margin-bottom: 8px;
+      display: block;
+    }
+    textarea.student-input {
+      width: 100%;
+      min-height: 54px;
+      padding: 10px 12px;
+      border: 1.5px solid #d9d3ed;
+      border-radius: 12px;
+      font: inherit;
+      font-size: .95rem;
+      outline: none;
+      resize: vertical;
+    }
+    textarea.student-input:focus { border-color: var(--primary); }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(101, 86, 189, .3);
+      transition: background .2s, transform .15s;
+    }
+    .btn-submit:hover { background: var(--primary-dark); transform: translateY(-1px); }
+
+    /* Risposte raggruppate per domanda */
+    .results-section h2 {
+      font-size: 1.3rem;
+      color: var(--primary-dark);
+      margin-bottom: 16px;
+    }
+    .question-group {
+      margin-bottom: 26px;
+    }
+    .question-group h3 {
+      margin: 0 0 12px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+    .response-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 16px rgba(50, 38, 94, .04);
+    }
+    .response-card.approved { border-color: #a7f3d0; background: #f0fdf4; }
+    .response-card.has-feedback { border-color: #fde68a; background: #fffbeb; }
+
+    .response-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .student-name {
+      font-weight: 800;
+      color: var(--primary-dark);
+      font-size: .98rem;
+    }
+    .status-badge {
+      flex-shrink: 0;
+      font-size: .7rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+    .status-pending { background: #f3f4f6; color: #6b7280; }
+    .status-ok { background: #d1fae5; color: #047857; }
+    .status-review { background: #fef3c7; color: #b45309; }
+
+    .ans-text { color: var(--text); font-weight: 600; font-size: .94rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+    /* Controlli per correggere singolarmente ogni risposta */
+    .teacher-review-box {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed #dcd6f7;
+      display: none;
+    }
+    .teacher-review-box.visible { display: block; }
+    .feedback-input {
+      width: 100%;
+      padding: 9px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font: inherit;
+      font-size: .85rem;
+      margin-bottom: 8px;
+    }
+    .review-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+    .btn-review-ok, .btn-review-comment {
+      min-height: 40px;
+      padding: 7px 12px;
+      border: none;
+      border-radius: 8px;
+      font: inherit;
+      font-size: .8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-review-ok { background: var(--success); color: white; }
+    .btn-review-comment { background: var(--accent); color: #24213a; }
+
+    .feedback-display {
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: #fef9c3;
+      border-left: 4px solid #eab308;
+      border-radius: 8px;
+      font-size: .88rem;
+      color: #713f12;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    @media (max-width: 520px) {
+      body { padding: 14px 9px; }
+      .login-box { flex-direction: column; align-items: stretch; gap: 6px; }
+      .card { padding: 14px 10px; border-radius: 20px; }
+      .response-card { padding: 14px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <header class="hero">
+      <span class="eyebrow">Unità 10 · Видео и Прослушивание</span>
+      <h1>Посмотрите видео и ответьте на вопросы</h1>
+      <p class="hero-subtitle">Все ответы отправляются и отображаются в общем списке класса</p>
+    </header>
+
+    <!-- Плеер YouTube -->
+    <div class="video-container">
+      <iframe 
+        src="https://www.youtube.com/embed/g-_0H8cwHFE" 
+        title="Fare acquisti — Video" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <!-- Barra Controlli Superiore -->
+    <div id="status" class="top-controls">
+      <div class="teacher-controls">
+        <label class="teacher-toggle">
+          <input type="checkbox" id="teacher-mode">
+          Режим учителя · Modalità insegnante
+        </label>
+        <button id="reset" class="reset-btn" type="button" style="display:none;">⚠️ Сбросить все ответы · Azzera</button>
+      </div>
+    </div>
+
+    <!-- Форма отправки ответов ученика -->
+    <section class="card" id="student-form-section">
+      <div class="login-box">
+        <label for="student-name-input">Ваше имя (Имя Фамилия):</label>
+        <input type="text" id="student-name-input" placeholder="Введите ваше имя...">
+      </div>
+
+      <form id="answers-form">
+        <div class="q-item">
+          <label class="q-label" for="ans-1">1. Di che colore è il vestito che cerca la ragazza?</label>
+          <textarea id="ans-1" class="student-input" rows="2" placeholder="Напишите ответ на итальянском..." required></textarea>
+        </div>
+
+        <div class="q-item">
+          <label class="q-label" for="ans-2">2. Che taglia porta la ragazza?</label>
+          <textarea id="ans-2" class="student-input" rows="2" placeholder="Напишите ответ на итальянском..." required></textarea>
+        </div>
+
+        <div class="q-item">
+          <label class="q-label" for="ans-3">3. Perché la commessa fa uno sconto alla cliente?</label>
+          <textarea id="ans-3" class="student-input" rows="2" placeholder="Напишите ответ на итальянском..." required></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit">📤 Отправить ответы · Invia risposte</button>
+      </form>
+    </section>
+
+    <!-- Ответы класса -->
+    <section class="results-section">
+      <h2>📋 Ответы студентов · Risposte degli studenti</h2>
+      <div id="responses-list">
+        <p style="color: var(--text-muted); font-size: .9rem;">Пока никто не отправил ответы...</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "INSERISCI_API_KEY",
+      authDomain: "esercizi-parlo-italiano.firebaseapp.com",
+      databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "esercizi-parlo-italiano",
+      appId: "INSERISCI_APP_ID"
+    };
+
+    const studentNameInput = document.getElementById("student-name-input");
+    const answersForm = document.getElementById("answers-form");
+    const teacherToggle = document.getElementById("teacher-mode");
+    const resetButton = document.getElementById("reset");
+    const responsesList = document.getElementById("responses-list");
+
+    // Загрузка ранее сохраненного имени
+    if (localStorage.getItem("parlo_student_name")) {
+      studentNameInput.value = localStorage.getItem("parlo_student_name");
+    }
+
+    let answersRef = null;
+    let isTeacher = false;
+    let allResponses = {};
+
+    teacherToggle.addEventListener("change", (e) => {
+      isTeacher = e.target.checked;
+      document.body.classList.toggle("teacher-mode", isTeacher);
+      resetButton.style.display = isTeacher ? "inline-block" : "none";
+      renderResponses();
+    });
+
+    if (window.firebase) {
+      try {
+        firebase.initializeApp(firebaseConfig);
+        answersRef = firebase.database().ref("esercizi/unita10-video-t");
+
+        answersRef.on("value", (snapshot) => {
+          allResponses = snapshot.val() || {};
+          renderResponses();
+        });
+      } catch (e) {
+        console.error("Errore Firebase:", e);
+      }
+    }
+
+    answersForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = studentNameInput.value.trim();
+      if (!name) {
+        alert("Пожалуйста, введите ваше имя перед отправкой! · Inserisci il tuo nome!");
+        return;
+      }
+      
+      localStorage.setItem("parlo_student_name", name);
+
+      const studentId = name.replace(/[.#$[\]]/g, "_"); // Безопасный ключ Firebase
+      const ans1 = document.getElementById("ans-1").value.trim();
+      const ans2 = document.getElementById("ans-2").value.trim();
+      const ans3 = document.getElementById("ans-3").value.trim();
+
+      if (answersRef) {
+        answersRef.child("students").child(studentId).set({
+          name: name,
+          ans1: ans1,
+          ans2: ans2,
+          ans3: ans3,
+          timestamp: Date.now(),
+          status: "pending"
+        }).then(() => {
+          alert("Ответы успешно отправлены! · Risposte inviate con successo!");
+        });
+      }
+    });
+
+    const questionDetails = [
+      { key: "ans1", title: "1. Di che colore è il vestito che cerca la ragazza?" },
+      { key: "ans2", title: "2. Che taglia porta la ragazza?" },
+      { key: "ans3", title: "3. Perché la commessa fa uno sconto alla cliente?" }
+    ];
+
+    function renderResponses() {
+      responsesList.replaceChildren();
+      const studentsData = allResponses.students || {};
+      const studentEntries = Object.entries(studentsData);
+
+      if (studentEntries.length === 0) {
+        const emptyMessage = document.createElement("p");
+        emptyMessage.style.color = "var(--text-muted)";
+        emptyMessage.style.fontSize = ".9rem";
+        emptyMessage.textContent = "Пока никто не отправил ответы...";
+        responsesList.appendChild(emptyMessage);
+        return;
+      }
+
+      questionDetails.forEach(({ key: questionKey, title }) => {
+        const group = document.createElement("section");
+        group.className = "question-group";
+        const heading = document.createElement("h3");
+        heading.textContent = title;
+        group.appendChild(heading);
+
+        studentEntries.forEach(([studentId, item]) => {
+          const answerReview = item.reviews?.[questionKey];
+          const review = answerReview || {
+            status: item.status || "pending",
+            feedback: item.feedback || ""
+          };
+          const card = document.createElement("article");
+          card.className = "response-card";
+          if (review.status === "approved") card.classList.add("approved");
+          if (review.feedback) card.classList.add("has-feedback");
+
+          const header = document.createElement("div");
+          header.className = "response-header";
+          const name = document.createElement("span");
+          name.className = "student-name";
+          name.textContent = `👤 ${item.name || "Studente"}`;
+          const badge = document.createElement("span");
+          badge.className = "status-badge";
+          if (review.status === "approved") {
+            badge.classList.add("status-ok");
+            badge.textContent = "Одобрено ✔";
+          } else if (review.feedback || review.status === "review") {
+            badge.classList.add("status-review");
+            badge.textContent = "Есть замечание 💬";
+          } else {
+            badge.classList.add("status-pending");
+            badge.textContent = "На проверке";
+          }
+          header.append(name, badge);
+          card.appendChild(header);
+
+          const answer = document.createElement("div");
+          answer.className = "ans-text";
+          answer.textContent = item[questionKey] || "—";
+          card.appendChild(answer);
+
+          if (review.feedback) {
+            const feedback = document.createElement("div");
+            feedback.className = "feedback-display";
+            const feedbackLabel = document.createElement("strong");
+            feedbackLabel.textContent = "Комментарий учителя: ";
+            feedback.append(feedbackLabel, document.createTextNode(review.feedback));
+            card.appendChild(feedback);
+          }
+
+          if (isTeacher) {
+            const reviewBox = document.createElement("div");
+            reviewBox.className = "teacher-review-box visible";
+            const feedbackInput = document.createElement("input");
+            feedbackInput.className = "feedback-input";
+            feedbackInput.type = "text";
+            feedbackInput.placeholder = "Замечание или исправление...";
+            feedbackInput.value = review.feedback || "";
+
+            const buttons = document.createElement("div");
+            buttons.className = "review-btns";
+            const approveButton = document.createElement("button");
+            approveButton.type = "button";
+            approveButton.className = "btn-review-ok";
+            approveButton.textContent = "✔ Одобрить";
+            approveButton.addEventListener("click", () => approveStudent(studentId, questionKey));
+            const commentButton = document.createElement("button");
+            commentButton.type = "button";
+            commentButton.className = "btn-review-comment";
+            commentButton.textContent = "💬 Сохранить комментарий";
+            commentButton.addEventListener("click", () => commentStudent(studentId, questionKey, feedbackInput.value));
+            buttons.append(approveButton, commentButton);
+            reviewBox.append(feedbackInput, buttons);
+            card.appendChild(reviewBox);
+          }
+
+          group.appendChild(card);
+        });
+
+        responsesList.appendChild(group);
+      });
+    }
+
+    function approveStudent(studentId, questionKey) {
+      if (!answersRef) return;
+      answersRef.child("students").child(studentId).child("reviews").child(questionKey).update({
+        status: "approved",
+        feedback: null
+      });
+    }
+
+    function commentStudent(studentId, questionKey, feedback) {
+      if (!answersRef) return;
+      answersRef.child("students").child(studentId).child("reviews").child(questionKey).update({
+        feedback: feedback.trim(),
+        status: "review"
+      });
+    }
+
+    resetButton.addEventListener("click", () => {
+      if (confirm("Вы уверены, что хотите удалить ответы всех студентов? · Azzerare tutte le risposte?")) {
+        answersRef.child("students").remove();
+      }
+    });
+  </script>
+</body>
+</html>
