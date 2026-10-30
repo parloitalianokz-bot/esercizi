@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unità 10 — Rispondi alle domande (Esercizio M)</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: 'Segoe UI', Inter, system-ui, -apple-system, sans-serif;
+      --primary: #6556bd;
+      --primary-light: #f0edff;
+      --primary-dark: #4c3e99;
+      --accent: #ffb703;
+      --bg-main: #f7f6fb;
+      --card-bg: #ffffff;
+      --text: #24213a;
+      --text-muted: #68667a;
+      --success: #20a16b;
+      --success-bg: #d9f4e8;
+      --border: #ebe9f2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 16px;
+      background:
+        radial-gradient(ellipse at 50% -12%, rgba(155, 142, 240, .24), transparent 42%),
+        var(--bg-main);
+      color: var(--text);
+    }
+
+    .container { width: min(100%, 760px); margin: 0 auto; }
+
+    .hero { margin: 8px 0 20px; text-align: center; }
+    .eyebrow {
+      display: inline-block;
+      color: var(--primary);
+      font-size: .8rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      background: var(--primary-light);
+      padding: 7px 14px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+      box-shadow: inset 0 0 0 1px rgba(101, 86, 189, .08);
+    }
+    h1 {
+      margin: 4px 0;
+      font-size: clamp(2rem, 5vw, 2.6rem);
+      letter-spacing: -.03em;
+      color: var(--primary-dark);
+      line-height: 1.15;
+    }
+    .hero-subtitle {
+      margin: 8px 0 0;
+      color: var(--text-muted);
+      font-size: .98rem;
+    }
+
+    /* Box Spiegazione Grammaticale in Russo */
+    .grammar-box {
+      background: #ffffff;
+      border: 1px solid #dcd6f7;
+      border-left: 5px solid var(--primary);
+      border-radius: 16px;
+      padding: 16px 18px;
+      margin-bottom: 24px;
+      font-size: .92rem;
+      line-height: 1.55;
+      box-shadow: 0 4px 14px rgba(50, 38, 94, .04);
+    }
+    .grammar-box h3 {
+      margin: 0 0 8px 0;
+      color: var(--primary-dark);
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .grammar-box p { margin: 0 0 8px 0; }
+    .grammar-box p:last-child { margin-bottom: 0; }
+    .grammar-box ul {
+      margin: 6px 0 8px 18px;
+      padding: 0;
+    }
+    .grammar-box li { margin-bottom: 4px; }
+    .it-highlight {
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    /* Barra controlli superiore */
+    .top-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding: 14px 20px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--card-bg);
+      box-shadow: 0 6px 18px rgba(50, 38, 94, .04);
+    }
+    .teacher-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+    .teacher-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .88rem;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+      user-select: none;
+    }
+    .teacher-toggle input { accent-color: var(--primary); }
+    
+    button.reset-btn {
+      padding: 6px 14px;
+      border: 1px solid #fca5a5;
+      border-radius: 10px;
+      background: #fff;
+      color: #dc2626;
+      font: inherit;
+      font-size: .8rem;
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 42px;
+    }
+    button.reset-btn:hover { background: #fef2f2; }
+
+    /* Card Esercizio */
+    .card {
+      padding: clamp(20px, 4vw, 32px);
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      background: var(--card-bg);
+      box-shadow: 0 20px 55px rgba(50, 38, 94, .08);
+    }
+
+    .question-box {
+      position: relative;
+      overflow: hidden;
+      padding: 22px;
+      margin-bottom: 22px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: #fff;
+      transition: all .25s ease;
+      box-shadow: 0 5px 16px rgba(50, 38, 94, .035);
+    }
+    .question-box.active {
+      border-color: #8b7ce0;
+      background: linear-gradient(145deg, #fff 55%, #faf9ff);
+      box-shadow: 0 0 0 3px rgba(101, 86, 189, .11), 0 10px 24px rgba(50, 38, 94, .06);
+    }
+    .question-box.active::before,
+    .question-box.approved::before {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 5px;
+      background: var(--primary);
+      content: "";
+    }
+    .question-box.approved::before { background: var(--success); }
+    .question-box.locked { background: #fbfaff; opacity: .7; }
+    .question-box.approved {
+      border-color: #d1fae5;
+      background: #f0fdf4;
+    }
+
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .question-title {
+      min-width: 0;
+      font-weight: 700;
+      font-size: 1.05rem;
+      line-height: 1.4;
+      display: flex;
+      align-items: flex-start;
+      color: var(--text);
+    }
+    .number {
+      display: inline-grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      margin-right: 12px;
+      border-radius: 12px;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: .95rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .badge {
+      font-size: .75rem;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      letter-spacing: .015em;
+      flex-shrink: 0;
+    }
+    .badge-locked { background: #e5e7eb; color: #6b7280; }
+    .badge-active { background: #ffe4e6; color: #e11d48; }
+    .badge-writing { background: #fef3c7; color: #d97706; }
+    .badge-approved { background: var(--success-bg); color: #047857; }
+
+    /* Stile Parole Cliccabili */
+    .word-dict {
+      color: var(--primary);
+      border-bottom: 2px dashed var(--primary);
+      cursor: pointer;
+      font-weight: 700;
+      padding: 0 2px;
+      border-radius: 4px;
+      transition: background .15s ease;
+    }
+    .word-dict:hover {
+      background: var(--primary-light);
+    }
+
+    /* Textarea per le risposte */
+    textarea.answer-input {
+      width: 100%;
+      min-height: 64px;
+      padding: 12px 14px;
+      border: 1.5px solid #d9d3ed;
+      border-radius: 12px;
+      font: inherit;
+      font-size: 1rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+      background: #fff;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    textarea.answer-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(101, 86, 189, 0.15);
+    }
+    textarea.answer-input:disabled {
+      background: #f2f0f8;
+      border-color: #e1deeb;
+      color: #334155;
+      cursor: not-allowed;
+    }
+
+    /* Controlli Token */
+    .token-controls {
+      margin-top: 10px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
+    .btn-token {
+      background: var(--accent);
+      color: #24213a;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: .85rem;
+      cursor: pointer;
+      min-height: 42px;
+      transition: background 0.2s;
+    }
+    .btn-token:hover { background: #e0a200; }
+    .btn-token.release {
+      background: #e2e8f0;
+      color: #475569;
+    }
+
+    /* Azione Unica Insegnante */
+    .teacher-action {
+      margin-top: 16px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .btn-approve {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      max-width: 100%;
+      line-height: 1.4;
+      font-size: .9rem;
+      cursor: pointer;
+      min-height: 42px;
+      box-shadow: 0 4px 12px rgba(101, 86, 189, 0.2);
+      transition: transform 0.15s, background 0.2s;
+    }
+    .btn-approve:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    /* Modal / Popup Traduzione */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(36, 33, 58, 0.45);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease;
+      padding: 16px;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-card {
+      background: #ffffff;
+      width: min(100%, 400px);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      transform: scale(0.92);
+      transition: transform .2s ease;
+      position: relative;
+    }
+    .modal-overlay.open .modal-card {
+      transform: scale(1);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .modal-title-it {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+    .modal-close {
+      background: #f0edff;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      color: var(--primary);
+      font-weight: 800;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+    .modal-close:hover { background: #e2daf9; }
+    .modal-body-ru {
+      font-size: 1.1rem;
+      color: var(--text);
+      font-weight: 600;
+      line-height: 1.4;
+      background: var(--bg-main);
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    @media (max-width: 520px) {
+      body { padding: 18px 10px; }
+      .hero { margin: 4px 0 18px; }
+      .hero-subtitle { line-height: 1.5; }
+      .grammar-box { padding: 15px 16px; line-height: 1.6; }
+      .top-controls { padding: 12px 14px; margin-bottom: 18px; }
+      .teacher-controls { width: 100%; justify-content: space-between; gap: 10px; }
+      .card { padding: 18px 12px; border-radius: 20px; }
+      .question-box { padding: 17px 14px; margin-bottom: 16px; border-radius: 16px; }
+      .question-header { flex-direction: column; align-items: stretch; gap: 9px; margin-bottom: 12px; }
+      .question-title { font-size: 1rem; line-height: 1.5; }
+      .number { width: 34px; height: 34px; margin-right: 10px; }
+      .badge {
+        align-self: flex-start;
+        max-width: calc(100% - 44px);
+        margin-left: 44px;
+        white-space: normal;
+        line-height: 1.4;
+        font-size: .72rem;
+        padding: 5px 8px;
+      }
+      textarea.answer-input { font-size: 16px; line-height: 1.55; }
+      .teacher-action { justify-content: stretch; }
+      .btn-approve { width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <header class="hero">
+      <span class="eyebrow">Unità 10 · Вопросы и ответы</span>
+      <h1>Ответьте на вопросы</h1>
+      <p class="hero-subtitle">Rispondi alle domande dell'esercizio M (нажмите на выделенные слова для перевода)</p>
+    </header>
+
+    <!-- Box Spiegazione Grammaticale in Russo -->
+    <div class="grammar-box">
+      <h3>💡 Грамматическая заметка: ответы на вопросы с глаголом <em>piacere</em></h3>
+      <p>При ответе на вопросы обратите внимание на то, <strong>кому</strong> адресован вопрос:</p>
+      <ul>
+        <li><span class="it-highlight">Ti piace...?</span> ➔ Даем ответ от себя (я): <span class="it-highlight">Sì, mi piace... / No, non mi piace...</span></li>
+        <li><span class="it-highlight">Vi piace...?</span> ➔ Даем ответ от имени группы (мы): <span class="it-highlight">Sì, ci piace... / No, non ci piace...</span></li>
+        <li><span class="it-highlight">A Marina / A Paolo piace...?</span> ➔ Отвечаем в 3-м лице (ей/ему): <span class="it-highlight">Sì, le/gli piace... / No, non le/gli piace...</span></li>
+        <li><span class="it-highlight">Ai bambini piace...?</span> ➔ Отвечаем в 3-м лице мн. ч. (им): <span class="it-highlight">Sì, gli piace... / No, non gli piace...</span></li>
+      </ul>
+      <p style="margin-top: 6px;">Не забывайте согласовывать глагол с предметом: <span class="it-highlight">piace</span> — для единственного числа и глаголов, <span class="it-highlight">piacciono</span> — для множественного числа!</p>
+    </div>
+
+    <!-- Barra Controlli Superiore -->
+    <div id="status" class="top-controls">
+      <div class="teacher-controls">
+        <label class="teacher-toggle">
+          <input type="checkbox" id="teacher-mode">
+          Режим учителя · Modalità insegnante
+        </label>
+        <button id="reset" class="reset-btn" type="button" style="display:none;">⚠️ Сбросить · Azzera</button>
+      </div>
+    </div>
+
+    <!-- Card dell'Esercizio -->
+    <section class="card">
+      <form id="answers" autocomplete="off"></form>
+    </section>
+  </main>
+
+  <!-- Popup Modal Traduzione -->
+  <div id="dict-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span id="modal-it" class="modal-title-it"></span>
+        <button type="button" class="modal-close" id="modal-close-btn">✕</button>
+      </div>
+      <div id="modal-ru" class="modal-body-ru"></div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "INSERISCI_API_KEY",
+      authDomain: "esercizi-parlo-italiano.firebaseapp.com",
+      databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "esercizi-parlo-italiano",
+      appId: "INSERISCI_APP_ID"
+    };
+
+    // Domande con parole evidenziate e traduzione associata
+    const questions = [
+      {
+        html: "Ti piace <span class='word-dict' data-ru='Граппа (итальянская виноградная водка)'>la grappa</span>?",
+      },
+      {
+        html: "Ai bambini piace il gelato?",
+      },
+      {
+        html: "Ti piacciono <span class='word-dict' data-ru='Фильмы ужасов'>i film dell’orrore</span>?",
+      },
+      {
+        html: "A Marina piace l’insalata?",
+      },
+      {
+        html: "Ti piace il mio vestito nuovo?",
+      },
+      {
+        html: "Vi piacciono <span class='word-dict' data-ru='Морепродукты'>i frutti di mare</span>?",
+      },
+      {
+        html: "Ti piacciono <span class='word-dict' data-ru='Мебель'>i mobili</span> del mio appartamento?",
+      },
+      {
+        html: "Vi piace <span class='word-dict' data-ru='Танцевать'>ballare</span>?",
+      },
+      {
+        html: "A Paolo piacciono <span class='word-dict' data-ru='Галстуки'>le cravatte</span>?",
+      },
+      {
+        html: "Ti piacciono <span class='word-dict' data-ru='Грибы'>i funghi</span>?",
+      }
+    ];
+
+    const myClientId = "user_" + Math.random().toString(36).substring(2, 9);
+
+    const form = document.getElementById("answers");
+    const teacherToggle = document.getElementById("teacher-mode");
+    const resetButton = document.getElementById("reset");
+
+    // Modal elements
+    const modal = document.getElementById("dict-modal");
+    const modalIt = document.getElementById("modal-it");
+    const modalRu = document.getElementById("modal-ru");
+    const modalCloseBtn = document.getElementById("modal-close-btn");
+
+    function openModal(itText, ruText) {
+      modalIt.textContent = itText;
+      modalRu.textContent = ruText;
+      modal.classList.add("open");
+    }
+
+    function closeModal() {
+      modal.classList.remove("open");
+    }
+
+    modalCloseBtn.addEventListener("click", closeModal);
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    let answersRef = null;
+    let currentActiveStep = -1;
+    let currentWriter = null;
+    let isTeacher = false;
+
+    const questionBoxes = [];
+    const badges = [];
+
+    questions.forEach((qObj, qIdx) => {
+      const row = document.createElement("div");
+      row.className = "question-box locked";
+      row.id = `question-${qIdx}`;
+
+      const header = document.createElement("div");
+      header.className = "question-header";
+
+      const title = document.createElement("div");
+      title.className = "question-title";
+      title.innerHTML = `<span class="number">${qIdx + 1}</span><span>${qObj.html}</span>`;
+
+      // Aggiungi event listener per le parole cliccabili
+      title.querySelectorAll(".word-dict").forEach(el => {
+        el.addEventListener("click", (e) => {
+          e.stopPropagation();
+          openModal(el.textContent, el.getAttribute("data-ru"));
+        });
+      });
+
+      const badge = document.createElement("span");
+      badge.className = "badge badge-locked";
+      badge.textContent = "Закрыта · Bloccata";
+
+      header.append(title, badge);
+
+      const input = document.createElement("textarea");
+      input.id = `answer-input-${qIdx}`;
+      input.className = "answer-input";
+      input.rows = 2;
+      input.disabled = true;
+      input.placeholder = "In attesa dell'insegnante · Ждём, пока учитель откроет блок...";
+
+      input.addEventListener("input", () => {
+        if (answersRef && currentActiveStep === qIdx && currentWriter === myClientId) {
+          answersRef.child("responses").child(String(qIdx)).set(input.value);
+        }
+      });
+
+      // Controlli Token (Prendi/Lascia parola)
+      const tokenDiv = document.createElement("div");
+      tokenDiv.className = "token-controls";
+      tokenDiv.style.display = "none";
+
+      const tokenBtn = document.createElement("button");
+      tokenBtn.className = "btn-token";
+      tokenBtn.type = "button";
+      tokenBtn.textContent = "✋ Взять слово · Prendi la parola";
+      tokenBtn.onclick = () => {
+        if (answersRef && currentActiveStep === qIdx) {
+          if (currentWriter === myClientId) {
+            answersRef.child("currentWriter").set(null);
+          } else if (!currentWriter) {
+            answersRef.child("currentWriter").set(myClientId);
+          }
+        }
+      };
+
+      tokenDiv.appendChild(tokenBtn);
+
+      // Pulsante Azione Docente
+      const actionDiv = document.createElement("div");
+      actionDiv.className = "teacher-action";
+      actionDiv.style.display = "none";
+
+      const actionBtn = document.createElement("button");
+      actionBtn.className = "btn-approve";
+      actionBtn.type = "button";
+      actionBtn.textContent = "🔓 Открыть блок · Sblocca Blocco";
+      actionBtn.onclick = () => {
+        if (answersRef) {
+          if (currentActiveStep === qIdx) {
+            answersRef.update({
+              activeStep: qIdx + 1,
+              currentWriter: null
+            });
+          } else {
+            answersRef.update({
+              activeStep: qIdx,
+              currentWriter: null
+            });
+          }
+        }
+      };
+
+      actionDiv.appendChild(actionBtn);
+      row.append(header, input, tokenDiv, actionDiv);
+
+      form.appendChild(row);
+      questionBoxes.push(row);
+      badges.push(badge);
+    });
+
+    teacherToggle.addEventListener("change", (e) => {
+      isTeacher = e.target.checked;
+      resetButton.style.display = isTeacher ? "inline-block" : "none";
+      updateUIState();
+    });
+
+    let currentResponsesData = {};
+
+    function updateUIState() {
+      questionBoxes.forEach((box, i) => {
+        const badge = badges[i];
+        const input = box.querySelector("textarea.answer-input");
+        const tokenDiv = box.querySelector(".token-controls");
+        const tokenBtn = box.querySelector(".btn-token");
+        const actionDiv = box.querySelector(".teacher-action");
+        const actionBtn = box.querySelector(".btn-approve");
+
+        box.classList.remove("active", "locked", "approved");
+
+        if (i < currentActiveStep) {
+          // Blocco Approvato
+          box.classList.add("approved");
+          badge.className = "badge badge-approved";
+          badge.textContent = "Одобрено · Approvata";
+          input.disabled = true;
+          tokenDiv.style.display = "none";
+          actionDiv.style.display = "none";
+        } else if (i === currentActiveStep) {
+          // Blocco Attivo (Sbloccato)
+          box.classList.add("active");
+
+          if (!currentWriter) {
+            badge.className = "badge badge-active";
+            badge.textContent = "Открыто · In corso";
+            input.disabled = true;
+            input.placeholder = "Напишите ответ · Scrivi la risposta";
+
+            tokenDiv.style.display = "flex";
+            tokenBtn.textContent = "✋ Взять слово · Prendi la parola";
+            tokenBtn.className = "btn-token";
+            tokenBtn.disabled = false;
+          } else if (currentWriter === myClientId) {
+            badge.className = "badge badge-writing";
+            badge.textContent = "Вы пишете · Stai scrivendo";
+            input.disabled = false;
+            input.placeholder = "Напишите ответ · Scrivi la risposta";
+
+            tokenDiv.style.display = "flex";
+            tokenBtn.textContent = "✔ Передать слово · Lascia la parola";
+            tokenBtn.className = "btn-token release";
+            tokenBtn.disabled = false;
+          } else {
+            badge.className = "badge badge-writing";
+            badge.textContent = "Пишет одноклассник · Un compagno sta scrivendo";
+            input.disabled = true;
+            input.placeholder = "Пишет одноклассник · Un compagno sta scrivendo";
+
+            tokenDiv.style.display = "flex";
+            tokenBtn.textContent = "🔒 Пишет одноклассник · Un compagno sta scrivendo";
+            tokenBtn.className = "btn-token release";
+            tokenBtn.disabled = true;
+          }
+
+          if (isTeacher) {
+            actionDiv.style.display = "flex";
+            actionBtn.textContent = "✔️ Одобрить и открыть следующий · Approva e apri il successivo ➔";
+          } else {
+            actionDiv.style.display = "none";
+          }
+        } else {
+          // Blocco Bloccato
+          box.classList.add("locked");
+          badge.className = "badge badge-locked";
+          badge.textContent = "Закрыта · Bloccata";
+          input.disabled = true;
+          input.placeholder = "In attesa dell'insegnante · Ждём, пока учитель откроет блок...";
+          tokenDiv.style.display = "none";
+
+          if (isTeacher && i === currentActiveStep + 1) {
+            actionDiv.style.display = "flex";
+            actionBtn.textContent = i === 0
+              ? "🔓 Открыть первый блок · Sblocca il primo blocco"
+              : "🔓 Открыть этот блок · Sblocca questo blocco";
+          } else {
+            actionDiv.style.display = "none";
+          }
+        }
+      });
+    }
+
+    if (window.firebase) {
+      try {
+        firebase.initializeApp(firebaseConfig);
+        answersRef = firebase.database().ref("esercizi/unita10-domande-m");
+
+        answersRef.on("value", (snapshot) => {
+          const data = snapshot.val() || {};
+          currentResponsesData = data.responses || {};
+
+          currentActiveStep = (data.activeStep !== undefined) ? data.activeStep : -1;
+          currentWriter = data.currentWriter || null;
+
+          questionBoxes.forEach((box, qIdx) => {
+            const input = box.querySelector("textarea.answer-input");
+            const responseVal = currentResponsesData[qIdx] || "";
+
+            if (currentWriter !== myClientId) {
+              input.value = responseVal;
+            }
+          });
+
+          updateUIState();
+        });
+      } catch (e) {
+        console.error("Errore Firebase:", e);
+      }
+    }
+
+    resetButton.addEventListener("click", () => {
+      if (confirm("Сбросить все ответы и снова заблокировать упражнение? · Vuoi azzerare tutte le risposte e bloccare nuovamente l'esercizio?")) {
+        answersRef.set({
+          activeStep: -1,
+          currentWriter: null,
+          responses: {}
+        });
+      }
+    });
+  </script>
+</body>
+</html>
