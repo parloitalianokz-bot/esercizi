@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unità 10 — Completa le frasi a schede</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: 'Segoe UI', Inter, system-ui, -apple-system, sans-serif;
+      --primary: #6556bd;
+      --primary-light: #f0edff;
+      --primary-dark: #4c3e99;
+      --accent: #ffb703;
+      --bg-main: #f7f6fb;
+      --card-bg: #ffffff;
+      --text: #24213a;
+      --text-muted: #68667a;
+      --success: #20a16b;
+      --success-bg: #d9f4e8;
+      --border: #ebe9f2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 16px;
+      background:
+        radial-gradient(ellipse at 50% -12%, rgba(155, 142, 240, .24), transparent 42%),
+        var(--bg-main);
+      color: var(--text);
+    }
+
+    .container { width: min(100%, 720px); margin: 0 auto; }
+
+    .hero { margin: 8px 0 24px; text-align: center; }
+    .eyebrow {
+      display: inline-block;
+      color: var(--primary);
+      font-size: .8rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      background: var(--primary-light);
+      padding: 7px 14px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+      box-shadow: inset 0 0 0 1px rgba(101, 86, 189, .08);
+    }
+    h1 {
+      margin: 4px 0;
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      letter-spacing: -.03em;
+      color: var(--primary-dark);
+      line-height: 1.15;
+    }
+    .hero-subtitle {
+      margin: 6px 0 0;
+      color: var(--text-muted);
+      font-size: .95rem;
+    }
+
+    /* Barra controlli superiore (Insegnante & Reset) */
+    .top-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding: 12px 18px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--card-bg);
+      box-shadow: 0 6px 18px rgba(50, 38, 94, .04);
+    }
+    .teacher-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .teacher-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .88rem;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+      user-select: none;
+    }
+    .teacher-toggle input { accent-color: var(--primary); }
+    
+    button.reset-btn {
+      padding: 6px 12px;
+      border: 1px solid #fca5a5;
+      border-radius: 10px;
+      background: #fff;
+      color: #dc2626;
+      font: inherit;
+      font-size: .8rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: none;
+    }
+    button.reset-btn:hover { background: #fef2f2; }
+
+    /* Paginatore a Schede in alto (1-12) */
+    .tabs-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+      scrollbar-width: thin;
+    }
+    .tab-btn {
+      min-width: 38px;
+      height: 38px;
+      padding: 0 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: .85rem;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      transition: all .15s ease;
+    }
+    .tab-btn:hover { border-color: #bfaee6; color: var(--primary); }
+    .tab-btn.active-tab {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(101, 86, 189, .25);
+    }
+
+    /* Card della Frase Corrente */
+    .card {
+      padding: clamp(20px, 4vw, 32px);
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      background: var(--card-bg);
+      box-shadow: 0 20px 55px rgba(50, 38, 94, .08);
+      position: relative;
+    }
+
+    .phrase-box {
+      display: none;
+    }
+    .phrase-box.current-view {
+      display: block;
+      animation: fadeIn .25s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .phrase-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .number-title {
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .badge {
+      font-size: .75rem;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      letter-spacing: .015em;
+    }
+    .badge-active { background: #ffe4e6; color: #e11d48; }
+    .badge-writing { background: #fef3c7; color: #d97706; }
+
+    /* Cornice Immagine 16:9 */
+    .image-frame {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #f1f0f8;
+      border: 1px solid #e1deeb;
+      margin-bottom: 18px;
+      position: relative;
+    }
+    .image-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      position: relative;
+      z-index: 2;
+    }
+    .image-fallback {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: #837fa1;
+      font-size: .85rem;
+      font-weight: 600;
+    }
+    .image-fallback span.icon { font-size: 1.8rem; }
+
+    /* Testo Frase e Textarea */
+    .phrase-content {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    textarea.answer-input {
+      width: 100%;
+      min-height: 60px;
+      padding: 12px 14px;
+      border: 1.5px solid #d9d3ed;
+      border-radius: 12px;
+      font: inherit;
+      font-size: 1rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+      background: #fff;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    textarea.answer-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(101, 86, 189, 0.15);
+    }
+    textarea.answer-input:disabled {
+      background: #f2f0f8;
+      border-color: #e1deeb;
+      color: #334155;
+      cursor: not-allowed;
+    }
+
+    /* Controlli Token e Frecce */
+    .card-footer {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+    }
+    .nav-arrows {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-arrow {
+      background: #f0edff;
+      color: var(--primary-dark);
+      border: 1px solid #d9d3ed;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: .85rem;
+      cursor: pointer;
+    }
+    .btn-arrow:hover { background: #e2daf9; }
+    .btn-arrow:disabled { opacity: .4; cursor: not-allowed; }
+
+    .btn-token {
+      background: var(--accent);
+      color: #24213a;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: .88rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-token:hover { background: #e0a200; }
+    .btn-token.release { background: #e2e8f0; color: #475569; }
+
+    @media (max-width: 520px) {
+      body { padding: 16px 8px; }
+      .card { padding: 18px 14px; border-radius: 20px; }
+      .card-footer { flex-direction: column; align-items: stretch; }
+      .nav-arrows { justify-content: space-between; }
+      .btn-token { width: 100%; text-align: center; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <header class="hero">
+      <span class="eyebrow">Unità 10 · Vocabolario e Colori</span>
+      <h1>Дополните фразы</h1>
+      <p class="hero-subtitle">Completa le frasi osservando l'immagine</p>
+    </header>
+
+    <!-- Barra Controlli Superiore (Modalità Insegnante e Reset) -->
+    <div class="top-controls">
+      <div class="teacher-controls">
+        <label class="teacher-toggle">
+          <input type="checkbox" id="teacher-mode">
+          Режим учителя · Modalità insegnante
+        </label>
+      </div>
+      <button id="reset" class="reset-btn" type="button">⚠️ Сбросить ответы · Azzera risposte</button>
+    </div>
+
+    <!-- Paginatore a Schede in alto (1-12) -->
+    <div id="tabs-bar" class="tabs-bar"></div>
+
+    <!-- Card Singola Interattiva -->
+    <section class="card">
+      <div id="phrases-container"></div>
+    </section>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "INSERISCI_API_KEY",
+      authDomain: "esercizi-parlo-italiano.firebaseapp.com",
+      databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "esercizi-parlo-italiano",
+      appId: "INSERISCI_APP_ID"
+    };
+
+    const phrases = [
+      "Il latte è bianco, il caffè invece...",
+      "La neve è bianca, anche lo zucchero...",
+      "Le fragole sono rosse, i limoni invece...",
+      "L’erba è verde, il cielo invece...",
+      "I kiwi sono verdi, anche l’insalata...",
+      "La carta è bianca, anche le nuvole...",
+      "Il topo è piccolo, l’elefante invece...",
+      "L’oro è giallo, anche le banane...",
+      "I pomodori sono rossi, gli zucchini invece...",
+      "Il marmo è bianco, il legno invece...",
+      "Gli alberi in primavera sono verdi, in autunno invece...",
+      "La macchina è piccola, la tua invece..."
+    ];
+
+    const myClientId = "user_" + Math.random().toString(36).substring(2, 9);
+
+    const container = document.getElementById("phrases-container");
+    const tabsBar = document.getElementById("tabs-bar");
+    const teacherToggle = document.getElementById("teacher-mode");
+    const resetButton = document.getElementById("reset");
+
+    let answersRef = null;
+    let currentlyViewedTab = 0;
+    let writersData = {};
+    let isTeacher = false;
+
+    const phraseBoxes = [];
+    const tabButtons = [];
+    const badges = [];
+
+    phrases.forEach((phraseText, idx) => {
+      // 1. Tab in alto
+      const tabBtn = document.createElement("button");
+      tabBtn.className = "tab-btn";
+      tabBtn.textContent = idx + 1;
+      tabBtn.type = "button";
+      tabBtn.onclick = () => {
+        currentlyViewedTab = idx;
+        updateUIState();
+      };
+      tabsBar.appendChild(tabBtn);
+      tabButtons.push(tabBtn);
+
+      // 2. Box della frase
+      const row = document.createElement("div");
+      row.className = "phrase-box";
+      if (idx === 0) row.classList.add("current-view");
+
+      const header = document.createElement("div");
+      header.className = "phrase-header";
+
+      const numTitle = document.createElement("div");
+      numTitle.className = "number-title";
+      numTitle.innerHTML = `<span>Frase ${idx + 1} di ${phrases.length}</span>`;
+
+      const badge = document.createElement("span");
+      badge.className = "badge badge-active";
+      badge.textContent = "Открыто · Aperto";
+
+      header.append(numTitle, badge);
+
+      // Immagine 16:9
+      const imgFrame = document.createElement("div");
+      imgFrame.className = "image-frame";
+
+      const fileName = `f${idx + 1}.jpeg`;
+      const fallback = document.createElement("div");
+      fallback.className = "image-fallback";
+      fallback.innerHTML = `<span class="icon">🖼️</span><span>img/${fileName}</span>`;
+
+      const img = document.createElement("img");
+      img.src = `img/${fileName}`;
+      img.alt = `Immagine ${idx + 1}`;
+      img.onerror = () => { img.style.display = "none"; };
+
+      imgFrame.append(fallback, img);
+
+      const phraseDiv = document.createElement("div");
+      phraseDiv.className = "phrase-content";
+      phraseDiv.textContent = phraseText;
+
+      const input = document.createElement("textarea");
+      input.className = "answer-input";
+      input.rows = 2;
+      input.placeholder = "Напишите ответ · Scrivi la risposta";
+
+      input.addEventListener("input", () => {
+        if (answersRef && currentlyViewedTab === idx && writersData[idx] === myClientId) {
+          answersRef.child("responses").child(String(idx)).set(input.value);
+        }
+      });
+
+      // Footer con Frecce e Token indipendente per ogni scheda
+      const footer = document.createElement("div");
+      footer.className = "card-footer";
+
+      const arrowsDiv = document.createElement("div");
+      arrowsDiv.className = "nav-arrows";
+
+      const prevBtn = document.createElement("button");
+      prevBtn.className = "btn-arrow";
+      prevBtn.type = "button";
+      prevBtn.textContent = "⬅️ Indietro";
+      prevBtn.onclick = () => {
+        if (currentlyViewedTab > 0) {
+          currentlyViewedTab--;
+          updateUIState();
+        }
+      };
+
+      const nextBtn = document.createElement("button");
+      nextBtn.className = "btn-arrow";
+      nextBtn.type = "button";
+      nextBtn.textContent = "Avanti ➡️";
+      nextBtn.onclick = () => {
+        if (currentlyViewedTab < phrases.length - 1) {
+          currentlyViewedTab++;
+          updateUIState();
+        }
+      };
+      arrowsDiv.append(prevBtn, nextBtn);
+
+      const tokenBtn = document.createElement("button");
+      tokenBtn.className = "btn-token";
+      tokenBtn.type = "button";
+      tokenBtn.textContent = "✋ Взять слово · Prendi la parola";
+      tokenBtn.onclick = () => {
+        if (answersRef) {
+          const currentWriter = writersData[idx] || null;
+          if (currentWriter === myClientId) {
+            answersRef.child("writers").child(String(idx)).set(null);
+          } else if (!currentWriter) {
+            answersRef.child("writers").child(String(idx)).set(myClientId);
+          }
+        }
+      };
+
+      footer.append(arrowsDiv, tokenBtn);
+      row.append(header, imgFrame, phraseDiv, input, footer);
+      container.appendChild(row);
+
+      phraseBoxes.push(row);
+      badges.push(badge);
+    });
+
+    teacherToggle.addEventListener("change", (e) => {
+      isTeacher = e.target.checked;
+      resetButton.style.display = isTeacher ? "inline-block" : "none";
+      updateUIState();
+    });
+
+    function updateUIState() {
+      phraseBoxes.forEach((box, i) => {
+        const badge = badges[i];
+        const tabBtn = tabButtons[i];
+        const input = box.querySelector("textarea.answer-input");
+        const tokenBtn = box.querySelector(".btn-token");
+        const prevBtn = box.querySelectorAll(".btn-arrow")[0];
+        const nextBtn = box.querySelectorAll(".btn-arrow")[1];
+
+        // Scheda visualizzata
+        if (i === currentlyViewedTab) {
+          box.classList.add("current-view");
+        } else {
+          box.classList.remove("current-view");
+        }
+
+        // Tab in alto
+        tabBtn.className = "tab-btn";
+        if (i === currentlyViewedTab) tabBtn.classList.add("active-tab");
+
+        prevBtn.disabled = (i === 0);
+        nextBtn.disabled = (i === phrases.length - 1);
+
+        const cardWriter = writersData[i] || null;
+
+        if (!cardWriter) {
+          badge.className = "badge badge-active";
+          badge.textContent = "Открыто · Aperto";
+          input.disabled = true;
+          tokenBtn.textContent = "✋ Взять слово · Prendi la parola";
+          tokenBtn.className = "btn-token";
+          tokenBtn.disabled = false;
+        } else if (cardWriter === myClientId) {
+          badge.className = "badge badge-writing";
+          badge.textContent = "Вы пишете · Stai scrivendo";
+          input.disabled = false;
+          tokenBtn.textContent = "✔ Сдать слово · Lascia la parola";
+          tokenBtn.className = "btn-token release";
+          tokenBtn.disabled = false;
+        } else {
+          badge.className = "badge badge-writing";
+          badge.textContent = "Пишет одноклассник · Un compagno scrive";
+          input.disabled = true;
+          tokenBtn.textContent = "🔒 Пишет другой";
+          tokenBtn.className = "btn-token release";
+          tokenBtn.disabled = true;
+        }
+      });
+    }
+
+    if (window.firebase) {
+      try {
+        firebase.initializeApp(firebaseConfig);
+        answersRef = firebase.database().ref("esercizi/unita10-completa-immagini-schede-libere");
+
+        answersRef.on("value", (snapshot) => {
+          const data = snapshot.val() || {};
+          const responses = data.responses || {};
+          writersData = data.writers || {};
+
+          phraseBoxes.forEach((box, qIdx) => {
+            const input = box.querySelector("textarea.answer-input");
+            const val = responses[qIdx] || "";
+            if (writersData[qIdx] !== myClientId) {
+              input.value = val;
+            }
+          });
+
+          updateUIState();
+        });
+      } catch (e) {
+        console.error("Errore Firebase:", e);
+      }
+    }
+
+    resetButton.addEventListener("click", () => {
+      if (confirm("Сбросить все ответы? · Vuoi azzerare tutte le risposte?")) {
+        answersRef.set({
+          writers: {},
+          responses: {}
+        });
+      }
+    });
+  </script>
+</body>
+</html>
