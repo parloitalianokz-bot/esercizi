@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Unità 1 — Correggi i dati (Un albergo in centro - Esercizio C)</title>
+  <title>Unità 1 — Riordina i dialoghi (Un albergo in centro - Esercizio D)</title>
   <style>
     :root {
       color-scheme: light;
@@ -40,7 +40,7 @@
       color: var(--text);
     }
 
-    .container { width: min(100%, 860px); margin: 0 auto; }
+    .container { width: min(100%, 820px); margin: 0 auto; }
 
     .hero {
       position: relative;
@@ -53,18 +53,6 @@
       border-radius: 24px;
       background: linear-gradient(135deg, rgba(255, 254, 250, .94), rgba(242, 247, 239, .91));
       box-shadow: 0 12px 32px rgba(43, 69, 46, .07);
-    }
-    .hero::before {
-      position: absolute;
-      z-index: -1;
-      top: -62px;
-      right: -38px;
-      width: 190px;
-      height: 190px;
-      border: 1px solid rgba(189, 105, 77, .14);
-      border-radius: 50%;
-      box-shadow: 0 0 0 18px rgba(189, 105, 77, .035), 0 0 0 38px rgba(189, 105, 77, .025);
-      content: "";
     }
     .eyebrow {
       display: inline-block;
@@ -85,7 +73,6 @@
       letter-spacing: -.04em;
       color: var(--primary-dark);
       line-height: 1.12;
-      text-wrap: balance;
     }
     .hero-subtitle {
       margin: 8px 0 0;
@@ -169,7 +156,6 @@
       font-weight: 700;
       color: var(--primary-dark);
       background: #fff;
-      outline: none;
     }
 
     button.reset-btn {
@@ -195,9 +181,12 @@
       margin-bottom: 32px;
     }
 
-    /* Modalità Uno alla volta (Token) */
     #token-mode-section { display: none; }
     #token-mode-section.active-mode { display: block; }
+
+    #all-students-mode-section { display: none; }
+    #all-students-mode-section.active-mode { display: block; }
+    body.teacher-mode #student-form-card { display: none; }
 
     .token-bar {
       display: flex;
@@ -208,62 +197,91 @@
       background: var(--primary-light);
       border-radius: 14px;
     }
+    .btn-token {
+      background: var(--primary-dark);
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: .85rem;
+      cursor: pointer;
+      min-height: 42px;
+    }
+    .btn-token.release { background: #bd694d; }
+    .btn-token.busy { background: #e8ebea; color: #5f6863; cursor: not-allowed; }
 
-    /* Tabella interattiva */
-    .table-container {
-      overflow-x: auto;
-      margin-bottom: 20px;
-    }
-    table.data-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
+    /* Dialogo Container */
+    .dialogue-card {
+      margin-bottom: 28px;
+      padding: 20px;
       border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
+      border-radius: 20px;
       background: #fff;
+      box-shadow: 0 6px 20px rgba(43, 69, 46, .04);
     }
-    table.data-table th {
-      background: var(--primary-light);
-      color: var(--primary-dark);
+    .dialogue-title {
+      font-size: 1.1rem;
       font-weight: 800;
-      font-size: .9rem;
-      padding: 14px 12px;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
+      color: var(--primary-dark);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--primary-light);
     }
-    table.data-table td {
-      padding: 12px;
-      border-bottom: 1px solid var(--border);
-      vertical-align: middle;
-      font-size: .95rem;
-    }
-    table.data-table tr:last-child td { border-bottom: none; }
-    
-    .cell-content {
+
+    /* Elementi repliche */
+    .line-item {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      gap: 12px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
       background: #fafafa;
-      padding: 6px 10px;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
+      transition: all .2s ease;
     }
+    .line-item.fixed {
+      background: var(--primary-light);
+      border-color: #c2d8c5;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    .line-text {
+      flex: 1;
+      font-size: .95rem;
+      line-height: 1.4;
+    }
+    .line-badge {
+      display: inline-grid;
+      width: 28px;
+      height: 28px;
+      place-items: center;
+      border-radius: 8px;
+      background: #fff;
+      font-weight: 800;
+      font-size: .85rem;
+      color: var(--primary-dark);
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+    }
+
     .arrow-btns {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 3px;
     }
     .btn-arrow {
       background: #fff;
       border: 1px solid #cbd5e1;
-      border-radius: 4px;
-      width: 26px;
-      height: 22px;
+      border-radius: 6px;
+      width: 30px;
+      height: 24px;
       display: grid;
       place-items: center;
-      font-size: .65rem;
+      font-size: .75rem;
       cursor: pointer;
       color: var(--primary-dark);
     }
@@ -272,11 +290,6 @@
       border-color: var(--primary);
     }
     .btn-arrow:disabled { opacity: .3; cursor: not-allowed; }
-
-    /* Modalità Tutti insieme */
-    #all-students-mode-section { display: none; }
-    #all-students-mode-section.active-mode { display: block; }
-    body.teacher-mode #student-form-card { display: none; }
 
     .login-box {
       margin-bottom: 20px;
@@ -330,7 +343,6 @@
       margin-top: 10px;
     }
 
-    /* Risultati insegnante */
     .results-section h2 {
       font-size: 1.3rem;
       color: var(--primary-dark);
@@ -380,25 +392,10 @@
     .btn-review-ok { background: var(--success); color: white; }
     .btn-review-comment { background: var(--accent); color: #fff; }
 
-    .btn-token {
-      background: var(--primary-dark);
-      color: #fff;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: .85rem;
-      cursor: pointer;
-      min-height: 42px;
-    }
-    .btn-token.release { background: #bd694d; color: #fff; }
-    .btn-token.busy { background: #e8ebea; color: #5f6863; cursor: not-allowed; }
-
-    @media (max-width: 600px) {
+    @media (max-width: 520px) {
       body { padding: 16px 8px; }
-      .table-container { margin-inline: -10px; }
-      table.data-table th, table.data-table td { padding: 8px 6px; font-size: .85rem; }
-      .cell-content { padding: 4px 6px; }
+      .dialogue-card { padding: 14px; }
+      .line-item { padding: 8px 10px; }
     }
   </style>
 </head>
@@ -408,14 +405,23 @@
     <header class="hero">
       <span class="eyebrow">Unità 1 · Чтение и понимание</span>
       <h1>Un albergo in centro</h1>
-      <p class="hero-subtitle">Найдите и исправьте ошибки в таблице!</p>
+      <p class="hero-subtitle">Расставьте реплики в диалогах в правильном порядке!</p>
     </header>
 
     <div class="instruction-box">
       <div class="instruction-title">💡 Задание · Esercizio:</div>
       <div class="instruction-text">
-        1. 👉 <strong>Найдите и исправьте ошибки!</strong><br>
-        2. В таблице перепутаны данные. Используйте стрелки <strong>▲ / ▼</strong>, чтобы перемещать элементы и вернуть каждому клиенту верную национальность, профессию и цель поездки.
+        1. 👉 <strong>Расставьте реплики в диалогах в правильном порядке.</strong><br>
+        2. Используйте стрелки <strong>▲ / ▼</strong>, чтобы перемещать реплики. Первое предложение зафиксировано.
+      </div>
+    </div>
+
+    <div class="instruction-box">
+      <div class="instruction-title">📘 Как обращаться к собеседнику?</div>
+      <div class="instruction-text">
+        <strong>Tu</strong> — обращение к одному человеку на «ты»: <em>Tu sei inglese?</em><br>
+        <strong>Lei</strong> — вежливое обращение к одному человеку; глагол употребляется в 3-м лице единственного числа: <em>Lei è tedesco?</em><br>
+        <strong>Voi</strong> — обращение к двум или нескольким людям; глагол употребляется во 2-м лице множественного числа: <em>Voi siete stranieri?</em>
       </div>
     </div>
 
@@ -445,19 +451,7 @@
         <span id="token-status-text" style="font-weight:700; color:var(--primary-dark);">Открыто для работы</span>
         <button id="btn-take-token" class="btn-token" type="button">✋ Взять слово · Prendi la parola</button>
       </div>
-      <div class="table-container">
-        <table class="data-table" id="token-table">
-          <thead>
-            <tr>
-              <th>Cliente</th>
-              <th>Nazionalità</th>
-              <th>Professione</th>
-              <th>Motivo del viaggio</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
+      <div id="token-dialogues-container"></div>
     </section>
 
     <!-- MODALITÀ 2: TUTTI INSIEME -->
@@ -470,19 +464,7 @@
 
         <p id="save-status" class="save-status" role="status" aria-live="polite" hidden></p>
 
-        <div class="table-container">
-          <table class="data-table" id="student-table">
-            <thead>
-              <tr>
-                <th>Cliente</th>
-                <th>Nazionalità</th>
-                <th>Professione</th>
-                <th>Motivo del viaggio</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
+        <div id="student-dialogues-container"></div>
 
         <button type="button" id="btn-submit-all" class="btn-submit">📤 Отправить решение · Invia la risposta</button>
       </div>
@@ -507,18 +489,47 @@
       appId: "INSERISCI_APP_ID"
     };
 
-    const clients = ["Yoko", "Karl e Klaus", "Victor", "Olga", "Mary"];
+    const dialoguesConfig = [
+      {
+        id: "d1",
+        title: "Dialogo 1 — Olga",
+        fixed: "— Ciao Olga! Sei inglese?",
+        initialOrder: [
+          "— Sono studentessa.",
+          "— No, non sono inglese; sono russa.",
+          "— Sono in Italia perché la moda italiana è molto bella.",
+          "— Perché sei in Italia?",
+          "— Tu lavori o studi?"
+        ]
+      },
+      {
+        id: "d2",
+        title: "Dialogo 2 — Victor",
+        fixed: "— Buongiorno Victor! Lei è tedesco?",
+        initialOrder: [
+          "— No, sono avvocato.",
+          "— Lei è ingegnere?",
+          "— Perché è in Italia?",
+          "— Per affari.",
+          "— No, non sono tedesco, sono francese."
+        ]
+      },
+      {
+        id: "d3",
+        title: "Dialogo 3 — Karl e Klaus",
+        fixed: "— Buongiorno Karl e Klaus! Voi siete stranieri?",
+        initialOrder: [
+          "— Sì, siamo clienti dell’albergo Ponte Vecchio.",
+          "— Sì, siamo stranieri; siamo tedeschi.",
+          "— No, siamo qui per studiare l’italiano.",
+          "— Siete in Italia per turismo?",
+          "— Abitate in albergo?"
+        ]
+      }
+    ];
 
-    // Dati mescolati con concordanze di genere e numero CORRETTE
-    const initialData = {
-      nat: ["Russa", "Francese", "Inglese", "Giapponese", "Tedeschi"],
-      prof: ["Insegnante", "Studentessa", "Studenti", "Avvocatessa", "Dentista"],
-      mot: ["Per affari", "Per insegnare l’inglese", "Per una conferenza", "Per studiare l’italiano", "Per fare shopping"]
-    };
-
-    // Copie locali dello stato
-    let studentDataState = JSON.parse(JSON.stringify(initialData));
-    let tokenDataState = JSON.parse(JSON.stringify(initialData));
+    let studentState = JSON.parse(JSON.stringify(dialoguesConfig.map(d => d.initialOrder)));
+    let tokenState = JSON.parse(JSON.stringify(dialoguesConfig.map(d => d.initialOrder)));
 
     const myClientId = "user_" + Math.random().toString(36).substring(2, 9);
     const teacherToggle = document.getElementById("teacher-mode");
@@ -538,123 +549,145 @@
       studentNameInput.value = localStorage.getItem("parlo_student_name");
     }
 
-    // Costruzione della tabella per la modalità "Tutti Insieme"
-    function renderStudentTable() {
-      const tbody = document.querySelector("#student-table tbody");
-      tbody.replaceChildren();
+    // Renderizza i dialoghi per la modalità "Tutti insieme"
+    function renderStudentDialogues() {
+      const container = document.getElementById("student-dialogues-container");
+      container.replaceChildren();
 
-      clients.forEach((client, idx) => {
-        const tr = document.createElement("tr");
+      dialoguesConfig.forEach((dConf, dIdx) => {
+        const card = document.createElement("div");
+        card.className = "dialogue-card";
 
-        // Colonna Cliente
-        const tdClient = document.createElement("td");
-        tdClient.innerHTML = `<strong>${client}</strong>`;
-        tr.appendChild(tdClient);
+        const title = document.createElement("div");
+        title.className = "dialogue-title";
+        title.textContent = dConf.title;
+        card.appendChild(title);
 
-        // Colonne Nazionalità, Professione, Motivo
-        ["nat", "prof", "mot"].forEach(colKey => {
-          const td = document.createElement("td");
-          const cellDiv = document.createElement("div");
-          cellDiv.className = "cell-content";
+        // Riga Fissa [1]
+        const fixedLine = document.createElement("div");
+        fixedLine.className = "line-item fixed";
+        fixedLine.innerHTML = `<span class="line-badge">1</span><span class="line-text">${dConf.fixed}</span>`;
+        card.appendChild(fixedLine);
+
+        // Righe spostabili
+        const currentArr = studentState[dIdx];
+        currentArr.forEach((text, lineIdx) => {
+          const lineDiv = document.createElement("div");
+          lineDiv.className = "line-item";
+
+          const badge = document.createElement("span");
+          badge.className = "line-badge";
+          badge.textContent = lineIdx + 2;
 
           const textSpan = document.createElement("span");
-          textSpan.textContent = studentDataState[colKey][idx];
+          textSpan.className = "line-text";
+          textSpan.textContent = text;
 
-          const btnsDiv = document.createElement("div");
-          btnsDiv.className = "arrow-btns";
+          const arrowDiv = document.createElement("div");
+          arrowDiv.className = "arrow-btns";
 
           const btnUp = document.createElement("button");
           btnUp.className = "btn-arrow";
           btnUp.type = "button";
           btnUp.textContent = "▲";
-          btnUp.disabled = idx === 0;
-          btnUp.onclick = () => moveItem(studentDataState, colKey, idx, idx - 1, true);
+          btnUp.disabled = lineIdx === 0;
+          btnUp.onclick = () => moveLine(studentState, dIdx, lineIdx, lineIdx - 1, true);
 
           const btnDown = document.createElement("button");
           btnDown.className = "btn-arrow";
           btnDown.type = "button";
           btnDown.textContent = "▼";
-          btnDown.disabled = idx === clients.length - 1;
-          btnDown.onclick = () => moveItem(studentDataState, colKey, idx, idx + 1, true);
+          btnDown.disabled = lineIdx === currentArr.length - 1;
+          btnDown.onclick = () => moveLine(studentState, dIdx, lineIdx, lineIdx + 1, true);
 
-          btnsDiv.append(btnUp, btnDown);
-          cellDiv.append(textSpan, btnsDiv);
-          td.appendChild(cellDiv);
-          tr.appendChild(td);
+          arrowDiv.append(btnUp, btnDown);
+          lineDiv.append(badge, textSpan, arrowDiv);
+          card.appendChild(lineDiv);
         });
 
-        tbody.appendChild(tr);
+        container.appendChild(card);
       });
     }
 
-    // Costruzione della tabella per la modalità "Uno alla volta"
-    function renderTokenTable() {
-      const tbody = document.querySelector("#token-table tbody");
-      tbody.replaceChildren();
+    // Renderizza i dialoghi per la modalità "Uno alla volta"
+    function renderTokenDialogues() {
+      const container = document.getElementById("token-dialogues-container");
+      container.replaceChildren();
 
       const canEdit = currentWriter === myClientId;
 
-      clients.forEach((client, idx) => {
-        const tr = document.createElement("tr");
+      dialoguesConfig.forEach((dConf, dIdx) => {
+        const card = document.createElement("div");
+        card.className = "dialogue-card";
 
-        const tdClient = document.createElement("td");
-        tdClient.innerHTML = `<strong>${client}</strong>`;
-        tr.appendChild(tdClient);
+        const title = document.createElement("div");
+        title.className = "dialogue-title";
+        title.textContent = dConf.title;
+        card.appendChild(title);
 
-        ["nat", "prof", "mot"].forEach(colKey => {
-          const td = document.createElement("td");
-          const cellDiv = document.createElement("div");
-          cellDiv.className = "cell-content";
+        const fixedLine = document.createElement("div");
+        fixedLine.className = "line-item fixed";
+        fixedLine.innerHTML = `<span class="line-badge">1</span><span class="line-text">${dConf.fixed}</span>`;
+        card.appendChild(fixedLine);
+
+        const currentArr = tokenState[dIdx];
+        currentArr.forEach((text, lineIdx) => {
+          const lineDiv = document.createElement("div");
+          lineDiv.className = "line-item";
+
+          const badge = document.createElement("span");
+          badge.className = "line-badge";
+          badge.textContent = lineIdx + 2;
 
           const textSpan = document.createElement("span");
-          textSpan.textContent = tokenDataState[colKey][idx];
+          textSpan.className = "line-text";
+          textSpan.textContent = text;
 
-          const btnsDiv = document.createElement("div");
-          btnsDiv.className = "arrow-btns";
+          const arrowDiv = document.createElement("div");
+          arrowDiv.className = "arrow-btns";
 
           const btnUp = document.createElement("button");
           btnUp.className = "btn-arrow";
           btnUp.type = "button";
           btnUp.textContent = "▲";
-          btnUp.disabled = !canEdit || idx === 0;
-          btnUp.onclick = () => moveItemToken(colKey, idx, idx - 1);
+          btnUp.disabled = !canEdit || lineIdx === 0;
+          btnUp.onclick = () => moveLineToken(dIdx, lineIdx, lineIdx - 1);
 
           const btnDown = document.createElement("button");
           btnDown.className = "btn-arrow";
           btnDown.type = "button";
           btnDown.textContent = "▼";
-          btnDown.disabled = !canEdit || idx === clients.length - 1;
-          btnDown.onclick = () => moveItemToken(colKey, idx, idx + 1);
+          btnDown.disabled = !canEdit || lineIdx === currentArr.length - 1;
+          btnDown.onclick = () => moveLineToken(dIdx, lineIdx, lineIdx + 1);
 
-          btnsDiv.append(btnUp, btnDown);
-          cellDiv.append(textSpan, btnsDiv);
-          td.appendChild(cellDiv);
-          tr.appendChild(td);
+          arrowDiv.append(btnUp, btnDown);
+          lineDiv.append(badge, textSpan, arrowDiv);
+          card.appendChild(lineDiv);
         });
 
-        tbody.appendChild(tr);
+        container.appendChild(card);
       });
     }
 
-    function moveItem(stateObj, colKey, fromIdx, toIdx, isStudent) {
-      const temp = stateObj[colKey][fromIdx];
-      stateObj[colKey][fromIdx] = stateObj[colKey][toIdx];
-      stateObj[colKey][toIdx] = temp;
+    function moveLine(stateArr, dIdx, fromIdx, toIdx, isStudent) {
+      const temp = stateArr[dIdx][fromIdx];
+      stateArr[dIdx][fromIdx] = stateArr[dIdx][toIdx];
+      stateArr[dIdx][toIdx] = temp;
       if (isStudent) {
         saveStatus.hidden = true;
-        renderStudentTable();
+        renderStudentDialogues();
       }
     }
 
-    function moveItemToken(colKey, fromIdx, toIdx) {
-      moveItem(tokenDataState, colKey, fromIdx, toIdx, false);
-      renderTokenTable();
+    function moveLineToken(dIdx, fromIdx, toIdx) {
+      moveLine(tokenState, dIdx, fromIdx, toIdx, false);
+      renderTokenDialogues();
       if (answersRef && currentWriter === myClientId) {
-        answersRef.child("tokenData").child("tableState").set(tokenDataState);
+        answersRef.child("tokenData").child("dialoguesState").set(tokenState);
       }
     }
 
-    // Firebase
+    // Firebase Init
     let answersRef = null;
     let isTeacher = false;
     let currentWorkMode = "token";
@@ -688,23 +721,20 @@
     if (window.firebase) {
       try {
         firebase.initializeApp(firebaseConfig);
-        answersRef = firebase.database().ref("esercizi/unita1-correggi-dati-c");
+        answersRef = firebase.database().ref("esercizi/unita1-riordina-dialoghi-d");
 
         answersRef.on("value", (snapshot) => {
           const data = snapshot.val() || {};
           currentWorkMode = data.workMode || "token";
           workModeSelect.value = currentWorkMode;
 
-          // Token State
           const tData = data.tokenData || {};
           currentWriter = tData.currentWriter || null;
-          if (tData.tableState) {
-            tokenDataState = tData.tableState;
+          if (tData.dialoguesState) {
+            tokenState = tData.dialoguesState;
           }
 
-          // All Mode State
           allResponses = data.allStudentsData || {};
-
           updateUIState();
         });
       } catch (e) {
@@ -712,6 +742,7 @@
       }
     }
 
+    // Invio delle risposte
     document.getElementById("btn-submit-all").addEventListener("click", async () => {
       const name = studentNameInput.value.trim();
       if (!name) {
@@ -731,10 +762,11 @@
       try {
         await studentRef.update({
           name,
-          tableData: studentDataState,
+          dialoguesState: studentState,
           timestamp: Date.now()
         });
-        saveStatus.textContent = "✅ Ответ отправлен учителю · Risposta inviata all’insegnante";
+        
+        saveStatus.textContent = "✅ Ответ отправлен учителю! · Risposta inviata all’insegnante!";
         saveStatus.hidden = false;
       } catch (err) {
         alert("Ошибка при отправке · Errore durante l'invio.");
@@ -763,15 +795,16 @@
           btnTakeToken.disabled = true;
         }
 
-        renderTokenTable();
+        renderTokenDialogues();
       } else {
         tokenSection.classList.remove("active-mode");
         allSection.classList.add("active-mode");
-        renderStudentTable();
+        renderStudentDialogues();
         renderResponsesAllMode();
       }
     }
 
+    // Risultati visibili all'insegnante
     function renderResponsesAllMode() {
       responsesList.replaceChildren();
       const studentsData = allResponses.students || {};
@@ -798,23 +831,31 @@
         header.appendChild(name);
         card.appendChild(header);
 
-        // Visualizzazione tabella inviata dallo studente
-        const tData = item.tableData || initialData;
-        const tableContainer = document.createElement("div");
-        tableContainer.className = "table-container";
-        let tableHtml = `<table class="data-table"><thead><tr><th>Cliente</th><th>Nazionalità</th><th>Professione</th><th>Motivo</th></tr></thead><tbody>`;
+        const sData = item.dialoguesState || dialoguesConfig.map(d => d.initialOrder);
 
-        clients.forEach((cName, cIdx) => {
-          tableHtml += `<tr>
-            <td><strong>${cName}</strong></td>
-            <td>${tData.nat[cIdx]}</td>
-            <td>${tData.prof[cIdx]}</td>
-            <td>${tData.mot[cIdx]}</td>
-          </tr>`;
+        dialoguesConfig.forEach((dConf, dIdx) => {
+          const dBox = document.createElement("div");
+          dBox.style.marginBottom = "14px";
+          dBox.innerHTML = `<strong style="color:var(--primary-dark); font-size:.9rem;">${dConf.title}</strong>`;
+
+          const fixedDiv = document.createElement("div");
+          fixedDiv.className = "line-item fixed";
+          fixedDiv.style.padding = "6px 10px";
+          fixedDiv.style.fontSize = ".85rem";
+          fixedDiv.innerHTML = `<span class="line-badge" style="width:22px;height:22px;font-size:.75rem;">1</span> <span>${dConf.fixed}</span>`;
+          dBox.appendChild(fixedDiv);
+
+          sData[dIdx].forEach((lineText, lineIdx) => {
+            const lineDiv = document.createElement("div");
+            lineDiv.className = "line-item";
+            lineDiv.style.padding = "6px 10px";
+            lineDiv.style.fontSize = ".85rem";
+            lineDiv.innerHTML = `<span class="line-badge" style="width:22px;height:22px;font-size:.75rem;">${lineIdx + 2}</span> <span>${lineText}</span>`;
+            dBox.appendChild(lineDiv);
+          });
+
+          card.appendChild(dBox);
         });
-        tableHtml += `</tbody></table>`;
-        tableContainer.innerHTML = tableHtml;
-        card.appendChild(tableContainer);
 
         if (isTeacher) {
           const reviewBox = document.createElement("div");
@@ -853,16 +894,17 @@
 
     resetButton.addEventListener("click", () => {
       if (confirm("Сбросить все ответы? · Azzera tutte le risposte?")) {
+        const initialStates = dialoguesConfig.map(d => d.initialOrder);
         answersRef.set({
           workMode: currentWorkMode,
-          tokenData: { currentWriter: null, tableState: initialData },
+          tokenData: { currentWriter: null, dialoguesState: initialStates },
           allStudentsData: {}
         });
       }
     });
 
-    renderStudentTable();
-    renderTokenTable();
+    renderStudentDialogues();
+    renderTokenDialogues();
   </script>
 </body>
 </html>
