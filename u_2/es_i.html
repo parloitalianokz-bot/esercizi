@@ -291,7 +291,7 @@
     .btn-token.release { background: #bd694d; }
     .btn-token.busy { background: #e8ebea; color: #5f6863; cursor: not-allowed; }
 
-    /* Card Esercizio */
+    /* Layout Scheda con Immagine Ingrandita (x1,5) e Ratio Uniformata */
     .slide-item {
       padding: 20px;
       border: 1px solid var(--border);
@@ -301,18 +301,44 @@
     }
     .slide-item[hidden] { display: none; }
 
+    .slide-content-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
     .prompt-box {
       font-size: 1.15rem;
       font-weight: 700;
       color: var(--primary-dark);
-      margin-bottom: 18px;
-      padding: 14px 18px;
+      padding: 18px 22px;
       background: var(--primary-light);
-      border-radius: 14px;
+      border-radius: 16px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       line-height: 1.5;
+      margin: 0;
+    }
+
+    .slide-img-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Dimensioni ingrandite x1,5 (420px max larghezza, 320px max altezza) + Aspect Ratio 4:3 uniforme */
+    .slide-img {
+      width: 420px;
+      max-width: 100%;
+      max-height: 320px;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      border-radius: 18px;
+      border: 1px solid #d0e2d2;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.09);
     }
 
     textarea.answer-input {
@@ -478,10 +504,18 @@
     .btn-review-ok { background: var(--success); color: white; }
     .btn-review-comment { background: var(--accent); color: #fff; }
 
-    @media (max-width: 520px) {
+    @media (max-width: 720px) {
       body { padding: 16px 8px; }
       .slide-item { padding: 14px; }
       .slide-navigation { flex-direction: column; gap: 8px; }
+      .slide-content-grid {
+        grid-template-columns: 1fr;
+      }
+      .slide-img {
+        width: 100%;
+        max-width: 360px;
+        max-height: 270px;
+      }
     }
   </style>
 </head>
@@ -581,27 +615,27 @@
       appId: "INSERISCI_APP_ID"
     };
 
-    // Данные упражнения I с подсказками (Tooltip) и ответами
+    // Данные упражнения I с изображениями i_1.png ... i_19.png
     const itemsData = [
-      { id: "i1", num: "1.", promptHTML: 'Marie _____ francese, _____ di Parigi.', acceptedAnswers: ['è, è', 'è è'] },
-      { id: "i2", num: "2.", promptHTML: 'La lezione _____ interessante.', acceptedAnswers: ['è'] },
-      { id: "i3", num: "3.", promptHTML: 'Tu _____ trentacinque anni.', acceptedAnswers: ['hai'] },
-      { id: "i4", num: "4.", promptHTML: 'I bambini _____ molta <span class="has-tooltip" data-tooltip="страх темноты">paura del buio</span>.', acceptedAnswers: ['hanno'] },
-      { id: "i5", num: "5.", promptHTML: 'La casa _____ grande, ma _____ vecchia.', acceptedAnswers: ['è, è', 'è è'] },
-      { id: "i6", num: "6.", promptHTML: 'Ciao ragazzi, _____ <span class="has-tooltip" data-tooltip="голод">fame</span>?', acceptedAnswers: ['avete'] },
-      { id: "i7", num: "7.", promptHTML: '— Un bicchiere d\'acqua? — No, grazie, non _____ <span class="has-tooltip" data-tooltip="жажда">sete</span>.', acceptedAnswers: ['ho'] },
-      { id: "i8", num: "8.", promptHTML: 'Paolo _____ italiano, _____ di Roma.', acceptedAnswers: ['è, è', 'è è'] },
-      { id: "i9", num: "9.", promptHTML: 'Io _____ <span class="has-tooltip" data-tooltip="женат / замужем">sposato</span>, ma non _____ figli.', acceptedAnswers: ['sono, ho', 'sono ho'] },
-      { id: "i10", num: "10.", promptHTML: 'Se _____ molta <span class="has-tooltip" data-tooltip="голод">fame</span>, mangio un piatto di spaghetti.', acceptedAnswers: ['ho'] },
-      { id: "i11", num: "11.", promptHTML: 'L’insegnante oggi _____ molto <span class="has-tooltip" data-tooltip="занят">occupato</span>.', acceptedAnswers: ['è'] },
-      { id: "i12", num: "12.", promptHTML: 'Oggi tu _____ <span class="has-tooltip" data-tooltip="желание / хотеть">voglia</span> di mangiare le lasagne?', acceptedAnswers: ['hai'] },
-      { id: "i13", num: "13.", promptHTML: '— Ragazze, voi _____ russe? — No, _____ kazake, _____ di Almaty.', acceptedAnswers: ['siete, siamo, siamo', 'siete siamo siamo'] },
-      { id: "i14", num: "14.", promptHTML: 'Il mio amico Marco _____ medico e _____ trent\'anni.', acceptedAnswers: ['è, ha', 'è ha'] },
-      { id: "i15", num: "15.", promptHTML: 'La mia casa _____ in città e _____ tre <span class="has-tooltip" data-tooltip="этаж">piani</span>.', acceptedAnswers: ['è, ha', 'è ha'] },
-      { id: "i16", num: "16.", promptHTML: 'Noi _____ felici di conoscerti.', acceptedAnswers: ['siamo'] },
-      { id: "i17", num: "17.", promptHTML: 'Tu non _____ mai <span class="has-tooltip" data-tooltip="желание / хотеть">voglia</span> di lavorare.', acceptedAnswers: ['hai'] },
-      { id: "i18", num: "18.", promptHTML: '— Tu _____ <span class="has-tooltip" data-tooltip="страх собак">paura dei cani</span>? — No, non _____ paura.', acceptedAnswers: ['hai, ho', 'hai ho'] },
-      { id: "i19", num: "19.", promptHTML: 'Bambini, se _____ <span class="has-tooltip" data-tooltip="сонность / хотеть спать">sonno</span>, porto una <span class="has-tooltip" data-tooltip="одеяло">coperta</span>.', acceptedAnswers: ['avete'] }
+      { id: "i1", num: "1.", promptHTML: 'Marie _____ francese, _____ di Parigi.', acceptedAnswers: ['è, è', 'è è'], img: 'img/i_1.png' },
+      { id: "i2", num: "2.", promptHTML: 'La lezione _____ interessante.', acceptedAnswers: ['è'], img: 'img/i_2.png' },
+      { id: "i3", num: "3.", promptHTML: 'Tu _____ trentacinque anni.', acceptedAnswers: ['hai'], img: 'img/i_3.png' },
+      { id: "i4", num: "4.", promptHTML: 'I bambini _____ molta <span class="has-tooltip" data-tooltip="страх темноты">paura del buio</span>.', acceptedAnswers: ['hanno'], img: 'img/i_4.png' },
+      { id: "i5", num: "5.", promptHTML: 'La casa _____ grande, ma _____ vecchia.', acceptedAnswers: ['è, è', 'è è'], img: 'img/i_5.png' },
+      { id: "i6", num: "6.", promptHTML: 'Ciao ragazzi, _____ <span class="has-tooltip" data-tooltip="голод">fame</span>?', acceptedAnswers: ['avete'], img: 'img/i_6.png' },
+      { id: "i7", num: "7.", promptHTML: '— Un bicchiere d\'acqua? — No, grazie, non _____ <span class="has-tooltip" data-tooltip="жажда">sete</span>.', acceptedAnswers: ['ho'], img: 'img/i_7.png' },
+      { id: "i8", num: "8.", promptHTML: 'Paolo _____ italiano, _____ di Roma.', acceptedAnswers: ['è, è', 'è è'], img: 'img/i_8.png' },
+      { id: "i9", num: "9.", promptHTML: 'Io _____ <span class="has-tooltip" data-tooltip="женат / замужем">sposato</span>, ma non _____ figli.', acceptedAnswers: ['sono, ho', 'sono ho'], img: 'img/i_9.png' },
+      { id: "i10", num: "10.", promptHTML: 'Se _____ molta <span class="has-tooltip" data-tooltip="голод">fame</span>, mangio un piatto di spaghetti.', acceptedAnswers: ['ho'], img: 'img/i_10.png' },
+      { id: "i11", num: "11.", promptHTML: 'L’insegnante oggi _____ molto <span class="has-tooltip" data-tooltip="занят">occupato</span>.', acceptedAnswers: ['è'], img: 'img/i_11.png' },
+      { id: "i12", num: "12.", promptHTML: 'Oggi tu _____ <span class="has-tooltip" data-tooltip="желание / хотеть">voglia</span> di mangiare le lasagne?', acceptedAnswers: ['hai'], img: 'img/i_12.png' },
+      { id: "i13", num: "13.", promptHTML: '— Ragazze, voi _____ russe? — No, _____ kazake, _____ di Almaty.', acceptedAnswers: ['siete, siamo, siamo', 'siete siamo siamo'], img: 'img/i_13.png' },
+      { id: "i14", num: "14.", promptHTML: 'Il mio amico Marco _____ medico e _____ trent\'anni.', acceptedAnswers: ['è, ha', 'è ha'], img: 'img/i_14.png' },
+      { id: "i15", num: "15.", promptHTML: 'La mia casa _____ in città e _____ tre <span class="has-tooltip" data-tooltip="этаж">piani</span>.', acceptedAnswers: ['è, ha', 'è ha'], img: 'img/i_15.png' },
+      { id: "i16", num: "16.", promptHTML: 'Noi _____ felici di conoscerti.', acceptedAnswers: ['siamo'], img: 'img/i_16.png' },
+      { id: "i17", num: "17.", promptHTML: 'Tu non _____ mai <span class="has-tooltip" data-tooltip="желание / хотеть">voglia</span> di lavorare.', acceptedAnswers: ['hai'], img: 'img/i_17.png' },
+      { id: "i18", num: "18.", promptHTML: '— Tu _____ <span class="has-tooltip" data-tooltip="страх собак">paura dei cani</span>? — No, non _____ paura.', acceptedAnswers: ['hai, ho', 'hai ho'], img: 'img/i_18.png' },
+      { id: "i19", num: "19.", promptHTML: 'Bambini, se _____ <span class="has-tooltip" data-tooltip="сонность / хотеть спать">sonno</span>, porto una <span class="has-tooltip" data-tooltip="одеяло">coperta</span>.', acceptedAnswers: ['avete'], img: 'img/i_19.png' }
     ];
 
     function normalizeAnswer(value) {
@@ -638,7 +672,7 @@
         return normalizeAnswer(completedSentence) === normalizedValue;
       });
     }
-  
+
     function createEmptyState() {
       const state = {};
       itemsData.forEach(item => { state[item.id] = ""; });
@@ -667,6 +701,51 @@
 
     if (localStorage.getItem("parlo_student_name")) {
       studentNameInput.value = localStorage.getItem("parlo_student_name");
+    }
+
+    // Costruzione elemento del dom per la scheda
+    function buildSlideItem(item, isTokenMode, canEdit, currentState, onInputChange) {
+      const box = document.createElement("div");
+      box.className = "slide-item";
+
+      const gridBox = document.createElement("div");
+      gridBox.className = "slide-content-grid";
+
+      const promptBox = document.createElement("div");
+      promptBox.className = "prompt-box";
+      promptBox.innerHTML = `<span>${item.num}</span> <div>${item.promptHTML}</div>`;
+      gridBox.appendChild(promptBox);
+
+      if (item.img) {
+        const imgContainer = document.createElement("div");
+        imgContainer.className = "slide-img-container";
+
+        const img = document.createElement("img");
+        img.src = item.img;
+        img.alt = `Illustrazione per frase ${item.num}`;
+        img.className = "slide-img";
+        img.onerror = () => imgContainer.remove();
+
+        imgContainer.appendChild(img);
+        gridBox.appendChild(imgContainer);
+      }
+
+      const textarea = document.createElement("textarea");
+      textarea.className = "answer-input";
+      textarea.rows = 2;
+      
+      if (isTokenMode) {
+        textarea.placeholder = canEdit ? "Scrivi le forme corrette oppure la frase completa..." : "Prendi la parola per scrivere...";
+        textarea.disabled = !canEdit;
+      } else {
+        textarea.placeholder = "Scrivi le forme corrette oppure la frase completa...";
+      }
+
+      textarea.value = currentState[item.id] || "";
+      textarea.addEventListener("input", onInputChange);
+
+      box.append(gridBox, textarea);
+      return box;
     }
 
     // Navigazione Slide
@@ -709,25 +788,11 @@
       container.replaceChildren();
 
       itemsData.forEach((item, idx) => {
-        const box = document.createElement("div");
-        box.className = "slide-item";
-        box.hidden = idx !== activeStudentSlide;
-
-        const promptBox = document.createElement("div");
-        promptBox.className = "prompt-box";
-        promptBox.innerHTML = `<span>${item.num}</span> <div>${item.promptHTML}</div>`;
-
-        const textarea = document.createElement("textarea");
-        textarea.className = "answer-input";
-        textarea.rows = 2;
-        textarea.placeholder = "Scrivi le forme corrette oppure la frase completa...";
-        textarea.value = studentState[item.id] || "";
-        textarea.addEventListener("input", (e) => {
+        const box = buildSlideItem(item, false, true, studentState, (e) => {
           studentState[item.id] = e.target.value;
           saveStatus.hidden = true;
         });
-
-        box.append(promptBox, textarea);
+        box.hidden = idx !== activeStudentSlide;
         container.appendChild(box);
       });
     }
@@ -737,34 +802,18 @@
       const container = document.getElementById("token-slides-container");
       const canEdit = currentWriter === myClientId;
 
-      // Protezione Focus Loss: se sto scrivendo nel box attivo, non sostituire il DOM
       if (canEdit && container.contains(document.activeElement)) return;
 
       container.replaceChildren();
 
       itemsData.forEach((item, idx) => {
-        const box = document.createElement("div");
-        box.className = "slide-item";
-        box.hidden = idx !== activeTokenSlide;
-
-        const promptBox = document.createElement("div");
-        promptBox.className = "prompt-box";
-        promptBox.innerHTML = `<span>${item.num}</span> <div>${item.promptHTML}</div>`;
-
-        const textarea = document.createElement("textarea");
-        textarea.className = "answer-input";
-        textarea.rows = 2;
-        textarea.placeholder = canEdit ? "Scrivi le forme corrette oppure la frase completa..." : "Prendi la parola per scrivere...";
-        textarea.disabled = !canEdit;
-        textarea.value = tokenState[item.id] || "";
-        textarea.addEventListener("input", (e) => {
+        const box = buildSlideItem(item, true, canEdit, tokenState, (e) => {
           tokenState[item.id] = e.target.value;
           if (answersRef && currentWriter === myClientId) {
             answersRef.child("tokenData").child("answers").set(tokenState);
           }
         });
-
-        box.append(promptBox, textarea);
+        box.hidden = idx !== activeTokenSlide;
         container.appendChild(box);
       });
     }
@@ -850,7 +899,7 @@
         saveStatus.textContent = "✅ Ответ отправлен учителю! · Risposta inviata all’insegnante!";
         saveStatus.hidden = false;
       } catch (err) {
-        alert("Ошибка при отправке · Errore durante l'invio.");
+        alert("Ошибка при отправке · Errore दौरान l'invio.");
       }
     });
 
