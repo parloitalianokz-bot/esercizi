@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unità 3 — Il Presente Indicativo (Esercizio P)</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: 'Segoe UI', Inter, system-ui, -apple-system, sans-serif;
+      --primary: #477755;
+      --primary-light: #edf4ed;
+      --primary-dark: #2f5739;
+      --accent: #bd694d;
+      --bg-main: #f5f1e7;
+      --card-bg: #fffefa;
+      --text: #292d28;
+      --text-muted: #6b7069;
+      --success: #278253;
+      --success-bg: #e1f1e5;
+      --border: #e7e5dc;
+    }
+
+    * { box-sizing: border-box; }
+
+    :focus-visible {
+      outline: 3px solid rgba(189, 105, 77, .55);
+      outline-offset: 3px;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 16px;
+      background:
+        linear-gradient(rgba(250, 248, 241, .88), rgba(250, 248, 241, .88)),
+        url("img/sfondo.jpg") center / cover fixed,
+        radial-gradient(ellipse at 50% -12%, rgba(111, 151, 116, .18), transparent 42%),
+        var(--bg-main);
+      color: var(--text);
+    }
+
+    .container { width: min(100%, 880px); margin: 0 auto; }
+
+    .hero {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      margin: 8px 0 22px;
+      padding: 28px 20px 26px;
+      text-align: center;
+      border: 1px solid rgba(71, 119, 85, .13);
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255, 254, 250, .94), rgba(242, 247, 239, .91));
+      box-shadow: 0 12px 32px rgba(43, 69, 46, .07);
+    }
+    .eyebrow {
+      display: inline-block;
+      color: var(--primary-dark);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      background: #eaf1e8;
+      padding: 8px 15px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      box-shadow: inset 0 0 0 1px rgba(71, 119, 85, .11);
+    }
+    h1 {
+      margin: 4px 0;
+      font-size: clamp(1.9rem, 5vw, 2.65rem);
+      letter-spacing: -.04em;
+      color: var(--primary-dark);
+      line-height: 1.12;
+    }
+    .hero-subtitle {
+      margin: 8px 0 0;
+      color: var(--text-muted);
+      font-size: .98rem;
+    }
+
+    /* Box Istruzioni */
+    .instruction-box {
+      background: #fff;
+      border: 1px solid #d8e5d8;
+      border-left: 5px solid var(--accent);
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 6px 18px rgba(43, 69, 46, .04);
+    }
+    .instruction-title {
+      font-size: .85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .instruction-text {
+      font-size: .98rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    /* Top Controls */
+    .top-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding: 14px 20px;
+      border: 1px solid rgba(71, 119, 85, .13);
+      border-radius: 16px;
+      background: rgba(255, 254, 250, .96);
+      box-shadow: 0 8px 22px rgba(43, 69, 46, .055);
+    }
+    .teacher-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      justify-content: space-between;
+    }
+    .teacher-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .88rem;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+      user-select: none;
+    }
+    .teacher-toggle input { accent-color: var(--primary); }
+
+    .mode-select-box {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+    .mode-select-box.visible { display: flex; }
+    .mode-select-box select {
+      padding: 6px 10px;
+      border: 1.5px solid #d4e1d5;
+      border-radius: 8px;
+      font: inherit;
+      font-size: .85rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      background: #fff;
+    }
+
+    button.reset-btn {
+      padding: 6px 14px;
+      border: 1px solid #fca5a5;
+      border-radius: 10px;
+      background: #fff;
+      color: #dc2626;
+      font: inherit;
+      font-size: .8rem;
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 42px;
+    }
+    button.reset-btn:hover { background: #fef2f2; }
+
+    .card {
+      padding: clamp(20px, 4vw, 32px);
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      background: var(--card-bg);
+      box-shadow: 0 22px 60px rgba(43, 69, 46, .11);
+      margin-bottom: 32px;
+    }
+
+    /* Navigazione Slide */
+    .slide-navigation {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .slide-navigation button {
+      min-height: 42px;
+      padding: 8px 18px;
+      border: 1px solid #d8e5d8;
+      border-radius: 10px;
+      background: #fff;
+      color: var(--primary-dark);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .slide-navigation button:hover:not(:disabled) {
+      background: var(--primary-light);
+      border-color: var(--primary);
+    }
+    .slide-navigation button:disabled {
+      cursor: not-allowed;
+      opacity: .45;
+    }
+    .slide-progress {
+      color: var(--primary-dark);
+      font-size: .95rem;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    #token-mode-section { display: none; }
+    #token-mode-section.active-mode { display: block; }
+
+    #all-students-mode-section { display: none; }
+    #all-students-mode-section.active-mode { display: block; }
+    body.teacher-mode #student-form-card { display: none; }
+
+    .token-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      background: var(--primary-light);
+      border-radius: 14px;
+    }
+    .btn-token {
+      background: var(--primary-dark);
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: .85rem;
+      cursor: pointer;
+      min-height: 42px;
+    }
+    .btn-token.release { background: #bd694d; }
+    .btn-token.busy { background: #e8ebea; color: #5f6863; cursor: not-allowed; }
+
+    /* Layout Scheda */
+    .slide-item {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 0 6px 18px rgba(43, 69, 46, .03);
+    }
+    .slide-item[hidden] { display: none; }
+
+    .slide-header-img {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 1px solid #d0e2d2;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+    }
+
+    .sentence-box {
+      font-size: 1.15rem;
+      line-height: 2.2;
+      color: var(--text);
+      padding: 20px 24px;
+      background: #faf9f5;
+      border-radius: 16px;
+      border: 1px solid #e8e6dc;
+    }
+
+    input.inline-input {
+      display: inline-block;
+      padding: 4px 8px;
+      margin: 0 4px;
+      border: 1.5px solid #bdc3c7;
+      border-radius: 8px;
+      font: inherit;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      background: #fff;
+      text-align: center;
+      outline: none;
+      transition: all .2s ease;
+    }
+    input.inline-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(71, 119, 85, .18);
+    }
+    input.inline-input:disabled {
+      background: #f1f5f1;
+      color: #2f5739;
+    }
+    input.inline-input.correct {
+      border-color: #278253;
+      background: #e1f1e5;
+      color: #17623c;
+    }
+    input.inline-input.incorrect {
+      border-color: #dc2626;
+      background: #fde8e7;
+      color: #991b1b;
+    }
+
+    .login-box {
+      margin-bottom: 20px;
+      padding: 16px;
+      background: var(--primary-light);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .login-box label {
+      font-weight: 700;
+      font-size: .9rem;
+      color: var(--primary-dark);
+      white-space: nowrap;
+    }
+    .login-box input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1.5px solid #d4e1d5;
+      border-radius: 10px;
+      font: inherit;
+      font-size: .95rem;
+      outline: none;
+      background: #fff;
+    }
+
+    .save-status {
+      margin: 0 0 18px;
+      padding: 11px 14px;
+      border: 1px solid #b7dfc1;
+      border-radius: 12px;
+      background: var(--success-bg);
+      color: #17623c;
+      font-size: .9rem;
+      font-weight: 700;
+    }
+    .save-status[hidden] { display: none; }
+
+    .answer-feedback {
+      margin: 10px 2px 0;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: .95rem;
+      font-weight: 700;
+    }
+    .answer-feedback.correct { background: var(--success-bg); color: var(--success); }
+    .answer-feedback.incorrect { background: #fde8e7; color: #dc2626; }
+    .answer-feedback[hidden] { display: none; }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(71, 119, 85, .3);
+      margin-top: 18px;
+    }
+
+    .results-section h2 {
+      font-size: 1.3rem;
+      color: var(--primary-dark);
+      margin-bottom: 16px;
+    }
+    .question-responses { margin-bottom: 12px; }
+    .question-responses details {
+      margin-bottom: 10px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      overflow: hidden;
+    }
+    .question-responses summary {
+      padding: 14px 16px;
+      color: var(--primary-dark);
+      font-weight: 800;
+      cursor: pointer;
+      background: var(--primary-light);
+    }
+    .answer-list { padding: 4px 16px 12px; }
+    .answer-row {
+      display: grid;
+      grid-template-columns: minmax(120px, .35fr) 1fr;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: .92rem;
+    }
+    .answer-row:last-child { border-bottom: 0; }
+    .answer-author { font-weight: 700; color: var(--primary-dark); }
+    .answer-text {
+      display: block;
+      padding: 8px 10px;
+      border-radius: 8px;
+      overflow-wrap: anywhere;
+      font-weight: 600;
+    }
+    .answer-text.review-approved { background: var(--success-bg); }
+    .answer-text.review-rejected { background: #fde8e7; }
+    .answer-text.auto-correct { background: var(--success-bg); }
+    .answer-text.auto-incorrect { background: #fde8e7; }
+    .answer-cell { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .answer-cell .answer-text { flex: 1; min-width: 0; }
+    .answer-review-controls { display: flex; flex-shrink: 0; gap: 2px; }
+    .answer-review-btn {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border: 0;
+      border-radius: 5px;
+      background: transparent;
+      font-size: 1.1rem;
+      font-weight: 800;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .answer-review-btn.approve { color: var(--success); }
+    .answer-review-btn.reject { color: #dc2626; }
+    .answer-review-btn:hover { background: #f1f3ef; }
+    .answer-review-btn[aria-pressed="true"] { background: #f1f3ef; }
+
+    @media (max-width: 600px) {
+      body { padding: 16px 8px; }
+      .slide-item { padding: 14px; }
+      .slide-navigation { flex-direction: column; gap: 8px; }
+      .sentence-box { font-size: 1rem; padding: 14px; }
+      input.inline-input { width: 95px !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <header class="hero">
+      <span class="eyebrow">Unità 3 · Grammatica e Verbi</span>
+      <h1>Il Presente Indicativo</h1>
+      <p class="hero-subtitle">Поставьте глаголы в скобках в нужную форму (Presente)!</p>
+    </header>
+
+    <div class="instruction-box">
+      <div class="instruction-title">💡 Задание · Esercizio P:</div>
+      <div class="instruction-text">
+        👉 <strong>Раскройте скобки и вставьте глаголы в правильной форме настоящего времени (Presente):</strong><br>
+        <small style="color: var(--text-muted);">Используйте стрелки на экране или клавиши <strong>← / →</strong> (или ↑ / ↓) на клавиатуре для перехода между предложениями.</small>
+      </div>
+    </div>
+
+    <!-- Barra Controlli Superiore -->
+    <div id="status" class="top-controls">
+      <div class="teacher-controls">
+        <label class="teacher-toggle">
+          <input type="checkbox" id="teacher-mode">
+          Режим учителя · Modalità insegnante
+        </label>
+
+        <div class="mode-select-box" id="mode-selector-container">
+          <label for="work-mode">Режим работы:</label>
+          <select id="work-mode">
+            <option value="token">Uno alla volta · По одному</option>
+            <option value="all">Tutti insieme · Все вместе</option>
+          </select>
+        </div>
+
+        <button id="reset" class="reset-btn" type="button" style="display:none;">⚠️ Сбросить · Azzera</button>
+      </div>
+    </div>
+
+    <!-- MODALITÀ 1: UNO ALLA VOLTA -->
+    <section id="token-mode-section" class="card active-mode">
+      <div class="token-bar">
+        <span id="token-status-text" style="font-weight:700; color:var(--primary-dark);">Открыто для работы</span>
+        <button id="btn-take-token" class="btn-token" type="button">✋ Взять слово · Prendi la parola</button>
+      </div>
+
+      <nav class="slide-navigation" aria-label="Navigazione schede">
+        <button id="prev-token-slide" type="button">← Precedente</button>
+        <span id="progress-token-slide" class="slide-progress"></span>
+        <button id="next-token-slide" type="button">Successiva →</button>
+      </nav>
+
+      <div id="token-slides-container"></div>
+    </section>
+
+    <!-- MODALITÀ 2: TUTTI INSIEME -->
+    <section id="all-students-mode-section">
+      <div class="card" id="student-form-card">
+        <div class="login-box">
+          <label for="student-name-input">Ваше имя (Имя Фамилия):</label>
+          <input type="text" id="student-name-input" placeholder="Введите ваше имя...">
+        </div>
+
+        <p id="save-status" class="save-status" role="status" aria-live="polite" hidden></p>
+
+        <nav class="slide-navigation" aria-label="Navigazione schede">
+          <button id="prev-student-slide" type="button">← Precedente</button>
+          <span id="progress-student-slide" class="slide-progress"></span>
+          <button id="next-student-slide" type="button">Successiva →</button>
+        </nav>
+
+        <div id="student-slides-container"></div>
+
+        <button type="button" id="btn-submit-all" class="btn-submit">📤 Отправить решение · Invia la risposta</button>
+      </div>
+
+      <div class="results-section">
+        <h2>📋 Ответы студентов · Risposte degli studenti</h2>
+        <div id="responses-list">
+          <p style="color: var(--text-muted); font-size: .9rem;">Пока никто не отправил ответы...</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "INSERISCI_API_KEY",
+      authDomain: "esercizi-parlo-italiano.firebaseapp.com",
+      databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "esercizi-parlo-italiano",
+      appId: "INSERISCI_APP_ID"
+    };
+
+    // 25 Schede dell'Esercizio P (numerate 1..25)
+    const sentencesData = [
+      {
+        id: "p1",
+        num: "1.",
+        img: "img/p_01.png",
+        keys: ["dorme"],
+        template: `Il gatto {{0:100}} (dormire) sul divano.`
+      },
+      {
+        id: "p2",
+        num: "2.",
+        img: "img/p_02.png",
+        keys: ["guardano"],
+        template: `Luca e Maria {{0:110}} (guardare) un film al cinema questa sera.`
+      },
+      {
+        id: "p3",
+        num: "3.",
+        img: "img/p_03.png",
+        keys: ["ascolta", "studia"],
+        template: `Martina {{0:100}} (ascoltare) musica mentre {{1:100}} (studiare).`
+      },
+      {
+        id: "p4",
+        num: "4.",
+        img: "img/p_04.png",
+        keys: ["apre", "chiude"],
+        template: `Il negozio {{0:90}} (aprire) alle 8 di mattina e {{1:90}} (chiudere) alle otto di sera.`
+      },
+      {
+        id: "p5",
+        num: "5.",
+        img: "img/p_05.png",
+        keys: ["mangiamo"],
+        template: `Noi {{0:110}} (mangiare) sempre la colazione al bar.`
+      },
+      {
+        id: "p6",
+        num: "6.",
+        img: "img/p_06.png",
+        keys: ["ballano"],
+        template: `Alessandro e Laura {{0:100}} (ballare) in discoteca ogni sera.`
+      },
+      {
+        id: "p7",
+        num: "7.",
+        img: "img/p_07.png",
+        keys: ["racconta"],
+        template: `La nonna {{0:110}} (raccontare) una favola ai nipoti.`
+      },
+      {
+        id: "p8",
+        num: "8.",
+        img: "img/p_08.png",
+        keys: ["pensi"],
+        template: `Tu {{0:90}} (pensare) di fare una vacanza al mare quest'anno?`
+      },
+      {
+        id: "p9",
+        num: "9.",
+        img: "img/p_09.png",
+        keys: ["lavoro"],
+        template: `Io {{0:100}} (lavorare) come insegnante di matematica.`
+      },
+      {
+        id: "p10",
+        num: "10.",
+        img: "img/p_10.png",
+        keys: ["viaggiano"],
+        template: `Marco e Giulia {{0:110}} (viaggiare) per l'Europa quest’estate.`
+      },
+      {
+        id: "p11",
+        num: "11.",
+        img: "img/p_11.png",
+        keys: ["prende"],
+        template: `Marta {{0:100}} (prendere) l'autobus per andare all'università.`
+      },
+      {
+        id: "p12",
+        num: "12.",
+        img: "img/p_12.png",
+        keys: ["legge"],
+        template: `Luca {{0:90}} (leggere) un libro interessante in biblioteca.`
+      },
+      {
+        id: "p13",
+        num: "13.",
+        img: "img/p_13.png",
+        keys: ["torno"],
+        template: `Io {{0:90}} (tornare) a casa ogni giorno dopo le lezioni.`
+      },
+      {
+        id: "p14",
+        num: "14.",
+        img: "img/p_14.png",
+        keys: ["aspetta"],
+        template: `Mia sorella {{0:100}} (aspettare) il suo ragazzo fuori dalla stazione.`
+      },
+      {
+        id: "p15",
+        num: "15.",
+        img: "img/p_15.png",
+        keys: ["scrivo"],
+        template: `Io {{0:90}} (scrivere) un'email al mio capo ogni settimana.`
+      },
+      {
+        id: "p16",
+        num: "16.",
+        img: "img/p_16.png",
+        keys: ["festeggiamo"],
+        template: `Noi {{0:120}} (festeggiare) il compleanno di Giovanni sabato prossimo.`
+      },
+      {
+        id: "p17",
+        num: "17.",
+        img: "img/p_17.png",
+        keys: ["guida"],
+        template: `Giacomo {{0:90}} (guidare) lentamente quando piove.`
+      },
+      {
+        id: "p18",
+        num: "18.",
+        img: "img/p_18.png",
+        keys: ["gioca"],
+        template: `Il bambino {{0:90}} (giocare) nel parco con il suo cane.`
+      },
+      {
+        id: "p19",
+        num: "19.",
+        img: "img/p_19.png",
+        keys: ["prepara", "lava"],
+        template: `Maria {{0:100}} (preparare) la cena e poi {{1:90}} (lavare) i piatti.`
+      },
+      {
+        id: "p20",
+        num: "20.",
+        img: "img/p_20.png",
+        keys: ["studia"],
+        template: `Mia sorella {{0:100}} (studiare) medicina all'università.`
+      },
+      {
+        id: "p21",
+        num: "21.",
+        img: "img/p_21.png",
+        keys: ["passeggi"],
+        template: `Tu {{0:100}} (passeggiare) spesso al parco con gli amici?`
+      },
+      {
+        id: "p22",
+        num: "22.",
+        img: "img/p_22.png",
+        keys: ["telefona"],
+        template: `Marco {{0:100}} (telefonare) alla sua ragazza ogni sera.`
+      },
+      {
+        id: "p23",
+        num: "23.",
+        img: "img/p_23.png",
+        keys: ["passiamo"],
+        template: `In estate, noi {{0:110}} (passare) le giornate in spiaggia.`
+      },
+      {
+        id: "p24",
+        num: "24.",
+        img: "img/p_24.png",
+        keys: ["ascoltano"],
+        template: `Luca e Maria {{0:110}} (ascoltare) la musica italiana.`
+      },
+      {
+        id: "p25",
+        num: "25.",
+        img: "img/p_25.png",
+        keys: ["visitano"],
+        template: `Durante l'estate, molti turisti {{0:110}} (visitare) l’Italia.`
+      }
+    ];
+
+    function normalizeAnswer(value) {
+      return String(value || "")
+        .toLocaleLowerCase("it")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^\p{L}\p{N}\s]/gu, "")
+        .trim();
+    }
+
+    function createEmptyState() {
+      const state = {};
+      sentencesData.forEach(item => {
+        state[item.id] = new Array(item.keys.length).fill("");
+      });
+      return state;
+    }
+
+    let studentState = createEmptyState();
+    let studentSubmitted = false;
+    let tokenState = createEmptyState();
+    let activeTokenSlide = 0;
+    let activeStudentSlide = 0;
+
+    const myClientId = "user_" + Math.random().toString(36).substring(2, 9);
+    const teacherToggle = document.getElementById("teacher-mode");
+    const workModeSelect = document.getElementById("work-mode");
+    const modeSelectorContainer = document.getElementById("mode-selector-container");
+    const resetButton = document.getElementById("reset");
+
+    const tokenSection = document.getElementById("token-mode-section");
+    const allSection = document.getElementById("all-students-mode-section");
+    const studentNameInput = document.getElementById("student-name-input");
+    const saveStatus = document.getElementById("save-status");
+    const responsesList = document.getElementById("responses-list");
+
+    const btnTakeToken = document.getElementById("btn-take-token");
+    const tokenStatusText = document.getElementById("token-status-text");
+
+    if (localStorage.getItem("parlo_student_name")) {
+      studentNameInput.value = localStorage.getItem("parlo_student_name");
+    }
+
+    function buildSentenceHTML(item, isTokenMode, canEdit, currentState, onInputChange) {
+      let html = item.template;
+
+      item.keys.forEach((key, idx) => {
+        const keyPattern = new RegExp(`\\{\\{${idx}:(\\d+)\\}\\}`);
+        const match = html.match(keyPattern);
+        const width = match ? match[1] : 90;
+
+        const val = (currentState[item.id] && currentState[item.id][idx]) || "";
+        let inputClass = "inline-input";
+
+        if (!isTokenMode && studentSubmitted && val.trim()) {
+          const isOk = normalizeAnswer(val) === normalizeAnswer(key);
+          inputClass += isOk ? " correct" : " incorrect";
+        }
+
+        const disabledAttr = canEdit ? "" : "disabled";
+
+        const inputHTML = `<input type="text" 
+          class="${inputClass}" 
+          style="width: ${width}px;" 
+          value="${val.replace(/"/g, '&quot;')}" 
+          data-itemid="${item.id}" 
+          data-keyidx="${idx}" 
+          ${disabledAttr} 
+          placeholder="___" />`;
+
+        html = html.replace(keyPattern, inputHTML);
+      });
+
+      return html;
+    }
+
+    function buildSlideItem(item, isTokenMode, canEdit, currentState, onInputChange) {
+      const box = document.createElement("div");
+      box.className = "slide-item";
+
+      if (item.img) {
+        const img = document.createElement("img");
+        img.src = item.img;
+        img.alt = `Illustrazione per la frase ${item.num}`;
+        img.className = "slide-header-img";
+        img.onerror = () => img.remove();
+        box.appendChild(img);
+      }
+
+      const sentenceBox = document.createElement("div");
+      sentenceBox.className = "sentence-box";
+      sentenceBox.innerHTML = `<strong>${item.num}</strong> ` + buildSentenceHTML(item, isTokenMode, canEdit, currentState, onInputChange);
+
+      sentenceBox.querySelectorAll("input.inline-input").forEach(input => {
+        input.addEventListener("input", (e) => {
+          const kIdx = parseInt(e.target.dataset.keyidx, 10);
+          onInputChange(kIdx, e.target.value);
+        });
+      });
+
+      box.appendChild(sentenceBox);
+
+      const feedback = document.createElement("p");
+      feedback.className = "answer-feedback";
+      feedback.setAttribute("role", "status");
+      feedback.hidden = true;
+
+      if (!isTokenMode && studentSubmitted) {
+        const studentAnswers = currentState[item.id] || [];
+        const correctCount = item.keys.filter((key, i) => normalizeAnswer(studentAnswers[i]) === normalizeAnswer(key)).length;
+        const total = item.keys.length;
+
+        if (correctCount === total) {
+          feedback.textContent = `✓ Perfetto! (${correctCount}/${total})`;
+          feedback.className = "answer-feedback correct";
+        } else {
+          feedback.textContent = `✕ ${correctCount} su ${total} forme corrette. Controlla quelle evidenziate in rosso.`;
+          feedback.className = "answer-feedback incorrect";
+        }
+        feedback.hidden = false;
+      }
+
+      box.appendChild(feedback);
+      return box;
+    }
+
+    function setupNavigation(prevBtnId, nextBtnId, progressId, getCurrentSlide, setCurrentSlide, total) {
+      const prevBtn = document.getElementById(prevBtnId);
+      const nextBtn = document.getElementById(nextBtnId);
+      const progressSpan = document.getElementById(progressId);
+
+      function updateNav() {
+        const current = getCurrentSlide();
+        prevBtn.disabled = current === 0;
+        nextBtn.disabled = current === total - 1;
+        progressSpan.textContent = `Frase ${current + 1} di ${total}`;
+      }
+
+      prevBtn.onclick = () => {
+        if (getCurrentSlide() > 0) {
+          setCurrentSlide(getCurrentSlide() - 1);
+          updateNav();
+          renderStudentSlides();
+          renderTokenSlides();
+        }
+      };
+
+      nextBtn.onclick = () => {
+        if (getCurrentSlide() < total - 1) {
+          setCurrentSlide(getCurrentSlide() + 1);
+          updateNav();
+          renderStudentSlides();
+          renderTokenSlides();
+        }
+      };
+
+      updateNav();
+    }
+
+    window.addEventListener("keydown", (e) => {
+      if (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA") return;
+
+      if (currentWorkMode === "token") {
+        if ((e.key === "ArrowLeft" || e.key === "ArrowUp") && activeTokenSlide > 0) {
+          activeTokenSlide--;
+          document.getElementById("prev-token-slide").click();
+        } else if ((e.key === "ArrowRight" || e.key === "ArrowDown") && activeTokenSlide < sentencesData.length - 1) {
+          activeTokenSlide++;
+          document.getElementById("next-token-slide").click();
+        }
+      } else {
+        if ((e.key === "ArrowLeft" || e.key === "ArrowUp") && activeStudentSlide > 0) {
+          activeStudentSlide--;
+          document.getElementById("prev-student-slide").click();
+        } else if ((e.key === "ArrowRight" || e.key === "ArrowDown") && activeStudentSlide < sentencesData.length - 1) {
+          activeStudentSlide++;
+          document.getElementById("next-student-slide").click();
+        }
+      }
+    });
+
+    function renderStudentSlides() {
+      const container = document.getElementById("student-slides-container");
+      container.replaceChildren();
+
+      sentencesData.forEach((item, idx) => {
+        const box = buildSlideItem(item, false, true, studentState, (keyIdx, val) => {
+          if (!studentState[item.id]) studentState[item.id] = [];
+          studentState[item.id][keyIdx] = val;
+          studentSubmitted = false;
+          saveStatus.hidden = true;
+        });
+        box.hidden = idx !== activeStudentSlide;
+        container.appendChild(box);
+      });
+    }
+
+    function renderTokenSlides() {
+      const container = document.getElementById("token-slides-container");
+      const canEdit = currentWriter === myClientId;
+
+      if (canEdit && container.contains(document.activeElement)) return;
+
+      container.replaceChildren();
+
+      sentencesData.forEach((item, idx) => {
+        const box = buildSlideItem(item, true, canEdit, tokenState, (keyIdx, val) => {
+          if (!tokenState[item.id]) tokenState[item.id] = [];
+          tokenState[item.id][keyIdx] = val;
+          if (answersRef && currentWriter === myClientId) {
+            answersRef.child("tokenData").child("answers").set(tokenState);
+          }
+        });
+        box.hidden = idx !== activeTokenSlide;
+        container.appendChild(box);
+      });
+    }
+
+    let answersRef = null;
+    let isTeacher = false;
+    let currentWorkMode = "token";
+    let currentWriter = null;
+    let allResponses = {};
+
+    teacherToggle.addEventListener("change", (e) => {
+      isTeacher = e.target.checked;
+      document.body.classList.toggle("teacher-mode", isTeacher);
+      modeSelectorContainer.classList.toggle("visible", isTeacher);
+      resetButton.style.display = isTeacher ? "inline-block" : "none";
+      updateUIState();
+    });
+
+    workModeSelect.addEventListener("change", (e) => {
+      if (answersRef && isTeacher) {
+        answersRef.child("workMode").set(e.target.value);
+      }
+    });
+
+    btnTakeToken.onclick = () => {
+      if (answersRef) {
+        if (currentWriter === myClientId) {
+          answersRef.child("tokenData").child("currentWriter").set(null);
+        } else if (!currentWriter) {
+          answersRef.child("tokenData").child("currentWriter").set(myClientId);
+        }
+      }
+    };
+
+    if (window.firebase) {
+      try {
+        firebase.initializeApp(firebaseConfig);
+        answersRef = firebase.database().ref("esercizi/unita3-presente-regolari-p");
+
+        answersRef.on("value", (snapshot) => {
+          const data = snapshot.val() || {};
+          currentWorkMode = data.workMode || "token";
+          workModeSelect.value = currentWorkMode;
+
+          const tData = data.tokenData || {};
+          currentWriter = tData.currentWriter || null;
+          if (tData.answers) {
+            tokenState = tData.answers;
+          }
+
+          allResponses = data.allStudentsData || {};
+          updateUIState();
+        });
+      } catch (e) {
+        console.error("Errore Firebase:", e);
+      }
+    }
+
+    document.getElementById("btn-submit-all").addEventListener("click", async () => {
+      const name = studentNameInput.value.trim();
+      if (!name) {
+        alert("Пожалуйста, введите ваше имя! · Inserisci il tuo nome!");
+        studentNameInput.focus();
+        return;
+      }
+      if (!answersRef) {
+        alert("Нет соединения с базой данных. · Connessione non disponibile.");
+        return;
+      }
+
+      localStorage.setItem("parlo_student_name", name);
+      const studentId = name.replace(/[.#$\/\[\]]/g, "_");
+      const studentRef = answersRef.child("allStudentsData").child("students").child(studentId);
+
+      try {
+        await studentRef.update({
+          name,
+          answers: studentState,
+          timestamp: Date.now()
+        });
+
+        studentSubmitted = true;
+        renderStudentSlides();
+        saveStatus.textContent = "✅ Ответ отправлен учителю! · Risposta inviata all’insegnante!";
+        saveStatus.hidden = false;
+      } catch (err) {
+        alert("Ошибка при отправке · Errore durante l'invio.");
+      }
+    });
+
+    function updateUIState() {
+      if (currentWorkMode === "token") {
+        tokenSection.classList.add("active-mode");
+        allSection.classList.remove("active-mode");
+
+        if (!currentWriter) {
+          tokenStatusText.textContent = "Открыто · In corso";
+          btnTakeToken.textContent = "✋ Взять слово · Prendi la parola";
+          btnTakeToken.className = "btn-token";
+          btnTakeToken.disabled = false;
+        } else if (currentWriter === myClientId) {
+          tokenStatusText.textContent = "Вы редактируете · Stai modificando";
+          btnTakeToken.textContent = "✔ Передать слово · Lascia la parola";
+          btnTakeToken.className = "btn-token release";
+          btnTakeToken.disabled = false;
+        } else {
+          tokenStatusText.textContent = "🔒 Пишет одноклассник · Compagno scrive";
+          btnTakeToken.textContent = "🔒 Пишет одноклассник · Compagno scrive";
+          btnTakeToken.className = "btn-token busy";
+          btnTakeToken.disabled = true;
+        }
+
+        renderTokenSlides();
+      } else {
+        tokenSection.classList.remove("active-mode");
+        allSection.classList.add("active-mode");
+        renderStudentSlides();
+        renderResponsesAllMode();
+      }
+    }
+
+    function renderResponsesAllMode() {
+      responsesList.replaceChildren();
+      const studentsData = allResponses.students || {};
+      const studentEntries = Object.entries(studentsData);
+
+      if (studentEntries.length === 0) {
+        const emptyMessage = document.createElement("p");
+        emptyMessage.style.color = "var(--text-muted)";
+        emptyMessage.style.fontSize = ".9rem";
+        emptyMessage.textContent = "Пока никто не отправил ответы...";
+        responsesList.appendChild(emptyMessage);
+        return;
+      }
+
+      const groupedAnswers = document.createElement("div");
+      groupedAnswers.className = "question-responses";
+
+      sentencesData.forEach((item, index) => {
+        const details = document.createElement("details");
+        if (index === 0) details.open = true;
+
+        const summary = document.createElement("summary");
+        summary.textContent = `Frase ${item.num}`;
+        details.appendChild(summary);
+
+        const answerList = document.createElement("div");
+        answerList.className = "answer-list";
+
+        studentEntries.forEach(([studentId, sData]) => {
+          const row = document.createElement("div");
+          row.className = "answer-row";
+
+          const author = document.createElement("span");
+          author.className = "answer-author";
+          author.textContent = sData.name || "Studente";
+
+          const studentAnswers = sData.answers?.[item.id] || [];
+          const formattedAnswers = Array.isArray(studentAnswers) 
+            ? studentAnswers.map(a => a.trim() ? a : "—").join(", ")
+            : "—";
+
+          const isFullyCorrect = item.keys.every((key, i) => normalizeAnswer(studentAnswers[i]) === normalizeAnswer(key));
+
+          const answer = document.createElement("span");
+          answer.className = "answer-text";
+          answer.textContent = formattedAnswers;
+
+          const reviewStatus = sData.reviews?.[item.id];
+          if (reviewStatus === "approved") {
+            answer.classList.add("review-approved");
+          } else if (reviewStatus === "rejected") {
+            answer.classList.add("review-rejected");
+          } else if (formattedAnswers !== "—") {
+            answer.classList.add(isFullyCorrect ? "auto-correct" : "auto-incorrect");
+          }
+
+          const answerCell = document.createElement("div");
+          answerCell.className = "answer-cell";
+          answerCell.appendChild(answer);
+
+          if (isTeacher && formattedAnswers !== "—") {
+            const controls = document.createElement("div");
+            controls.className = "answer-review-controls";
+
+            const approveButton = document.createElement("button");
+            approveButton.type = "button";
+            approveButton.className = "answer-review-btn approve";
+            approveButton.textContent = "✓";
+            approveButton.setAttribute("aria-label", `Approva la risposta di ${sData.name || "Studente"}`);
+            approveButton.setAttribute("aria-pressed", String(reviewStatus === "approved"));
+            approveButton.onclick = () => {
+              const nextValue = reviewStatus === "approved" ? null : "approved";
+              answersRef.child("allStudentsData").child("students").child(studentId).child("reviews").child(item.id).set(nextValue);
+            };
+
+            const rejectButton = document.createElement("button");
+            rejectButton.type = "button";
+            rejectButton.className = "answer-review-btn reject";
+            rejectButton.textContent = "✕";
+            rejectButton.setAttribute("aria-label", `Non approvare la risposta di ${sData.name || "Studente"}`);
+            rejectButton.setAttribute("aria-pressed", String(reviewStatus === "rejected"));
+            rejectButton.onclick = () => {
+              const nextValue = reviewStatus === "rejected" ? null : "rejected";
+              answersRef.child("allStudentsData").child("students").child(studentId).child("reviews").child(item.id).set(nextValue);
+            };
+
+            controls.append(approveButton, rejectButton);
+            answerCell.appendChild(controls);
+          }
+
+          row.append(author, answerCell);
+          answerList.appendChild(row);
+        });
+
+        details.appendChild(answerList);
+        groupedAnswers.appendChild(details);
+      });
+
+      responsesList.appendChild(groupedAnswers);
+    }
+
+    resetButton.addEventListener("click", () => {
+      if (confirm("Сбросить все ответы? · Azzera tutte le risposte?")) {
+        answersRef.set({
+          workMode: currentWorkMode,
+          tokenData: { currentWriter: null, answers: createEmptyState() },
+          allStudentsData: {}
+        });
+      }
+    });
+
+    setupNavigation("prev-token-slide", "next-token-slide", "progress-token-slide", () => activeTokenSlide, (val) => activeTokenSlide = val, sentencesData.length);
+    setupNavigation("prev-student-slide", "next-student-slide", "progress-student-slide", () => activeStudentSlide, (val) => activeStudentSlide = val, sentencesData.length);
+
+    renderStudentSlides();
+    renderTokenSlides();
+  </script>
+</body>
+</html>
