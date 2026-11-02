@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unità 3 — Crea i Minidialoghi (Esercizio J)</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: 'Segoe UI', Inter, system-ui, -apple-system, sans-serif;
+      --primary: #477755;
+      --primary-light: #edf4ed;
+      --primary-dark: #2f5739;
+      --accent: #bd694d;
+      --bg-main: #f5f1e7;
+      --card-bg: #fffefa;
+      --text: #292d28;
+      --text-muted: #6b7069;
+      --success: #278253;
+      --success-bg: #e1f1e5;
+      --border: #e7e5dc;
+    }
+
+    * { box-sizing: border-box; }
+
+    :focus-visible {
+      outline: 3px solid rgba(189, 105, 77, .55);
+      outline-offset: 3px;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 16px;
+      background:
+        linear-gradient(rgba(250, 248, 241, .88), rgba(250, 248, 241, .88)),
+        url("img/sfondo.jpg") center / cover fixed,
+        radial-gradient(ellipse at 50% -12%, rgba(111, 151, 116, .18), transparent 42%),
+        var(--bg-main);
+      color: var(--text);
+    }
+
+    .container { width: min(100%, 880px); margin: 0 auto; }
+
+    .hero {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      margin: 8px 0 22px;
+      padding: 28px 20px 26px;
+      text-align: center;
+      border: 1px solid rgba(71, 119, 85, .13);
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255, 254, 250, .94), rgba(242, 247, 239, .91));
+      box-shadow: 0 12px 32px rgba(43, 69, 46, .07);
+    }
+    .eyebrow {
+      display: inline-block;
+      color: var(--primary-dark);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      background: #eaf1e8;
+      padding: 8px 15px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      box-shadow: inset 0 0 0 1px rgba(71, 119, 85, .11);
+    }
+    h1 {
+      margin: 4px 0;
+      font-size: clamp(1.9rem, 5vw, 2.65rem);
+      letter-spacing: -.04em;
+      color: var(--primary-dark);
+      line-height: 1.12;
+    }
+    .hero-subtitle {
+      margin: 8px 0 0;
+      color: var(--text-muted);
+      font-size: .98rem;
+    }
+
+    /* Box Istruzioni & Esempio */
+    .instruction-box {
+      background: #fff;
+      border: 1px solid #d8e5d8;
+      border-left: 5px solid var(--accent);
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 6px 18px rgba(43, 69, 46, .04);
+    }
+    .instruction-title {
+      font-size: .85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .instruction-text {
+      font-size: .98rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .example-card {
+      margin-top: 10px;
+      padding: 12px 14px;
+      background: var(--primary-light);
+      border-radius: 10px;
+      font-size: .92rem;
+      color: var(--primary-dark);
+      border: 1px solid #d0e2d2;
+      line-height: 1.6;
+    }
+
+    /* Top Controls */
+    .top-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding: 14px 20px;
+      border: 1px solid rgba(71, 119, 85, .13);
+      border-radius: 16px;
+      background: rgba(255, 254, 250, .96);
+      box-shadow: 0 8px 22px rgba(43, 69, 46, .055);
+    }
+    .teacher-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      justify-content: space-between;
+    }
+    .teacher-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .88rem;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+      user-select: none;
+    }
+    .teacher-toggle input { accent-color: var(--primary); }
+
+    .mode-select-box {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+    .mode-select-box.visible { display: flex; }
+    .mode-select-box select {
+      padding: 6px 10px;
+      border: 1.5px solid #d4e1d5;
+      border-radius: 8px;
+      font: inherit;
+      font-size: .85rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      background: #fff;
+    }
+
+    button.reset-btn {
+      padding: 6px 14px;
+      border: 1px solid #fca5a5;
+      border-radius: 10px;
+      background: #fff;
+      color: #dc2626;
+      font: inherit;
+      font-size: .8rem;
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 42px;
+    }
+    button.reset-btn:hover { background: #fef2f2; }
+
+    .card {
+      padding: clamp(20px, 4vw, 32px);
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      background: var(--card-bg);
+      box-shadow: 0 22px 60px rgba(43, 69, 46, .11);
+      margin-bottom: 32px;
+    }
+
+    /* Navigazione Slide */
+    .slide-navigation {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .slide-navigation button {
+      min-height: 42px;
+      padding: 8px 16px;
+      border: 1px solid #d8e5d8;
+      border-radius: 10px;
+      background: #fff;
+      color: var(--primary-dark);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .slide-navigation button:hover:not(:disabled) {
+      background: var(--primary-light);
+      border-color: var(--primary);
+    }
+    .slide-navigation button:disabled {
+      cursor: not-allowed;
+      opacity: .45;
+    }
+    .slide-progress {
+      color: var(--primary-dark);
+      font-size: .95rem;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    #token-mode-section { display: none; }
+    #token-mode-section.active-mode { display: block; }
+
+    #all-students-mode-section { display: none; }
+    #all-students-mode-section.active-mode { display: block; }
+    body.teacher-mode #student-form-card { display: none; }
+
+    /* Barra Doppia Token per Coppia */
+    .token-bar-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .token-box {
+      padding: 12px 16px;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .token-box.blue {
+      background: #e6f2ff;
+      border: 1px solid #b3d7ff;
+    }
+    .token-box.yellow {
+      background: #fffde6;
+      border: 1px solid #ffe899;
+    }
+    .token-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 800;
+      font-size: .88rem;
+    }
+    .token-box.blue .token-box-header { color: #004085; }
+    .token-box.yellow .token-box-header { color: #856404; }
+
+    .btn-token {
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: .82rem;
+      cursor: pointer;
+      min-height: 38px;
+    }
+    .btn-token.blue { background: #0056b3; color: #fff; }
+    .btn-token.yellow { background: #d39e00; color: #fff; }
+    .btn-token.release { background: #bd694d; color: #fff; }
+    .btn-token.busy { background: #e8ebea; color: #5f6863; cursor: not-allowed; }
+
+    /* Scheda persona compatta con dati in orizzontale */
+    .person-card-header {
+      position: sticky;
+      top: 8px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      background: #faf9f5;
+      border: 1px solid #e8e6dc;
+      border-radius: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 6px 18px rgba(43, 69, 46, .12);
+    }
+    .person-info-grid {
+      display: flex;
+      flex: 1;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 14px;
+      font-size: .84rem;
+      line-height: 1.25;
+    }
+    .person-info-item { color: var(--text); white-space: nowrap; }
+    .person-info-item strong { color: var(--primary-dark); }
+
+    /* Griglia del Dialogo */
+    .dialogue-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .dialogue-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+    .dialogue-col {
+      padding: 12px 14px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .dialogue-col.questions {
+      background: #e6f2ff;
+      border: 1px solid #cce5ff;
+    }
+    .dialogue-col.answers {
+      background: #fffde6;
+      border: 1px solid #fff3cd;
+    }
+    .col-label {
+      font-size: .75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .dialogue-col.questions .col-label { color: #004085; }
+    .dialogue-col.answers .col-label { color: #856404; }
+
+    input.dialogue-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      font: inherit;
+      font-size: .95rem;
+      font-weight: 600;
+      outline: none;
+      background: #fff;
+    }
+    input.dialogue-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(71, 119, 85, .15);
+    }
+    input.dialogue-input:disabled {
+      background: #f8faf8;
+      color: #334155;
+    }
+    input.dialogue-input.correct {
+      border-color: #278253;
+      background: #e1f1e5;
+    }
+    input.dialogue-input.incorrect {
+      border-color: #dc2626;
+      background: #fde8e7;
+    }
+
+    .static-text {
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--text);
+      padding: 8px 0;
+    }
+
+    .login-box {
+      margin-bottom: 20px;
+      padding: 16px;
+      background: var(--primary-light);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .login-box label {
+      font-weight: 700;
+      font-size: .9rem;
+      color: var(--primary-dark);
+      white-space: nowrap;
+    }
+    .login-box input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1.5px solid #d4e1d5;
+      border-radius: 10px;
+      font: inherit;
+      font-size: .95rem;
+      outline: none;
+      background: #fff;
+    }
+
+    .save-status {
+      margin: 0 0 18px;
+      padding: 11px 14px;
+      border: 1px solid #b7dfc1;
+      border-radius: 12px;
+      background: var(--success-bg);
+      color: #17623c;
+      font-size: .9rem;
+      font-weight: 700;
+    }
+    .save-status[hidden] { display: none; }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(71, 119, 85, .3);
+      margin-top: 18px;
+    }
+
+    .results-section h2 {
+      font-size: 1.3rem;
+      color: var(--primary-dark);
+      margin-bottom: 16px;
+    }
+    .question-responses { margin-bottom: 12px; }
+    .question-responses details {
+      margin-bottom: 10px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      overflow: hidden;
+    }
+    .question-responses summary {
+      padding: 14px 16px;
+      color: var(--primary-dark);
+      font-weight: 800;
+      cursor: pointer;
+      background: var(--primary-light);
+    }
+    .answer-list { padding: 4px 16px 12px; }
+    .answer-row {
+      display: grid;
+      grid-template-columns: minmax(120px, .35fr) 1fr;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: .92rem;
+    }
+    .answer-row:last-child { border-bottom: 0; }
+    .answer-author { font-weight: 700; color: var(--primary-dark); }
+    .answer-text {
+      display: block;
+      padding: 8px 10px;
+      border-radius: 8px;
+      overflow-wrap: anywhere;
+      font-weight: 600;
+    }
+    .answer-text.review-approved { background: var(--success-bg); }
+    .answer-text.review-rejected { background: #fde8e7; }
+    .answer-text.auto-correct { background: var(--success-bg); }
+    .answer-text.auto-incorrect { background: #fde8e7; }
+    .answer-cell { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .answer-cell .answer-text { flex: 1; min-width: 0; }
+    .answer-review-controls { display: flex; flex-shrink: 0; gap: 2px; }
+    .answer-review-btn {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border: 0;
+      border-radius: 5px;
+      background: transparent;
+      font-size: 1.1rem;
+      font-weight: 800;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .answer-review-btn.approve { color: var(--success); }
+    .answer-review-btn.reject { color: #dc2626; }
+    .answer-review-btn:hover { background: #f1f3ef; }
+    .answer-review-btn[aria-pressed="true"] { background: #f1f3ef; }
+
+    @media (max-width: 720px) {
+      body { padding: 16px 8px; }
+      .token-bar-pair { grid-template-columns: 1fr; }
+      .dialogue-row { grid-template-columns: 1fr; }
+      .person-card-header { padding: 8px; text-align: left; }
+      .person-info-grid { gap: 3px 10px; font-size: .75rem; }
+      .person-info-item { white-space: normal; }
+      .slide-navigation { flex-direction: column; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <header class="hero">
+      <span class="eyebrow">Unità 3 · Interazione e Dialoghi</span>
+      <h1>Crea i Minidialoghi</h1>
+      <p class="hero-subtitle">Задайте вопросы и дайте ответы по карточке каждого человека!</p>
+    </header>
+
+    <div class="instruction-box">
+      <div class="instruction-title">💡 Задание · Esercizio J:</div>
+      <div class="instruction-text">
+        👉 <strong>Создайте мини-диалог для каждого человека. Задайте вопрос и дайте полный ответ:</strong>
+        <div class="example-card">
+          📌 <em>Пример (Cristina):</em><br>
+          • Nome: <strong>Come si chiama?</strong> → <strong>Si chiama Cristina.</strong><br>
+          • Professione: <strong>Che lavoro fa?</strong> → <strong>Fa la commessa.</strong><br>
+          • Provenienza: <strong>Di dov'è?</strong> → <strong>È di Roma.</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barra Controlli Superiore -->
+    <div id="status" class="top-controls">
+      <div class="teacher-controls">
+        <label class="teacher-toggle">
+          <input type="checkbox" id="teacher-mode">
+          Режим учителя · Modalità insegnante
+        </label>
+
+        <div class="mode-select-box" id="mode-selector-container">
+          <label for="work-mode">Режим работы:</label>
+          <select id="work-mode">
+            <option value="token">Uno alla volta · По одному (в парах)</option>
+            <option value="all">Tutti insieme · Все вместе</option>
+          </select>
+        </div>
+
+        <button id="reset" class="reset-btn" type="button" style="display:none;">⚠️ Сбросить · Azzera</button>
+      </div>
+    </div>
+
+    <!-- MODALITÀ 1: UNO ALLA VOLTA (Coppia con 2 Token) -->
+    <section id="token-mode-section" class="card active-mode">
+      <div class="token-bar-pair">
+        <div class="token-box blue">
+          <div class="token-box-header">
+            <span>🗣️ Studente A (Domande)</span>
+            <span id="token-q-status">Libero</span>
+          </div>
+          <button id="btn-token-q" class="btn-token blue" type="button">✋ Prendi Token Domande</button>
+        </div>
+
+        <div class="token-box yellow">
+          <div class="token-box-header">
+            <span>💬 Studente B (Risposte)</span>
+            <span id="token-a-status">Libero</span>
+          </div>
+          <button id="btn-token-a" class="btn-token yellow" type="button">✋ Prendi Token Risposte</button>
+        </div>
+      </div>
+
+      <nav class="slide-navigation" aria-label="Navigazione schede">
+        <button id="prev-token-slide" type="button">← Precedente</button>
+        <span id="progress-token-slide" class="slide-progress"></span>
+        <button id="next-token-slide" type="button">Successiva →</button>
+      </nav>
+
+      <div id="token-slides-container"></div>
+    </section>
+
+    <!-- MODALITÀ 2: TUTTI INSIEME -->
+    <section id="all-students-mode-section">
+      <div class="card" id="student-form-card">
+        <div class="login-box">
+          <label for="student-name-input">Ваше имя (Имя Фамилия):</label>
+          <input type="text" id="student-name-input" placeholder="Введите ваше имя...">
+        </div>
+
+        <p id="save-status" class="save-status" role="status" aria-live="polite" hidden></p>
+
+        <nav class="slide-navigation" aria-label="Navigazione schede">
+          <button id="prev-student-slide" type="button">← Precedente</button>
+          <span id="progress-student-slide" class="slide-progress"></span>
+          <button id="next-student-slide" type="button">Successiva →</button>
+        </nav>
+
+        <div id="student-slides-container"></div>
+
+        <button type="button" id="btn-submit-all" class="btn-submit">📤 Отправить решение · Invia la risposta</button>
+      </div>
+
+      <div class="results-section">
+        <h2>📋 Ответы студентов · Risposte degli studenti</h2>
+        <div id="responses-list">
+          <p style="color: var(--text-muted); font-size: .9rem;">Пока никто не отправил ответы...</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "INSERISCI_API_KEY",
+      authDomain: "esercizi-parlo-italiano.firebaseapp.com",
+      databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "esercizi-parlo-italiano",
+      appId: "INSERISCI_APP_ID"
+    };
+
+    // 14 Schede Persona dell'Esercizio J
+    const peopleData = [
+      { id: "j1", num: "1.", name: "Giovanni", prof: "cuoco", prov: "Napoli", res: "Milano", age: "42 anni", lang: "italiano, francese", img: "img/j_01.png" },
+      { id: "j2", num: "2.", name: "Sofia", prof: "architetta", prov: "Torino", res: "Torino", age: "35 anni", lang: "italiano, inglese, spagnolo", img: "img/j_02.png" },
+      { id: "j3", num: "3.", name: "Marco", prof: "studente", prov: "Firenze", res: "Roma", age: "21 anni", lang: "italiano, tedesco", img: "img/j_03.png" },
+      { id: "j4", num: "4.", name: "Chiara", prof: "giornalista", prov: "Bologna", res: "Bologna", age: "29 anni", lang: "italiano, inglese, russo", img: "img/j_04.png" },
+      { id: "j5", num: "5.", name: "Luca", prof: "ingegnere", prov: "Milano", res: "Pechino", age: "38 anni", lang: "italiano, inglese, cinese", img: "img/j_05.png" },
+      { id: "j6", num: "6.", name: "Martina", prof: "designer", prov: "Venezia", res: "Tokyo", age: "26 anni", lang: "italiano, inglese, giapponese", img: "img/j_06.png" },
+      { id: "j7", num: "7.", name: "Alessandro", prof: "musicista", prov: "Roma", res: "Berlino", age: "33 anni", lang: "italiano, tedesco, inglese", img: "img/j_07.png" },
+      { id: "j8", num: "8.", name: "Federica", prof: "veterinaria", prov: "Genova", res: "Torino", age: "45 anni", lang: "italiano, portoghese", img: "img/j_08.png" },
+      { id: "j9", num: "9.", name: "Paolo", prof: "barista", prov: "Torino", res: "Londra", age: "24 anni", lang: "italiano, inglese", img: "img/j_09.png" },
+      { id: "j10", num: "10.", name: "Silvia", prof: "dottoressa", prov: "Palermo", res: "Napoli", age: "32 anni", lang: "italiano, tedesco, inglese", img: "img/j_10.png" },
+      { id: "j11", num: "11.", name: "Fabio", prof: "parrucchiere", prov: "Bari", res: "Bari", age: "40 anni", lang: "italiano, francese", img: "img/j_11.png" },
+      { id: "j12", num: "12.", name: "Laura", prof: "psicologa", prov: "Siena", res: "Firenze", age: "34 anni", lang: "italiano, inglese, francese", img: "img/j_12.png" },
+      { id: "j13", num: "13.", name: "Monica", prof: "attrice", prov: "Perugia", res: "Roma", age: "60 anni", lang: "italiano, francese, inglese", img: "img/j_13.png" },
+      { id: "j14", num: "14.", name: "Francesco", prof: "ex calciatore", prov: "Roma", res: "Roma", age: "48 anni", lang: "italiano, un po' di spagnolo", img: "img/j_14.png" }
+    ];
+
+    // Risposte ed Domande di riferimento per la verifica
+    const fieldTemplates = [
+      { key: "name", q: "Come si chiama?", a: (p) => `Si chiama ${p.name}.` },
+      { key: "prof", q: "Che lavoro fa?", a: (p) => p.prof.startsWith("ex ") ? `Fa l'${p.prof}.` : (["a","e","i","o","u"].includes(p.prof[0]) ? `Fa l'${p.prof}.` : `Fa ${p.prof.endsWith("a") ? "la" : "il"} ${p.prof}.`) },
+      { key: "prov", q: "Di dov'è?", a: (p) => `È di ${p.prov}.` },
+      { key: "res", q: "Dove abita?", a: (p) => `Abita a ${p.res}.` },
+      { key: "age", q: "Quanti anni ha?", a: (p) => `Ha ${p.age}.` },
+      { key: "lang", q: "Che lingue parla?", a: (p) => `Parla ${p.lang}.` }
+    ];
+
+    // Alternanza pseudo-casuale stabile per persona: identica per tutti gli studenti,
+    // con tre domande e tre risposte già compilate in ogni dialogo.
+    function getPresetModes(person) {
+      let seed = Array.from(person.id).reduce((value, char) => (value * 31 + char.charCodeAt(0)) >>> 0, 0);
+      const modes = [true, true, true, false, false, false].map(qGiven => ({ qGiven, aGiven: !qGiven }));
+
+      for (let i = modes.length - 1; i > 0; i--) {
+        seed = (seed * 1664525 + 1013904223) >>> 0;
+        const j = seed % (i + 1);
+        [modes[i], modes[j]] = [modes[j], modes[i]];
+      }
+
+      return modes;
+    }
+
+    function normalizeText(str) {
+      return String(str || "")
+        .toLocaleLowerCase("it")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^\p{L}\p{N}\s]/gu, "")
+        .trim()
+        .replace(/\s+/g, " ");
+    }
+
+    function createEmptyTokenState() {
+      const state = {};
+      peopleData.forEach(p => {
+        state[p.id] = { q: ["","","","","",""], a: ["","","","","",""] };
+      });
+      return state;
+    }
+
+    function createEmptyStudentState() {
+      const state = {};
+      peopleData.forEach(p => {
+        state[p.id] = ["","","","","",""];
+      });
+      return state;
+    }
+
+    let tokenState = createEmptyTokenState();
+    let studentState = createEmptyStudentState();
+    let studentSubmitted = false;
+    let activeTokenSlide = 0;
+    let activeStudentSlide = 0;
+
+    const myClientId = "user_" + Math.random().toString(36).substring(2, 9);
+    const teacherToggle = document.getElementById("teacher-mode");
+    const workModeSelect = document.getElementById("work-mode");
+    const modeSelectorContainer = document.getElementById("mode-selector-container");
+    const resetButton = document.getElementById("reset");
+
+    const tokenSection = document.getElementById("token-mode-section");
+    const allSection = document.getElementById("all-students-mode-section");
+    const studentNameInput = document.getElementById("student-name-input");
+    const saveStatus = document.getElementById("save-status");
+    const responsesList = document.getElementById("responses-list");
+
+    const btnTokenQ = document.getElementById("btn-token-q");
+    const btnTokenA = document.getElementById("btn-token-a");
+    const tokenQStatus = document.getElementById("token-q-status");
+    const tokenAStatus = document.getElementById("token-a-status");
+
+    let currentQWriter = null;
+    let currentAWriter = null;
+
+    if (localStorage.getItem("parlo_student_name")) {
+      studentNameInput.value = localStorage.getItem("parlo_student_name");
+    }
+
+    // Costruzione della scheda per la modalità TOKEN (In Coppia)
+    function buildTokenSlide(person, canEditQ, canEditA) {
+      const slide = document.createElement("div");
+      slide.className = "person-slide";
+
+      const header = document.createElement("div");
+      header.className = "person-card-header";
+      header.innerHTML = `
+        <div class="person-info-grid">
+          <div class="person-info-item"><strong>Nome:</strong> ${person.name}</div>
+          <div class="person-info-item"><strong>Professione:</strong> ${person.prof}</div>
+          <div class="person-info-item"><strong>Provenienza:</strong> ${person.prov}</div>
+          <div class="person-info-item"><strong>Residenza:</strong> ${person.res}</div>
+          <div class="person-info-item"><strong>Età:</strong> ${person.age}</div>
+          <div class="person-info-item"><strong>Lingue:</strong> ${person.lang}</div>
+        </div>
+      `;
+
+      const grid = document.createElement("div");
+      grid.className = "dialogue-grid";
+
+      const pData = tokenState[person.id] || { q: ["","","","","",""], a: ["","","","","",""] };
+
+      fieldTemplates.forEach((ft, idx) => {
+        const row = document.createElement("div");
+        row.className = "dialogue-row";
+
+        // Colonna Domanda
+        const colQ = document.createElement("div");
+        colQ.className = "dialogue-col questions";
+        colQ.innerHTML = `<span class="col-label">Domanda ${idx + 1}</span>`;
+
+        const inputQ = document.createElement("input");
+        inputQ.type = "text";
+        inputQ.className = "dialogue-input";
+        inputQ.placeholder = canEditQ ? "Scrivi la domanda..." : "In attesa dello Studente A...";
+        inputQ.disabled = !canEditQ;
+        inputQ.value = pData.q[idx] || "";
+        inputQ.oninput = (e) => {
+          tokenState[person.id].q[idx] = e.target.value;
+          if (answersRef && currentQWriter === myClientId) {
+            answersRef.child("tokenData").child("answers").set(tokenState);
+          }
+        };
+        colQ.appendChild(inputQ);
+
+        // Colonna Risposta
+        const colA = document.createElement("div");
+        colA.className = "dialogue-col answers";
+        colA.innerHTML = `<span class="col-label">Risposta ${idx + 1}</span>`;
+
+        const inputA = document.createElement("input");
+        inputA.type = "text";
+        inputA.className = "dialogue-input";
+        inputA.placeholder = canEditA ? "Scrivi la risposta..." : "In attesa dello Studente B...";
+        inputA.disabled = !canEditA;
+        inputA.value = pData.a[idx] || "";
+        inputA.oninput = (e) => {
+          tokenState[person.id].a[idx] = e.target.value;
+          if (answersRef && currentAWriter === myClientId) {
+            answersRef.child("tokenData").child("answers").set(tokenState);
+          }
+        };
+        colA.appendChild(inputA);
+
+        row.append(colQ, colA);
+        grid.appendChild(row);
+      });
+
+      slide.append(header, grid);
+      return slide;
+    }
+
+    // Costruzione della scheda per la modalità TUTTI INSIEME (Misto)
+    function buildStudentSlide(person) {
+      const slide = document.createElement("div");
+      slide.className = "person-slide";
+
+      const header = document.createElement("div");
+      header.className = "person-card-header";
+      header.innerHTML = `
+        <div class="person-info-grid">
+          <div class="person-info-item"><strong>Nome:</strong> ${person.name}</div>
+          <div class="person-info-item"><strong>Professione:</strong> ${person.prof}</div>
+          <div class="person-info-item"><strong>Provenienza:</strong> ${person.prov}</div>
+          <div class="person-info-item"><strong>Residenza:</strong> ${person.res}</div>
+          <div class="person-info-item"><strong>Età:</strong> ${person.age}</div>
+          <div class="person-info-item"><strong>Lingue:</strong> ${person.lang}</div>
+        </div>
+      `;
+
+      const grid = document.createElement("div");
+      grid.className = "dialogue-grid";
+
+      const sAnswers = studentState[person.id] || ["","","","","",""];
+      const presetModes = getPresetModes(person);
+
+      fieldTemplates.forEach((ft, idx) => {
+        const mode = presetModes[idx];
+        const row = document.createElement("div");
+        row.className = "dialogue-row";
+
+        // Colonna Domanda
+        const colQ = document.createElement("div");
+        colQ.className = "dialogue-col questions";
+        colQ.innerHTML = `<span class="col-label">Domanda</span>`;
+
+        if (mode.qGiven) {
+          const textDiv = document.createElement("div");
+          textDiv.className = "static-text";
+          textDiv.textContent = ft.q;
+          colQ.appendChild(textDiv);
+        } else {
+          const inputQ = document.createElement("input");
+          inputQ.type = "text";
+          inputQ.className = "dialogue-input";
+          inputQ.placeholder = "Scrivi la domanda...";
+          inputQ.value = sAnswers[idx] || "";
+          inputQ.oninput = (e) => {
+            studentState[person.id][idx] = e.target.value;
+            studentSubmitted = false;
+            saveStatus.hidden = true;
+          };
+
+          if (studentSubmitted && sAnswers[idx].trim()) {
+            const isOk = normalizeText(sAnswers[idx]) === normalizeText(ft.q);
+            inputQ.classList.add(isOk ? "correct" : "incorrect");
+          }
+
+          colQ.appendChild(inputQ);
+        }
+
+        // Colonna Risposta
+        const colA = document.createElement("div");
+        colA.className = "dialogue-col answers";
+        colA.innerHTML = `<span class="col-label">Risposta</span>`;
+
+        if (mode.aGiven) {
+          const textDiv = document.createElement("div");
+          textDiv.className = "static-text";
+          textDiv.textContent = ft.a(person);
+          colA.appendChild(textDiv);
+        } else {
+          const inputA = document.createElement("input");
+          inputA.type = "text";
+          inputA.className = "dialogue-input";
+          inputA.placeholder = "Scrivi la risposta...";
+          inputA.value = sAnswers[idx] || "";
+          inputA.oninput = (e) => {
+            studentState[person.id][idx] = e.target.value;
+            studentSubmitted = false;
+            saveStatus.hidden = true;
+          };
+
+          if (studentSubmitted && sAnswers[idx].trim()) {
+            const targetA = ft.a(person);
+            const isOk = normalizeText(sAnswers[idx]) === normalizeText(targetA);
+            inputA.classList.add(isOk ? "correct" : "incorrect");
+          }
+
+          colA.appendChild(inputA);
+        }
+
+        row.append(colQ, colA);
+        grid.appendChild(row);
+      });
+
+      slide.append(header, grid);
+      return slide;
+    }
+
+    function setupNavigation(prevBtnId, nextBtnId, progressId, getCurrentSlide, setCurrentSlide, total) {
+      const prevBtn = document.getElementById(prevBtnId);
+      const nextBtn = document.getElementById(nextBtnId);
+      const progressSpan = document.getElementById(progressId);
+
+      function updateNav() {
+        const current = getCurrentSlide();
+        prevBtn.disabled = current === 0;
+        nextBtn.disabled = current === total - 1;
+        progressSpan.textContent = `Persona ${current + 1} di ${total} · ${peopleData[current].name}`;
+      }
+
+      prevBtn.onclick = () => {
+        if (getCurrentSlide() > 0) {
+          setCurrentSlide(getCurrentSlide() - 1);
+          updateNav();
+          renderStudentSlides();
+          renderTokenSlides();
+        }
+      };
+
+      nextBtn.onclick = () => {
+        if (getCurrentSlide() < total - 1) {
+          setCurrentSlide(getCurrentSlide() + 1);
+          updateNav();
+          renderStudentSlides();
+          renderTokenSlides();
+        }
+      };
+
+      updateNav();
+    }
+
+    function renderStudentSlides() {
+      const container = document.getElementById("student-slides-container");
+      container.replaceChildren();
+
+      peopleData.forEach((person, idx) => {
+        const slide = buildStudentSlide(person);
+        slide.hidden = idx !== activeStudentSlide;
+        container.appendChild(slide);
+      });
+    }
+
+    function renderTokenSlides() {
+      const container = document.getElementById("token-slides-container");
+      const canEditQ = currentQWriter === myClientId;
+      const canEditA = currentAWriter === myClientId;
+
+      if ((canEditQ || canEditA) && container.contains(document.activeElement)) return;
+
+      container.replaceChildren();
+
+      peopleData.forEach((person, idx) => {
+        const slide = buildTokenSlide(person, canEditQ, canEditA);
+        slide.hidden = idx !== activeTokenSlide;
+        container.appendChild(slide);
+      });
+    }
+
+    let answersRef = null;
+    let isTeacher = false;
+    let currentWorkMode = "token";
+    let allResponses = {};
+
+    teacherToggle.addEventListener("change", (e) => {
+      isTeacher = e.target.checked;
+      document.body.classList.toggle("teacher-mode", isTeacher);
+      modeSelectorContainer.classList.toggle("visible", isTeacher);
+      resetButton.style.display = isTeacher ? "inline-block" : "none";
+      updateUIState();
+    });
+
+    workModeSelect.addEventListener("change", (e) => {
+      if (answersRef && isTeacher) {
+        answersRef.child("workMode").set(e.target.value);
+      }
+    });
+
+    btnTokenQ.onclick = () => {
+      if (answersRef) {
+        if (currentQWriter === myClientId) {
+          answersRef.child("tokenData").child("currentQWriter").set(null);
+        } else if (!currentQWriter) {
+          answersRef.child("tokenData").child("currentQWriter").set(myClientId);
+        }
+      }
+    };
+
+    btnTokenA.onclick = () => {
+      if (answersRef) {
+        if (currentAWriter === myClientId) {
+          answersRef.child("tokenData").child("currentAWriter").set(null);
+        } else if (!currentAWriter) {
+          answersRef.child("tokenData").child("currentAWriter").set(myClientId);
+        }
+      }
+    };
+
+    if (window.firebase) {
+      try {
+        firebase.initializeApp(firebaseConfig);
+        answersRef = firebase.database().ref("esercizi/unita3-minidialoghi-j");
+
+        answersRef.on("value", (snapshot) => {
+          const data = snapshot.val() || {};
+          currentWorkMode = data.workMode || "token";
+          workModeSelect.value = currentWorkMode;
+
+          const tData = data.tokenData || {};
+          currentQWriter = tData.currentQWriter || null;
+          currentAWriter = tData.currentAWriter || null;
+
+          if (tData.answers) {
+            tokenState = tData.answers;
+          }
+
+          allResponses = data.allStudentsData || {};
+          updateUIState();
+        });
+      } catch (e) {
+        console.error("Errore Firebase:", e);
+      }
+    }
+
+    document.getElementById("btn-submit-all").addEventListener("click", async () => {
+      const name = studentNameInput.value.trim();
+      if (!name) {
+        alert("Пожалуйста, введите ваше имя! · Inserisci il tuo nome!");
+        studentNameInput.focus();
+        return;
+      }
+      if (!answersRef) {
+        alert("Нет соединения с базой данных. · Connessione non disponibile.");
+        return;
+      }
+
+      localStorage.setItem("parlo_student_name", name);
+      const studentId = name.replace(/[.#$\/\[\]]/g, "_");
+      const studentRef = answersRef.child("allStudentsData").child("students").child(studentId);
+
+      try {
+        await studentRef.update({
+          name,
+          answers: studentState,
+          timestamp: Date.now()
+        });
+
+        studentSubmitted = true;
+        renderStudentSlides();
+        saveStatus.textContent = "✅ Ответ отправлен учителю! · Risposta inviata all’insegnante!";
+        saveStatus.hidden = false;
+      } catch (err) {
+        alert("Ошибка при отправке · Errore durante l'invio.");
+      }
+    });
+
+    function updateUIState() {
+      if (currentWorkMode === "token") {
+        tokenSection.classList.add("active-mode");
+        allSection.classList.remove("active-mode");
+
+        // UI Token Q
+        if (!currentQWriter) {
+          tokenQStatus.textContent = "Libero";
+          btnTokenQ.textContent = "✋ Prendi Token Domande";
+          btnTokenQ.className = "btn-token blue";
+          btnTokenQ.disabled = false;
+        } else if (currentQWriter === myClientId) {
+          tokenQStatus.textContent = "Stai modificando";
+          btnTokenQ.textContent = "✔ Lascia Token Domande";
+          btnTokenQ.className = "btn-token release";
+          btnTokenQ.disabled = false;
+        } else {
+          tokenQStatus.textContent = "Compagno scrive";
+          btnTokenQ.textContent = "🔒 Compagno scrive";
+          btnTokenQ.className = "btn-token busy";
+          btnTokenQ.disabled = true;
+        }
+
+        // UI Token A
+        if (!currentAWriter) {
+          tokenAStatus.textContent = "Libero";
+          btnTokenA.textContent = "✋ Prendi Token Risposte";
+          btnTokenA.className = "btn-token yellow";
+          btnTokenA.disabled = false;
+        } else if (currentAWriter === myClientId) {
+          tokenAStatus.textContent = "Stai modificando";
+          btnTokenA.textContent = "✔ Lascia Token Risposte";
+          btnTokenA.className = "btn-token release";
+          btnTokenA.disabled = false;
+        } else {
+          tokenAStatus.textContent = "Compagno scrive";
+          btnTokenA.textContent = "🔒 Compagno scrive";
+          btnTokenA.className = "btn-token busy";
+          btnTokenA.disabled = true;
+        }
+
+        renderTokenSlides();
+      } else {
+        tokenSection.classList.remove("active-mode");
+        allSection.classList.add("active-mode");
+        renderStudentSlides();
+        renderResponsesAllMode();
+      }
+    }
+
+    function renderResponsesAllMode() {
+      responsesList.replaceChildren();
+      const studentsData = allResponses.students || {};
+      const studentEntries = Object.entries(studentsData);
+
+      if (studentEntries.length === 0) {
+        const emptyMessage = document.createElement("p");
+        emptyMessage.style.color = "var(--text-muted)";
+        emptyMessage.style.fontSize = ".9rem";
+        emptyMessage.textContent = "Пока никто не отправил ответы...";
+        responsesList.appendChild(emptyMessage);
+        return;
+      }
+
+      const groupedAnswers = document.createElement("div");
+      groupedAnswers.className = "question-responses";
+
+      peopleData.forEach((person, index) => {
+        const details = document.createElement("details");
+        if (index === 0) details.open = true;
+
+        const summary = document.createElement("summary");
+        summary.textContent = `${person.num} ${person.name}`;
+        details.appendChild(summary);
+
+        const answerList = document.createElement("div");
+        answerList.className = "answer-list";
+
+        studentEntries.forEach(([studentId, sData]) => {
+          const row = document.createElement("div");
+          row.className = "answer-row";
+
+          const author = document.createElement("span");
+          author.className = "answer-author";
+          author.textContent = sData.name || "Studente";
+
+          const studentAnswers = sData.answers?.[person.id] || [];
+          const formattedText = Array.isArray(studentAnswers)
+            ? studentAnswers.map((a, i) => a.trim() ? `${i + 1}) ${a}` : `${i + 1}) —`).join(" | ")
+            : "—";
+
+          const answer = document.createElement("span");
+          answer.className = "answer-text";
+          answer.textContent = formattedText;
+
+          const reviewStatus = sData.reviews?.[person.id];
+          if (reviewStatus === "approved") {
+            answer.classList.add("review-approved");
+          } else if (reviewStatus === "rejected") {
+            answer.classList.add("review-rejected");
+          }
+
+          const answerCell = document.createElement("div");
+          answerCell.className = "answer-cell";
+          answerCell.appendChild(answer);
+
+          if (isTeacher && formattedText !== "—") {
+            const controls = document.createElement("div");
+            controls.className = "answer-review-controls";
+
+            const approveButton = document.createElement("button");
+            approveButton.type = "button";
+            approveButton.className = "answer-review-btn approve";
+            approveButton.textContent = "✓";
+            approveButton.setAttribute("aria-label", `Approva la risposta di ${sData.name || "Studente"}`);
+            approveButton.setAttribute("aria-pressed", String(reviewStatus === "approved"));
+            approveButton.onclick = () => {
+              const nextValue = reviewStatus === "approved" ? null : "approved";
+              answersRef.child("allStudentsData").child("students").child(studentId).child("reviews").child(person.id).set(nextValue);
+            };
+
+            const rejectButton = document.createElement("button");
+            rejectButton.type = "button";
+            rejectButton.className = "answer-review-btn reject";
+            rejectButton.textContent = "✕";
+            rejectButton.setAttribute("aria-label", `Non approvare la risposta di ${sData.name || "Studente"}`);
+            rejectButton.setAttribute("aria-pressed", String(reviewStatus === "rejected"));
+            rejectButton.onclick = () => {
+              const nextValue = reviewStatus === "rejected" ? null : "rejected";
+              answersRef.child("allStudentsData").child("students").child(studentId).child("reviews").child(person.id).set(nextValue);
+            };
+
+            controls.append(approveButton, rejectButton);
+            answerCell.appendChild(controls);
+          }
+
+          row.append(author, answerCell);
+          answerList.appendChild(row);
+        });
+
+        details.appendChild(answerList);
+        groupedAnswers.appendChild(details);
+      });
+
+      responsesList.appendChild(groupedAnswers);
+    }
+
+    resetButton.addEventListener("click", () => {
+      if (confirm("Сбросить все ответы? · Azzera tutte le risposte?")) {
+        answersRef.set({
+          workMode: currentWorkMode,
+          tokenData: { currentQWriter: null, currentAWriter: null, answers: createEmptyTokenState() },
+          allStudentsData: {}
+        });
+      }
+    });
+
+    setupNavigation("prev-token-slide", "next-token-slide", "progress-token-slide", () => activeTokenSlide, (val) => activeTokenSlide = val, peopleData.length);
+    setupNavigation("prev-student-slide", "next-student-slide", "progress-student-slide", () => activeStudentSlide, (val) => activeStudentSlide = val, peopleData.length);
+
+    renderStudentSlides();
+    renderTokenSlides();
+  </script>
+</body>
+</html>
