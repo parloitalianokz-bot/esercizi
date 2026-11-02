@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unità 3 — Ordina il Dialogo (Esercizio G)</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: 'Segoe UI', Inter, system-ui, -apple-system, sans-serif;
+      --primary: #477755;
+      --primary-light: #edf4ed;
+      --primary-dark: #2f5739;
+      --accent: #bd694d;
+      --bg-main: #f5f1e7;
+      --card-bg: #fffefa;
+      --text: #292d28;
+      --text-muted: #6b7069;
+      --success: #278253;
+      --success-bg: #e1f1e5;
+      --border: #e7e5dc;
+    }
+
+    * { box-sizing: border-box; }
+
+    :focus-visible {
+      outline: 3px solid rgba(189, 105, 77, .55);
+      outline-offset: 3px;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 16px;
+      background:
+        linear-gradient(rgba(250, 248, 241, .88), rgba(250, 248, 241, .88)),
+        url("img/sfondo.jpg") center / cover fixed,
+        radial-gradient(ellipse at 50% -12%, rgba(111, 151, 116, .18), transparent 42%),
+        var(--bg-main);
+      color: var(--text);
+    }
+
+    .container { width: min(100%, 840px); margin: 0 auto; }
+
+    .hero {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      margin: 8px 0 22px;
+      padding: 28px 20px 26px;
+      text-align: center;
+      border: 1px solid rgba(71, 119, 85, .13);
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255, 254, 250, .94), rgba(242, 247, 239, .91));
+      box-shadow: 0 12px 32px rgba(43, 69, 46, .07);
+    }
+    .eyebrow {
+      display: inline-block;
+      color: var(--primary-dark);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      background: #eaf1e8;
+      padding: 8px 15px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      box-shadow: inset 0 0 0 1px rgba(71, 119, 85, .11);
+    }
+    h1 {
+      margin: 4px 0;
+      font-size: clamp(1.9rem, 5vw, 2.65rem);
+      letter-spacing: -.04em;
+      color: var(--primary-dark);
+      line-height: 1.12;
+    }
+    .hero-subtitle {
+      margin: 8px 0 0;
+      color: var(--text-muted);
+      font-size: .98rem;
+    }
+
+    /* Box Istruzioni */
+    .instruction-box {
+      background: #fff;
+      border: 1px solid #d8e5d8;
+      border-left: 5px solid var(--accent);
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 6px 18px rgba(43, 69, 46, .04);
+    }
+    .instruction-title {
+      font-size: .85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .instruction-text {
+      font-size: .98rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    /* Top Controls */
+    .top-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding: 14px 20px;
+      border: 1px solid rgba(71, 119, 85, .13);
+      border-radius: 16px;
+      background: rgba(255, 254, 250, .96);
+      box-shadow: 0 8px 22px rgba(43, 69, 46, .055);
+    }
+    .teacher-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      justify-content: space-between;
+    }
+    .teacher-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .88rem;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+      user-select: none;
+    }
+    .teacher-toggle input { accent-color: var(--primary); }
+
+    .mode-select-box {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+    .mode-select-box.visible { display: flex; }
+    .mode-select-box select {
+      padding: 6px 10px;
+      border: 1.5px solid #d4e1d5;
+      border-radius: 8px;
+      font: inherit;
+      font-size: .85rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      background: #fff;
+    }
+
+    button.reset-btn {
+      padding: 6px 14px;
+      border: 1px solid #fca5a5;
+      border-radius: 10px;
+      background: #fff;
+      color: #dc2626;
+      font: inherit;
+      font-size: .8rem;
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 42px;
+    }
+    button.reset-btn:hover { background: #fef2f2; }
+
+    .card {
+      padding: clamp(20px, 4vw, 32px);
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      background: var(--card-bg);
+      box-shadow: 0 22px 60px rgba(43, 69, 46, .11);
+      margin-bottom: 32px;
+    }
+
+    #token-mode-section { display: none; }
+    #token-mode-section.active-mode { display: block; }
+
+    #all-students-mode-section { display: none; }
+    #all-students-mode-section.active-mode { display: block; }
+    body.teacher-mode #student-form-card { display: none; }
+
+    .token-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      background: var(--primary-light);
+      border-radius: 14px;
+    }
+    .btn-token {
+      background: var(--primary-dark);
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: .85rem;
+      cursor: pointer;
+      min-height: 42px;
+    }
+    .btn-token.release { background: #bd694d; }
+    .btn-token.busy { background: #e8ebea; color: #5f6863; cursor: not-allowed; }
+
+    /* Список реплик с кнопками Вверх/Вниз */
+    .dialogue-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .dialogue-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border: 1.5px solid #d4e1d5;
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 3px 10px rgba(43, 69, 46, .03);
+      transition: all .2s ease;
+    }
+    .dialogue-item.disabled {
+      opacity: .75;
+      background: #f8faf8;
+    }
+    .dialogue-text {
+      flex: 1;
+      font-size: 1.02rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+    }
+    .dialogue-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .btn-move {
+      width: 32px;
+      height: 32px;
+      border: 1px solid #d0e2d2;
+      border-radius: 8px;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-size: .95rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: background .15s;
+    }
+    .btn-move:hover:not(:disabled) {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-move:disabled {
+      opacity: .35;
+      cursor: not-allowed;
+    }
+
+    .login-box {
+      margin-bottom: 20px;
+      padding: 16px;
+      background: var(--primary-light);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .login-box label {
+      font-weight: 700;
+      font-size: .9rem;
+      color: var(--primary-dark);
+      white-space: nowrap;
+    }
+    .login-box input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1.5px solid #d4e1d5;
+      border-radius: 10px;
+      font: inherit;
+      font-size: .95rem;
+      outline: none;
+      background: #fff;
+    }
+
+    .save-status {
+      margin: 0 0 18px;
+      padding: 11px 14px;
+      border: 1px solid #b7dfc1;
+      border-radius: 12px;
+      background: var(--success-bg);
+      color: #17623c;
+      font-size: .9rem;
+      font-weight: 700;
+    }
+    .save-status[hidden] { display: none; }
+
+    .answer-feedback {
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: .95rem;
+      font-weight: 700;
+    }
+    .answer-feedback.correct {
+      background: var(--success-bg);
+      color: #166534;
+      border: 1px solid #b7dfc1;
+    }
+    .answer-feedback.incorrect {
+      background: #fde8e7;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+    }
+    .answer-feedback[hidden] { display: none; }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(71, 119, 85, .3);
+      margin-top: 20px;
+    }
+
+    .results-section h2 {
+      font-size: 1.3rem;
+      color: var(--primary-dark);
+      margin-bottom: 16px;
+    }
+    .answer-list { padding: 8px 16px 16px; }
+    .answer-row {
+      display: grid;
+      grid-template-columns: minmax(120px, .3fr) 1fr;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: .92rem;
+    }
+    .answer-row:last-child { border-bottom: 0; }
+    .answer-author { font-weight: 700; color: var(--primary-dark); }
+    
+    .dialogue-preview {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: .9rem;
+      line-height: 1.4;
+    }
+    .dialogue-preview.review-approved { background: var(--success-bg); }
+    .dialogue-preview.review-rejected { background: #fde8e7; }
+    .dialogue-preview.auto-correct { background: var(--success-bg); }
+    .dialogue-preview.auto-incorrect { background: #fde8e7; }
+
+    .answer-cell { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .answer-cell .dialogue-preview { flex: 1; min-width: 0; }
+    .answer-review-controls { display: flex; flex-shrink: 0; gap: 2px; }
+    .answer-review-btn {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border: 0;
+      border-radius: 5px;
+      background: transparent;
+      font-size: 1.1rem;
+      font-weight: 800;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .answer-review-btn.approve { color: var(--success); }
+    .answer-review-btn.reject { color: #dc2626; }
+    .answer-review-btn:hover { background: #f1f3ef; }
+    .answer-review-btn[aria-pressed="true"] { background: #f1f3ef; }
+
+    @media (max-width: 600px) {
+      body { padding: 16px 8px; }
+      .dialogue-item { padding: 10px 12px; }
+      .dialogue-text { font-size: .95rem; }
+      .btn-move { width: 28px; height: 28px; font-size: .85rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <header class="hero">
+      <span class="eyebrow">Unità 3 · Conversazione</span>
+      <h1>Ordina il Dialogo</h1>
+      <p class="hero-subtitle">Собери диалог. Расставь фразы в правильном порядке с помощью стрелок!</p>
+    </header>
+
+    <div class="instruction-box">
+      <div class="instruction-title">💡 Задание · Esercizio G:</div>
+      <div class="instruction-text">
+        👉 Используйте кнопки <strong>⬆️ (вверх)</strong> и <strong>⬇️ (вниз)</strong>, чтобы расставить фразы диалога в правильной последовательности.
+      </div>
+    </div>
+
+    <!-- Barra Controlli Superiore -->
+    <div id="status" class="top-controls">
+      <div class="teacher-controls">
+        <label class="teacher-toggle">
+          <input type="checkbox" id="teacher-mode">
+          Режим учителя · Modalità insegnante
+        </label>
+
+        <div class="mode-select-box" id="mode-selector-container">
+          <label for="work-mode">Режим работы:</label>
+          <select id="work-mode">
+            <option value="token">Uno alla volta · По одному</option>
+            <option value="all">Tutti insieme · Все вместе</option>
+          </select>
+        </div>
+
+        <button id="reset" class="reset-btn" type="button" style="display:none;">⚠️ Сбросить · Azzera</button>
+      </div>
+    </div>
+
+    <!-- MODALITÀ 1: UNO ALLA VOLTA -->
+    <section id="token-mode-section" class="card active-mode">
+      <div class="token-bar">
+        <span id="token-status-text" style="font-weight:700; color:var(--primary-dark);">Открыто для работы</span>
+        <button id="btn-take-token" class="btn-token" type="button">✋ Взять слово · Prendi la parola</button>
+      </div>
+
+      <div id="token-dialogue-list" class="dialogue-list"></div>
+    </section>
+
+    <!-- MODALITÀ 2: TUTTI INSIEME -->
+    <section id="all-students-mode-section">
+      <div class="card" id="student-form-card">
+        <div class="login-box">
+          <label for="student-name-input">Ваше имя (Имя Фамилия):</label>
+          <input type="text" id="student-name-input" placeholder="Введите ваше имя...">
+        </div>
+
+        <p id="save-status" class="save-status" role="status" aria-live="polite" hidden></p>
+
+        <div id="student-dialogue-list" class="dialogue-list"></div>
+
+        <div id="student-feedback" class="answer-feedback" hidden></div>
+
+        <button type="button" id="btn-submit-all" class="btn-submit">📤 Отправить решение · Invia la risposta</button>
+      </div>
+
+      <div class="results-section">
+        <h2>📋 Ответы студентов · Risposte degli studenti</h2>
+        <div id="responses-list">
+          <p style="color: var(--text-muted); font-size: .9rem;">Пока никто не отправил ответы...</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "INSERISCI_API_KEY",
+      authDomain: "esercizi-parlo-italiano.firebaseapp.com",
+      databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "esercizi-parlo-italiano",
+      appId: "INSERISCI_APP_ID"
+    };
+
+    // Правильный порядок диалога
+    const correctOrder = [
+      "Ciao! Come ti chiami?",
+      "Ciao! Mi chiamo Matteo, e tu?",
+      "Io mi chiamo Anna. Di dove sei?",
+      "Sono italiano, di Genova, ma abito a Milano. E tu?",
+      "Io sono kazaka, abito ad Almaty.",
+      "Piacere di conoscerti, Anna!",
+      "Piacere mio, Matteo!"
+    ];
+
+    // Исходное перемешанное состояние
+    const initialShuffled = [
+      "Piacere mio, Matteo!",
+      "Sono italiano, di Genova, ma abito a Milano. E tu?",
+      "Ciao! Come ti chiami?",
+      "Io sono kazaka, abito ad Almaty.",
+      "Ciao! Mi chiamo Matteo, e tu?",
+      "Piacere di conoscerti, Anna!",
+      "Io mi chiamo Anna. Di dove sei?"
+    ];
+
+    let studentDialogue = [...initialShuffled];
+    let tokenDialogue = [...initialShuffled];
+    let studentSubmitted = false;
+
+    const myClientId = "user_" + Math.random().toString(36).substring(2, 9);
+    const teacherToggle = document.getElementById("teacher-mode");
+    const workModeSelect = document.getElementById("work-mode");
+    const modeSelectorContainer = document.getElementById("mode-selector-container");
+    const resetButton = document.getElementById("reset");
+
+    const tokenSection = document.getElementById("token-mode-section");
+    const allSection = document.getElementById("all-students-mode-section");
+    const studentNameInput = document.getElementById("student-name-input");
+    const saveStatus = document.getElementById("save-status");
+    const responsesList = document.getElementById("responses-list");
+    const studentFeedback = document.getElementById("student-feedback");
+
+    const btnTakeToken = document.getElementById("btn-take-token");
+    const tokenStatusText = document.getElementById("token-status-text");
+
+    if (localStorage.getItem("parlo_student_name")) {
+      studentNameInput.value = localStorage.getItem("parlo_student_name");
+    }
+
+    function isCorrectDialogue(orderArray) {
+      if (!orderArray || orderArray.length !== correctOrder.length) return false;
+      return orderArray.every((line, idx) => line === correctOrder[idx]);
+    }
+
+    function renderDialogueList(containerId, dialogueArray, canEdit, onMove) {
+      const container = document.getElementById(containerId);
+      container.replaceChildren();
+
+      dialogueArray.forEach((text, index) => {
+        const item = document.createElement("div");
+        item.className = "dialogue-item" + (canEdit ? "" : " disabled");
+
+        const textSpan = document.createElement("span");
+        textSpan.className = "dialogue-text";
+        textSpan.textContent = text;
+
+        const controls = document.createElement("div");
+        controls.className = "dialogue-controls";
+
+        const btnUp = document.createElement("button");
+        btnUp.type = "button";
+        btnUp.className = "btn-move";
+        btnUp.textContent = "▲";
+        btnUp.title = "Sposta su";
+        btnUp.disabled = !canEdit || index === 0;
+        btnUp.onclick = () => onMove(index, index - 1);
+
+        const btnDown = document.createElement("button");
+        btnDown.type = "button";
+        btnDown.className = "btn-move";
+        btnDown.textContent = "▼";
+        btnDown.title = "Sposta giù";
+        btnDown.disabled = !canEdit || index === dialogueArray.length - 1;
+        btnDown.onclick = () => onMove(index, index + 1);
+
+        controls.append(btnUp, btnDown);
+        item.append(textSpan, controls);
+        container.appendChild(item);
+      });
+    }
+
+    function renderStudentDialogue() {
+      renderDialogueList("student-dialogue-list", studentDialogue, true, (from, to) => {
+        const temp = studentDialogue[from];
+        studentDialogue[from] = studentDialogue[to];
+        studentDialogue[to] = temp;
+        studentSubmitted = false;
+        saveStatus.hidden = true;
+        studentFeedback.hidden = true;
+        renderStudentDialogue();
+      });
+
+      if (studentSubmitted) {
+        const isCorrect = isCorrectDialogue(studentDialogue);
+        studentFeedback.textContent = isCorrect
+          ? "✓ Отлично! Диалог собран правильно! · Bravissimo! Il dialogo è corretto!"
+          : "✕ Есть ошибки в порядке фраз. Попробуйте ещё раз! · Il dialogo non è ancora corretto.";
+        studentFeedback.className = "answer-feedback " + (isCorrect ? "correct" : "incorrect");
+        studentFeedback.hidden = false;
+      }
+    }
+
+    function renderTokenDialogue() {
+      const canEdit = currentWriter === myClientId;
+      renderDialogueList("token-dialogue-list", tokenDialogue, canEdit, (from, to) => {
+        const temp = tokenDialogue[from];
+        tokenDialogue[from] = tokenDialogue[to];
+        tokenDialogue[to] = temp;
+        if (answersRef && currentWriter === myClientId) {
+          answersRef.child("tokenData").child("answers").set(tokenDialogue);
+        }
+        renderTokenDialogue();
+      });
+    }
+
+    let answersRef = null;
+    let isTeacher = false;
+    let currentWorkMode = "token";
+    let currentWriter = null;
+    let allResponses = {};
+
+    teacherToggle.addEventListener("change", (e) => {
+      isTeacher = e.target.checked;
+      document.body.classList.toggle("teacher-mode", isTeacher);
+      modeSelectorContainer.classList.toggle("visible", isTeacher);
+      resetButton.style.display = isTeacher ? "inline-block" : "none";
+      updateUIState();
+    });
+
+    workModeSelect.addEventListener("change", (e) => {
+      if (answersRef && isTeacher) {
+        answersRef.child("workMode").set(e.target.value);
+      }
+    });
+
+    btnTakeToken.onclick = () => {
+      if (answersRef) {
+        if (currentWriter === myClientId) {
+          answersRef.child("tokenData").child("currentWriter").set(null);
+        } else if (!currentWriter) {
+          answersRef.child("tokenData").child("currentWriter").set(myClientId);
+        }
+      }
+    };
+
+    if (window.firebase) {
+      try {
+        firebase.initializeApp(firebaseConfig);
+        answersRef = firebase.database().ref("esercizi/unita3-dialogo-g");
+
+        answersRef.on("value", (snapshot) => {
+          const data = snapshot.val() || {};
+          currentWorkMode = data.workMode || "token";
+          workModeSelect.value = currentWorkMode;
+
+          const tData = data.tokenData || {};
+          currentWriter = tData.currentWriter || null;
+          if (tData.answers) {
+            tokenDialogue = tData.answers;
+          }
+
+          allResponses = data.allStudentsData || {};
+          updateUIState();
+        });
+      } catch (e) {
+        console.error("Errore Firebase:", e);
+      }
+    }
+
+    document.getElementById("btn-submit-all").addEventListener("click", async () => {
+      const name = studentNameInput.value.trim();
+      if (!name) {
+        alert("Пожалуйста, введите ваше имя! · Inserisci il tuo nome!");
+        studentNameInput.focus();
+        return;
+      }
+      if (!answersRef) {
+        alert("Нет соединения с базой данных. · Connessione non disponibile.");
+        return;
+      }
+
+      localStorage.setItem("parlo_student_name", name);
+      const studentId = name.replace(/[.#$\/\[\]]/g, "_");
+      const studentRef = answersRef.child("allStudentsData").child("students").child(studentId);
+
+      try {
+        await studentRef.update({
+          name,
+          answers: studentDialogue,
+          timestamp: Date.now()
+        });
+
+        studentSubmitted = true;
+        renderStudentDialogue();
+        saveStatus.textContent = "✅ Ответ отправлен учителю! · Risposta inviata all’insegnante!";
+        saveStatus.hidden = false;
+      } catch (err) {
+        alert("Ошибка при отправке · Errore durante l'invio.");
+      }
+    });
+
+    function updateUIState() {
+      if (currentWorkMode === "token") {
+        tokenSection.classList.add("active-mode");
+        allSection.classList.remove("active-mode");
+
+        if (!currentWriter) {
+          tokenStatusText.textContent = "Открыто · In corso";
+          btnTakeToken.textContent = "✋ Взять слово · Prendi la parola";
+          btnTakeToken.className = "btn-token";
+          btnTakeToken.disabled = false;
+        } else if (currentWriter === myClientId) {
+          tokenStatusText.textContent = "Вы редактируете · Stai modificando";
+          btnTakeToken.textContent = "✔ Передать слово · Lascia la parola";
+          btnTakeToken.className = "btn-token release";
+          btnTakeToken.disabled = false;
+        } else {
+          tokenStatusText.textContent = "🔒 Пишет одноклассник · Compagno scrive";
+          btnTakeToken.textContent = "🔒 Пишет одноклассник · Compagno scrive";
+          btnTakeToken.className = "btn-token busy";
+          btnTakeToken.disabled = true;
+        }
+
+        renderTokenDialogue();
+      } else {
+        tokenSection.classList.remove("active-mode");
+        allSection.classList.add("active-mode");
+        renderStudentDialogue();
+        renderResponsesAllMode();
+      }
+    }
+
+    function renderResponsesAllMode() {
+      responsesList.replaceChildren();
+      const studentsData = allResponses.students || {};
+      const studentEntries = Object.entries(studentsData);
+
+      if (studentEntries.length === 0) {
+        const emptyMessage = document.createElement("p");
+        emptyMessage.style.color = "var(--text-muted)";
+        emptyMessage.style.fontSize = ".9rem";
+        emptyMessage.textContent = "Пока никто не отправил ответы...";
+        responsesList.appendChild(emptyMessage);
+        return;
+      }
+
+      const answerList = document.createElement("div");
+      answerList.className = "answer-list";
+
+      studentEntries.forEach(([studentId, sData]) => {
+        const row = document.createElement("div");
+        row.className = "answer-row";
+
+        const author = document.createElement("span");
+        author.className = "answer-author";
+        author.textContent = sData.name || "Studente";
+
+        const submittedDialogue = sData.answers || [];
+        const isCorrect = isCorrectDialogue(submittedDialogue);
+        const reviewStatus = sData.reviews?.dialogue;
+
+        const previewBox = document.createElement("div");
+        previewBox.className = "dialogue-preview";
+
+        if (isCorrect || reviewStatus === "approved") {
+          previewBox.classList.add(isCorrect ? "auto-correct" : "review-approved");
+        } else if (reviewStatus === "rejected") {
+          previewBox.classList.add("review-rejected");
+        } else {
+          previewBox.classList.add("auto-incorrect");
+        }
+
+        submittedDialogue.forEach((line, idx) => {
+          const lineP = document.createElement("div");
+          lineP.textContent = `${idx + 1}. ${line}`;
+          previewBox.appendChild(lineP);
+        });
+
+        const answerCell = document.createElement("div");
+        answerCell.className = "answer-cell";
+        answerCell.appendChild(previewBox);
+
+        if (isTeacher && submittedDialogue.length > 0) {
+          const controls = document.createElement("div");
+          controls.className = "answer-review-controls";
+
+          const approveButton = document.createElement("button");
+          approveButton.type = "button";
+          approveButton.className = "answer-review-btn approve";
+          approveButton.textContent = "✓";
+          approveButton.setAttribute("aria-label", `Approva la risposta di ${sData.name || "Studente"}`);
+          approveButton.setAttribute("aria-pressed", String(reviewStatus === "approved"));
+          approveButton.onclick = () => {
+            const nextValue = reviewStatus === "approved" ? null : "approved";
+            answersRef.child("allStudentsData").child("students").child(studentId).child("reviews").child("dialogue").set(nextValue);
+          };
+
+          const rejectButton = document.createElement("button");
+          rejectButton.type = "button";
+          rejectButton.className = "answer-review-btn reject";
+          rejectButton.textContent = "✕";
+          rejectButton.setAttribute("aria-label", `Non approvare la risposta di ${sData.name || "Studente"}`);
+          rejectButton.setAttribute("aria-pressed", String(reviewStatus === "rejected"));
+          rejectButton.onclick = () => {
+            const nextValue = reviewStatus === "rejected" ? null : "rejected";
+            answersRef.child("allStudentsData").child("students").child(studentId).child("reviews").child("dialogue").set(nextValue);
+          };
+
+          controls.append(approveButton, rejectButton);
+          answerCell.appendChild(controls);
+        }
+
+        row.append(author, answerCell);
+        answerList.appendChild(row);
+      });
+
+      responsesList.appendChild(answerList);
+    }
+
+    resetButton.addEventListener("click", () => {
+      if (confirm("Сбросить все ответы? · Azzera tutte le risposte?")) {
+        answersRef.set({
+          workMode: currentWorkMode,
+          tokenData: { currentWriter: null, answers: [...initialShuffled] },
+          allStudentsData: {}
+        });
+      }
+    });
+
+    renderStudentDialogue();
+    renderTokenDialogue();
+  </script>
+</body>
+</html>
