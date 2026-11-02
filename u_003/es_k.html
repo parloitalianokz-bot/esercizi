@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unità 3 — Conosci i tuoi compagni (Esercizio K)</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: 'Segoe UI', Inter, system-ui, -apple-system, sans-serif;
+      --primary: #477755;
+      --primary-light: #edf4ed;
+      --primary-dark: #2f5739;
+      --accent: #bd694d;
+      --bg-main: #f5f1e7;
+      --card-bg: #fffefa;
+      --text: #292d28;
+      --text-muted: #6b7069;
+      --border: #e7e5dc;
+    }
+
+    * { box-sizing: border-box; }
+
+    :focus-visible {
+      outline: 3px solid rgba(189, 105, 77, .55);
+      outline-offset: 3px;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 16px;
+      background:
+        linear-gradient(rgba(250, 248, 241, .88), rgba(250, 248, 241, .88)),
+        url("img/sfondo.jpg") center / cover fixed,
+        radial-gradient(ellipse at 50% -12%, rgba(111, 151, 116, .18), transparent 42%),
+        var(--bg-main);
+      color: var(--text);
+    }
+
+    .container { width: min(100%, 880px); margin: 0 auto; }
+
+    .hero {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      margin: 8px 0 22px;
+      padding: 28px 20px 26px;
+      text-align: center;
+      border: 1px solid rgba(71, 119, 85, .13);
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255, 254, 250, .94), rgba(242, 247, 239, .91));
+      box-shadow: 0 12px 32px rgba(43, 69, 46, .07);
+    }
+    .eyebrow {
+      display: inline-block;
+      color: var(--primary-dark);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      background: #eaf1e8;
+      padding: 8px 15px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      box-shadow: inset 0 0 0 1px rgba(71, 119, 85, .11);
+    }
+    h1 {
+      margin: 4px 0;
+      font-size: clamp(1.9rem, 5vw, 2.65rem);
+      letter-spacing: -.04em;
+      color: var(--primary-dark);
+      line-height: 1.12;
+    }
+    .hero-subtitle {
+      margin: 8px 0 0;
+      color: var(--text-muted);
+      font-size: .98rem;
+    }
+
+    /* Box Istruzioni */
+    .instruction-box {
+      background: #fff;
+      border: 1px solid #d8e5d8;
+      border-left: 5px solid var(--accent);
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 6px 18px rgba(43, 69, 46, .04);
+    }
+    .instruction-title {
+      font-size: .85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .instruction-text {
+      font-size: .98rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    /* Top Controls */
+    .top-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding: 14px 20px;
+      border: 1px solid rgba(71, 119, 85, .13);
+      border-radius: 16px;
+      background: rgba(255, 254, 250, .96);
+      box-shadow: 0 8px 22px rgba(43, 69, 46, .055);
+    }
+    .teacher-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      justify-content: space-between;
+    }
+    .teacher-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .88rem;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+      user-select: none;
+    }
+    .teacher-toggle input { accent-color: var(--primary); }
+
+    button.reset-btn {
+      padding: 6px 14px;
+      border: 1px solid #fca5a5;
+      border-radius: 10px;
+      background: #fff;
+      color: #dc2626;
+      font: inherit;
+      font-size: .8rem;
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 42px;
+    }
+    button.reset-btn:hover { background: #fef2f2; }
+
+    .card {
+      padding: clamp(20px, 4vw, 32px);
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      background: var(--card-bg);
+      box-shadow: 0 22px 60px rgba(43, 69, 46, .11);
+      margin-bottom: 32px;
+    }
+
+    /* Barra Token Doppia per Lavoro in Coppia */
+    .token-bar-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .token-box {
+      padding: 14px 16px;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .token-box.blue {
+      background: #e6f2ff;
+      border: 1px solid #b3d7ff;
+    }
+    .token-box.yellow {
+      background: #fffde6;
+      border: 1px solid #ffe899;
+    }
+    .token-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 800;
+      font-size: .9rem;
+    }
+    .token-box.blue .token-box-header { color: #004085; }
+    .token-box.yellow .token-box-header { color: #856404; }
+
+    .btn-token {
+      border: none;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: .85rem;
+      cursor: pointer;
+      min-height: 40px;
+    }
+    .btn-token.blue { background: #0056b3; color: #fff; }
+    .btn-token.yellow { background: #d39e00; color: #fff; }
+    .btn-token.release { background: #bd694d; color: #fff; }
+    .btn-token.busy { background: #e8ebea; color: #5f6863; cursor: not-allowed; }
+
+    /* Layout del Dialogo */
+    .dialogue-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .dialogue-line {
+      padding: 16px 20px;
+      border-radius: 16px;
+      font-size: 1.05rem;
+      line-height: 1.8;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .dialogue-line.student-a {
+      background: #e6f2ff;
+      border: 1.5px solid #b3d7ff;
+      color: #004085;
+    }
+
+    .dialogue-line.student-b {
+      background: #fffde6;
+      border: 1.5px solid #ffe899;
+      color: #856404;
+    }
+
+    .speaker-tag {
+      font-weight: 800;
+      margin-right: 4px;
+    }
+
+    input.inline-input {
+      display: inline-block;
+      padding: 4px 10px;
+      border: 1.5px solid #bdc3c7;
+      border-radius: 8px;
+      font: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      background: #fff;
+      outline: none;
+      transition: all .2s ease;
+    }
+
+    .student-a input.inline-input {
+      border-color: #9ec5fe;
+      color: #004085;
+    }
+
+    .student-b input.inline-input {
+      border-color: #ffe066;
+      color: #856404;
+    }
+
+    input.inline-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(71, 119, 85, .18);
+    }
+
+    input.inline-input:disabled {
+      background: rgba(255, 255, 255, .6);
+      opacity: .85;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 16px 8px; }
+      .token-bar-pair { grid-template-columns: 1fr; }
+      .dialogue-line { padding: 12px 14px; font-size: .98rem; }
+      input.inline-input { width: 100px !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <header class="hero">
+      <span class="eyebrow">Unità 3 · Lavoro in Coppia</span>
+      <h1>Conosci i tuoi compagni</h1>
+      <p class="hero-subtitle">Познакомьтесь со своими одноклассниками! Работа в парах.</p>
+    </header>
+
+    <div class="instruction-box">
+      <div class="instruction-title">💡 Задание · Esercizio K:</div>
+      <div class="instruction-text">
+        👉 <strong>Познакомьтесь со своим одноклассником, заполнив пропуски в диалоге:</strong>
+        <ul>
+          <li><strong>Студент A (голубой блок):</strong> берет Token A и заполняет свои реплики.</li>
+          <li><strong>Студент B (желтый блок):</strong> берет Token B и заполняет свои ответы.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Barra Controlli Superiore -->
+    <div id="status" class="top-controls">
+      <div class="teacher-controls">
+        <label class="teacher-toggle">
+          <input type="checkbox" id="teacher-mode">
+          Режим учителя · Modalità insegnante
+        </label>
+
+        <button id="reset" class="reset-btn" type="button" style="display:none;">⚠️ Сбросить · Azzera</button>
+      </div>
+    </div>
+
+    <!-- SEZIONE ESERCIZIO IN COPPIA -->
+    <section class="card">
+      <div class="token-bar-pair">
+        <div class="token-box blue">
+          <div class="token-box-header">
+            <span>🗣️ Studente A (Azzurro)</span>
+            <span id="token-a-status">Libero</span>
+          </div>
+          <button id="btn-token-a" class="btn-token blue" type="button">✋ Prendi Token A</button>
+        </div>
+
+        <div class="token-box yellow">
+          <div class="token-box-header">
+            <span>💬 Studente B (Giallino)</span>
+            <span id="token-b-status">Libero</span>
+          </div>
+          <button id="btn-token-b" class="btn-token yellow" type="button">✋ Prendi Token B</button>
+        </div>
+      </div>
+
+      <div class="dialogue-container">
+        <!-- Battuta 1: Studente A -->
+        <div class="dialogue-line student-a">
+          <span class="speaker-tag">A:</span> Ciao, mi chiamo 
+          <input type="text" class="inline-input" data-speaker="a" data-idx="0" style="width: 120px;" placeholder="nome..." disabled> 
+          e tu come ti chiami?
+        </div>
+
+        <!-- Battuta 2: Studente B -->
+        <div class="dialogue-line student-b">
+          <span class="speaker-tag">B:</span> Mi chiamo 
+          <input type="text" class="inline-input" data-speaker="b" data-idx="0" style="width: 120px;" placeholder="nome..." disabled>. 
+          Sono 
+          <input type="text" class="inline-input" data-speaker="b" data-idx="1" style="width: 110px;" placeholder="nazionalità..." disabled> 
+          di 
+          <input type="text" class="inline-input" data-speaker="b" data-idx="2" style="width: 110px;" placeholder="città..." disabled> 
+          e tu di dove sei?
+        </div>
+
+        <!-- Battuta 3: Studente A -->
+        <div class="dialogue-line student-a">
+          <span class="speaker-tag">A:</span> Sono 
+          <input type="text" class="inline-input" data-speaker="a" data-idx="1" style="width: 110px;" placeholder="nazionalità..." disabled> 
+          di 
+          <input type="text" class="inline-input" data-speaker="a" data-idx="2" style="width: 110px;" placeholder="città..." disabled>. 
+          Ho 
+          <input type="text" class="inline-input" data-speaker="a" data-idx="3" style="width: 80px;" placeholder="età..." disabled> 
+          anni. E tu quanti anni hai?
+        </div>
+
+        <!-- Battuta 4: Studente B -->
+        <div class="dialogue-line student-b">
+          <span class="speaker-tag">B:</span> Ho 
+          <input type="text" class="inline-input" data-speaker="b" data-idx="3" style="width: 80px;" placeholder="età..." disabled> 
+          anni. Sono 
+          <input type="text" class="inline-input" data-speaker="b" data-idx="4" style="width: 130px;" placeholder="professione..." disabled> 
+          e tu che lavoro fai?
+        </div>
+
+        <!-- Battuta 5: Studente A -->
+        <div class="dialogue-line student-a">
+          <span class="speaker-tag">A:</span> Sono 
+          <input type="text" class="inline-input" data-speaker="a" data-idx="4" style="width: 130px;" placeholder="professione..." disabled>. 
+          Ci vediamo 
+          <input type="text" class="inline-input" data-speaker="a" data-idx="5" style="width: 100px;" placeholder="presto..." disabled>!
+        </div>
+
+        <!-- Battuta 6: Studente B -->
+        <div class="dialogue-line student-b">
+          <span class="speaker-tag">B:</span> Ciao!
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "INSERISCI_API_KEY",
+      authDomain: "esercizi-parlo-italiano.firebaseapp.com",
+      databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "esercizi-parlo-italiano",
+      appId: "INSERISCI_APP_ID"
+    };
+
+    let dialogState = {
+      a: ["", "", "", "", "", ""],
+      b: ["", "", "", "", "", ""]
+    };
+
+    const myClientId = "user_" + Math.random().toString(36).substring(2, 9);
+    const teacherToggle = document.getElementById("teacher-mode");
+    const resetButton = document.getElementById("reset");
+
+    const btnTokenA = document.getElementById("btn-token-a");
+    const btnTokenB = document.getElementById("btn-token-b");
+    const tokenAStatus = document.getElementById("token-a-status");
+    const tokenBStatus = document.getElementById("token-b-status");
+
+    let currentAWriter = null;
+    let currentBWriter = null;
+    let isTeacher = false;
+    let answersRef = null;
+
+    teacherToggle.addEventListener("change", (e) => {
+      isTeacher = e.target.checked;
+      document.body.classList.toggle("teacher-mode", isTeacher);
+      resetButton.style.display = isTeacher ? "inline-block" : "none";
+      renderUI();
+    });
+
+    btnTokenA.onclick = () => {
+      if (answersRef) {
+        if (currentAWriter === myClientId) {
+          answersRef.child("tokenData").child("currentAWriter").set(null);
+        } else if (!currentAWriter) {
+          answersRef.child("tokenData").child("currentAWriter").set(myClientId);
+        }
+      }
+    };
+
+    btnTokenB.onclick = () => {
+      if (answersRef) {
+        if (currentBWriter === myClientId) {
+          answersRef.child("tokenData").child("currentBWriter").set(null);
+        } else if (!currentBWriter) {
+          answersRef.child("tokenData").child("currentBWriter").set(myClientId);
+        }
+      }
+    };
+
+    if (window.firebase) {
+      try {
+        firebase.initializeApp(firebaseConfig);
+        answersRef = firebase.database().ref("esercizi/unita3-conoscersi-k");
+
+        answersRef.on("value", (snapshot) => {
+          const data = snapshot.val() || {};
+          const tData = data.tokenData || {};
+
+          currentAWriter = tData.currentAWriter || null;
+          currentBWriter = tData.currentBWriter || null;
+
+          if (tData.answers) {
+            dialogState = tData.answers;
+          }
+
+          renderUI();
+        });
+      } catch (e) {
+        console.error("Errore Firebase:", e);
+      }
+    }
+
+    function renderUI() {
+      const canEditA = currentAWriter === myClientId;
+      const canEditB = currentBWriter === myClientId;
+
+      // Token A Status
+      if (!currentAWriter) {
+        tokenAStatus.textContent = "Libero";
+        btnTokenA.textContent = "✋ Prendi Token A";
+        btnTokenA.className = "btn-token blue";
+        btnTokenA.disabled = false;
+      } else if (currentAWriter === myClientId) {
+        tokenAStatus.textContent = "Stai modificando";
+        btnTokenA.textContent = "✔ Lascia Token A";
+        btnTokenA.className = "btn-token release";
+        btnTokenA.disabled = false;
+      } else {
+        tokenAStatus.textContent = "Compagno scrive";
+        btnTokenA.textContent = "🔒 Compagno scrive";
+        btnTokenA.className = "btn-token busy";
+        btnTokenA.disabled = true;
+      }
+
+      // Token B Status
+      if (!currentBWriter) {
+        tokenBStatus.textContent = "Libero";
+        btnTokenB.textContent = "✋ Prendi Token B";
+        btnTokenB.className = "btn-token yellow";
+        btnTokenB.disabled = false;
+      } else if (currentBWriter === myClientId) {
+        tokenBStatus.textContent = "Stai modificando";
+        btnTokenB.textContent = "✔ Lascia Token B";
+        btnTokenB.className = "btn-token release";
+        btnTokenB.disabled = false;
+      } else {
+        tokenBStatus.textContent = "Compagno scrive";
+        btnTokenB.textContent = "🔒 Compagno scrive";
+        btnTokenB.className = "btn-token busy";
+        btnTokenB.disabled = true;
+      }
+
+      // Aggiornamento Input
+      document.querySelectorAll("input.inline-input").forEach(input => {
+        const speaker = input.dataset.speaker;
+        const idx = parseInt(input.dataset.idx, 10);
+        const canEdit = speaker === "a" ? canEditA : canEditB;
+
+        if (!(canEdit && document.activeElement === input)) {
+          input.value = (dialogState[speaker] && dialogState[speaker][idx]) || "";
+        }
+
+        input.disabled = !canEdit;
+      });
+    }
+
+    // Event Listener sugli input
+    document.querySelectorAll("input.inline-input").forEach(input => {
+      input.addEventListener("input", (e) => {
+        const speaker = e.target.dataset.speaker;
+        const idx = parseInt(e.target.dataset.idx, 10);
+
+        if (!dialogState[speaker]) dialogState[speaker] = [];
+        dialogState[speaker][idx] = e.target.value;
+
+        if (answersRef) {
+          if (speaker === "a" && currentAWriter === myClientId) {
+            answersRef.child("tokenData").child("answers").set(dialogState);
+          } else if (speaker === "b" && currentBWriter === myClientId) {
+            answersRef.child("tokenData").child("answers").set(dialogState);
+          }
+        }
+      });
+    });
+
+    resetButton.addEventListener("click", () => {
+      if (confirm("Сбросить все ответы? · Azzera tutte le risposte?")) {
+        answersRef.set({
+          tokenData: {
+            currentAWriter: null,
+            currentBWriter: null,
+            answers: { a: ["", "", "", "", "", ""], b: ["", "", "", "", "", ""] }
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
