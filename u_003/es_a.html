@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unità 3 — Lettura e Comprensione (Esercizio A)</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: 'Segoe UI', Inter, system-ui, -apple-system, sans-serif;
+      --primary: #477755;
+      --primary-light: #edf4ed;
+      --primary-dark: #2f5739;
+      --accent: #bd694d;
+      --bg-main: #f5f1e7;
+      --card-bg: #fffefa;
+      --text: #292d28;
+      --text-muted: #6b7069;
+      --success: #278253;
+      --success-bg: #e1f1e5;
+      --border: #e7e5dc;
+    }
+
+    * { box-sizing: border-box; }
+
+    :focus-visible {
+      outline: 3px solid rgba(189, 105, 77, .55);
+      outline-offset: 3px;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 16px;
+      background:
+        linear-gradient(rgba(250, 248, 241, .88), rgba(250, 248, 241, .88)),
+        url("img/sfondo.jpg") center / cover fixed,
+        radial-gradient(ellipse at 50% -12%, rgba(111, 151, 116, .18), transparent 42%),
+        var(--bg-main);
+      color: var(--text);
+    }
+
+    .container { width: min(100%, 820px); margin: 0 auto; }
+
+    .hero {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      margin: 8px 0 22px;
+      padding: 28px 20px 26px;
+      text-align: center;
+      border: 1px solid rgba(71, 119, 85, .13);
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255, 254, 250, .94), rgba(242, 247, 239, .91));
+      box-shadow: 0 12px 32px rgba(43, 69, 46, .07);
+    }
+    .hero::before {
+      position: absolute;
+      z-index: -1;
+      top: -62px;
+      right: -38px;
+      width: 190px;
+      height: 190px;
+      border: 1px solid rgba(189, 105, 77, .14);
+      border-radius: 50%;
+      box-shadow: 0 0 0 18px rgba(189, 105, 77, .035), 0 0 0 38px rgba(189, 105, 77, .025);
+      content: "";
+    }
+    .eyebrow {
+      display: inline-block;
+      color: var(--primary-dark);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      background: #eaf1e8;
+      padding: 8px 15px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      box-shadow: inset 0 0 0 1px rgba(71, 119, 85, .11);
+    }
+    h1 {
+      margin: 4px 0;
+      font-size: clamp(1.9rem, 5vw, 2.65rem);
+      letter-spacing: -.04em;
+      color: var(--primary-dark);
+      line-height: 1.12;
+      text-wrap: balance;
+    }
+    .hero-subtitle {
+      margin: 8px 0 0;
+      color: var(--text-muted);
+      font-size: .98rem;
+    }
+
+    /* Box Текста Чтения */
+    .reading-box {
+      background: #ffffff;
+      border: 1px solid #d8e5d8;
+      border-left: 5px solid var(--primary);
+      border-radius: 18px;
+      margin-bottom: 24px;
+      font-size: .96rem;
+      line-height: 1.7;
+      box-shadow: 0 8px 22px rgba(43, 69, 46, .055);
+      overflow: hidden;
+    }
+    .reading-box summary {
+      padding: 16px 18px;
+      color: var(--primary-dark);
+      font-weight: 700;
+      cursor: pointer;
+      list-style: none;
+    }
+    .reading-box summary::-webkit-details-marker { display: none; }
+    .reading-box summary::after {
+      content: "+";
+      float: right;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    .reading-box[open] summary::after { content: "−"; }
+    .reading-content { padding: 0 18px 18px; }
+    .reading-content p { margin: 0 0 12px; }
+    .reading-content p:last-child { margin-bottom: 0; }
+
+    /* Barra controlli superiore */
+    .top-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding: 14px 20px;
+      border: 1px solid rgba(71, 119, 85, .13);
+      border-radius: 16px;
+      background: rgba(255, 254, 250, .96);
+      box-shadow: 0 8px 22px rgba(43, 69, 46, .055);
+    }
+    .teacher-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+    .teacher-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .88rem;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+      user-select: none;
+    }
+    .teacher-toggle input { accent-color: var(--primary); }
+    
+    button.reset-btn {
+      padding: 6px 14px;
+      border: 1px solid #fca5a5;
+      border-radius: 10px;
+      background: #fff;
+      color: #dc2626;
+      font: inherit;
+      font-size: .8rem;
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 42px;
+    }
+    button.reset-btn:hover { background: #fef2f2; }
+
+    /* Card Esercizio */
+    .card {
+      padding: clamp(20px, 4vw, 32px);
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      background: var(--card-bg);
+      box-shadow: 0 22px 60px rgba(43, 69, 46, .11);
+    }
+
+    .slide-navigation {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .slide-navigation button {
+      min-height: 42px;
+      padding: 8px 14px;
+      border: 1px solid #d8e5d8;
+      border-radius: 10px;
+      background: #fff;
+      color: var(--primary-dark);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .slide-navigation button:disabled {
+      cursor: not-allowed;
+      opacity: .45;
+    }
+    .slide-progress {
+      color: var(--text-muted);
+      font-size: .9rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .section-box {
+      position: relative;
+      overflow: hidden;
+      padding: 22px;
+      margin-bottom: 22px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: #fff;
+      transition: all .25s ease;
+      box-shadow: 0 5px 16px rgba(43, 69, 46, .035);
+    }
+    .section-box.active {
+      border-color: #83a98a;
+      background: linear-gradient(145deg, #fff 55%, #f7faf5);
+      box-shadow: 0 0 0 3px rgba(71, 119, 85, .11), 0 10px 24px rgba(43, 69, 46, .06);
+    }
+    .section-box.active::before,
+    .section-box.approved::before {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 5px;
+      background: var(--primary);
+      content: "";
+    }
+    .section-box.approved::before { background: var(--success); }
+    .section-box.locked { background: #faf9f3; opacity: .7; }
+    .section-box.approved {
+      border-color: #d1fae5;
+      background: #f0fdf4;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .section-title {
+      min-width: 0;
+      font-weight: 700;
+      font-size: 1.05rem;
+      line-height: 1.4;
+      display: flex;
+      align-items: center;
+      color: var(--text);
+    }
+    .number {
+      display: inline-grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      margin-right: 12px;
+      border-radius: 12px;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: .95rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .badge {
+      font-size: .75rem;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      letter-spacing: .015em;
+      flex-shrink: 0;
+    }
+    .badge-locked { background: #e5e7eb; color: #6b7280; }
+    .badge-active { background: var(--primary); color: #fff; }
+    .badge-writing { background: #fef3c7; color: #d97706; }
+    .badge-approved { background: var(--success-bg); color: #047857; }
+
+    /* Box Formulazione Domanda */
+    .question-form-card {
+      padding: 16px;
+      border: 1px solid #dce8dc;
+      border-radius: 14px;
+      background: #f7faf5;
+      margin-bottom: 14px;
+    }
+    .question-form-card label {
+      display: block;
+      font-size: .92rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 6px;
+    }
+    textarea.question-input {
+      width: 100%;
+      min-height: 52px;
+      padding: 10px 12px;
+      border: 1.5px solid #d4e1d5;
+      border-radius: 10px;
+      font: inherit;
+      font-size: .98rem;
+      outline: none;
+      resize: vertical;
+      background: #fff;
+    }
+    textarea.question-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(71, 119, 85, 0.15);
+    }
+    textarea.question-input:disabled { background: #f2f0f8; color: #334155; }
+
+    /* Controlli Token */
+    .token-controls {
+      margin-top: 8px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
+    .btn-token {
+      background: var(--primary-dark);
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: .85rem;
+      cursor: pointer;
+      min-height: 42px;
+      transition: background 0.2s;
+    }
+    .btn-token:hover { background: #b65c43; }
+    .btn-token.release {
+      background: #e2e8f0;
+      color: #475569;
+    }
+
+    .section-hint {
+      margin: 0 0 14px;
+      padding: 0 0 0 12px;
+      border-left: 3px solid #d5e2d5;
+      color: #465c49;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    /* Opzioni di risposta */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .option-btn {
+      display: flex;
+      align-items: center;
+      min-height: 48px;
+      padding: 12px 16px;
+      border: 1.5px solid #e1deeb;
+      border-radius: 12px;
+      background: #fff;
+      font: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+      box-shadow: 0 2px 5px rgba(36, 33, 58, .025);
+    }
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      transform: translateY(-1px);
+      box-shadow: 0 5px 12px rgba(71, 119, 85, .1);
+    }
+    .option-btn.selected {
+      justify-content: space-between;
+      gap: 12px;
+      border-color: var(--primary);
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-weight: 700;
+      box-shadow: inset 0 0 0 1px var(--primary), 0 4px 12px rgba(71, 119, 85, .1);
+    }
+    .option-btn.selected::after {
+      content: "✓";
+      display: grid;
+      width: 24px;
+      height: 24px;
+      flex: 0 0 24px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 800;
+    }
+    .option-btn.selected.correct {
+      border-color: #15803d;
+      background: #dcfce7;
+      color: #166534;
+      box-shadow: inset 0 0 0 1px #15803d, 0 4px 12px rgba(21, 128, 61, .12);
+    }
+    .option-btn.selected.correct::after {
+      content: "✓";
+      background: #15803d;
+    }
+    .option-btn.selected.incorrect {
+      border-color: #dc2626;
+      background: #fee2e2;
+      color: #991b1b;
+      box-shadow: inset 0 0 0 1px #dc2626, 0 4px 12px rgba(220, 38, 38, .12);
+    }
+    .option-btn.selected.incorrect::after {
+      content: "×";
+      background: #dc2626;
+    }
+    .option-btn:disabled {
+      cursor: not-allowed;
+      opacity: .85;
+    }
+
+    /* Azione Unica Insegnante */
+    .teacher-action {
+      margin-top: 16px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .btn-approve {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      max-width: 100%;
+      line-height: 1.4;
+      font-size: .9rem;
+      cursor: pointer;
+      min-height: 42px;
+      box-shadow: 0 4px 12px rgba(71, 119, 85, 0.2);
+      transition: transform 0.15s, background 0.2s;
+    }
+    .btn-approve:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 520px) {
+      body { padding: 16px 8px; }
+      .top-controls { flex-direction: column; align-items: flex-start; }
+      .teacher-controls { width: 100%; justify-content: space-between; }
+      .card { padding: 18px 14px; border-radius: 20px; }
+      .section-box { padding: 16px 13px; border-radius: 16px; }
+      .section-header { flex-direction: row; align-items: center; }
+      .badge { font-size: .68rem; padding: 5px 7px; }
+      .section-title { font-size: 1rem; }
+      .option-btn { padding: 11px 12px; font-size: .95rem; }
+    }
+
+    @media (max-width: 420px) {
+      .slide-navigation {
+        flex-direction: column;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <header class="hero">
+      <span class="eyebrow">Unità 3 · Lettura e Comprensione</span>
+      <h1>Matteo e il suo viaggio ad Almaty</h1>
+      <p class="hero-subtitle">Работа в парах — "Вопрос и Ответ". Задайте вопрос и выберите правильный вариант.</p>
+    </header>
+
+    <!-- Текст для чтения -->
+    <details class="reading-box">
+      <summary>📖 Текст: Matteo ad Almaty</summary>
+      <div class="reading-content">
+        <p>Ciao a tutti, io mi chiamo Matteo. Ho quarantatré anni, e sono italiano. Sono di Genova, ma da 10 anni abito a Milano con la mia famiglia.</p>
+        <p>Io abito a Milano, ma adesso sono ad Almaty per affari. Viaggio spesso per lavoro; sono commerciante di spaghetti al pesto. Di solito viaggio in macchina o in aereo.</p>
+        <p>Conosco bene Almaty: conosco Medeo e il Mercato Zelyony Bazar. Conosco molti negozi e ristoranti. Conosco anche molte persone ad Almaty.</p>
+        <p>Ancora non parlo kazako; parlo solo italiano e un po' di russo. Per comunicare, come tutti gli italiani, uso le mani e faccio i gesti.</p>
+        <p>Quando sono ad Almaty, abito in albergo. La sera, dopo il lavoro, se ho fame, mangio il beshbarmak, se ho sete, bevo il kumys.</p>
+        <p>Almaty è una bella città e gli abitanti di Almaty sono molto amichevoli.</p>
+        <p>Adesso sono ad Almaty, ma domani torno a Milano, dove ho molte cose da fare per presentare il mio nuovo piatto: il beshbarmak al pesto.</p>
+      </div>
+    </details>
+
+    <!-- Barra Controlli Superiore -->
+    <div id="status" class="top-controls">
+      <div class="teacher-controls">
+        <label class="teacher-toggle">
+          <input type="checkbox" id="teacher-mode">
+          Режим учителя · Modalità insegnante
+        </label>
+        <button id="reset" class="reset-btn" type="button" style="display:none;">⚠️ Сбросить · Azzera</button>
+      </div>
+    </div>
+
+    <!-- Card dell'Esercizio -->
+    <section class="card">
+      <nav class="slide-navigation" aria-label="Navigazione delle schede">
+        <button id="previous-slide" type="button">← Precedente</button>
+        <span id="slide-progress" class="slide-progress" aria-live="polite"></span>
+        <button id="next-slide" type="button">Successiva →</button>
+      </nav>
+      <form id="answers" autocomplete="off"></form>
+    </section>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "INSERISCI_API_KEY",
+      authDomain: "esercizi-parlo-italiano.firebaseapp.com",
+      databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "esercizi-parlo-italiano",
+      appId: "INSERISCI_APP_ID"
+    };
+
+    const sectionsData = [
+      { hint: "1. Matteo", options: ["è kazako", "è italiano"], correctOption: 1 },
+      { hint: "2. Matteo", options: ["ha trentatré anni", "ha quarantatré anni"], correctOption: 1 },
+      { hint: "3. Matteo è", options: ["di Genova", "di Milano"], correctOption: 0 },
+      { hint: "4. Matteo abita", options: ["a Genova", "a Milano"], correctOption: 1 },
+      { hint: "5. Matteo", options: ["abita da solo", "abita con la famiglia"], correctOption: 1 },
+      { hint: "6. Matteo", options: ["è commerciante", "è insegnante"], correctOption: 0 },
+      { hint: "7. Matteo viaggia spesso", options: ["per turismo", "per lavoro"], correctOption: 1 },
+      { hint: "8. Matteo di solito viaggia", options: ["in aereo o in macchina", "a cavallo o sul cammello"], correctOption: 0 },
+      { hint: "9. Matteo parla", options: ["italiano e dialetto genovese", "italiano, un po’ di russo"], correctOption: 1 },
+      { hint: "10. Ad Almaty Matteo abita", options: ["in albergo", "in una yurta"], correctOption: 0 },
+      { hint: "11. Ad Almaty Matteo mangia", options: ["gli spaghetti al pesto", "il beshbarmak"], correctOption: 1 },
+      { hint: "12. Ad Almaty, Matteo beve", options: ["il kumys", "il prosecco"], correctOption: 0 },
+      { hint: "13. Almaty", options: ["è una città piccola", "è una città bella"], correctOption: 1 },
+      { hint: "14. Gli almatesi", options: ["sono amichevoli", "sono antipatici"], correctOption: 0 },
+      { hint: "15. Matteo torna a Milano", options: ["oggi", "domani"], correctOption: 1 }
+    ];
+
+    const myClientId = "user_" + Math.random().toString(36).substring(2, 9);
+
+    const form = document.getElementById("answers");
+    const teacherToggle = document.getElementById("teacher-mode");
+    const resetButton = document.getElementById("reset");
+    const previousSlideButton = document.getElementById("previous-slide");
+    const nextSlideButton = document.getElementById("next-slide");
+    const slideProgress = document.getElementById("slide-progress");
+
+    let answersRef = null;
+    let currentActiveStep = -1;
+    let viewedStep = 0;
+    let currentWriter = null;
+    let isTeacher = false;
+
+    const sectionElements = [];
+
+    sectionsData.forEach((sec, index) => {
+      const box = document.createElement("div");
+      box.className = "section-box locked";
+      box.id = `box-${index}`;
+
+      const header = document.createElement("div");
+      header.className = "section-header";
+
+      const title = document.createElement("div");
+      title.className = "section-title";
+      title.innerHTML = `<span class="number">${index + 1}</span>`;
+
+      const badge = document.createElement("span");
+      badge.className = "badge badge-locked";
+      badge.textContent = "Закрыта · Bloccata";
+
+      header.append(title, badge);
+
+      // Box Formulazione Domanda
+      const qCard = document.createElement("div");
+      qCard.className = "question-form-card";
+      qCard.innerHTML = `<label for="question-input-${index}">✍️ Вопрос · Domanda:</label>`;
+
+      const qInput = document.createElement("textarea");
+      qInput.id = `question-input-${index}`;
+      qInput.className = "question-input";
+      qInput.rows = 2;
+      qInput.disabled = true;
+      qInput.placeholder = "In attesa dell'insegnante · Ждём, пока учитель откроет блок...";
+
+      qInput.addEventListener("input", () => {
+        if (answersRef && currentActiveStep === index && currentWriter === myClientId) {
+          answersRef.child("responses").child(String(index)).child("formulatedQuestion").set(qInput.value);
+        }
+      });
+
+      // Controlli Token
+      const tokenDiv = document.createElement("div");
+      tokenDiv.className = "token-controls";
+      tokenDiv.style.display = "none";
+
+      const tokenBtn = document.createElement("button");
+      tokenBtn.className = "btn-token";
+      tokenBtn.type = "button";
+      tokenBtn.textContent = "✋ Взять слово · Prendi la parola";
+      tokenBtn.onclick = () => {
+        if (answersRef && currentActiveStep === index) {
+          if (currentWriter === myClientId) {
+            answersRef.child("currentWriter").set(null);
+          } else if (!currentWriter) {
+            answersRef.child("currentWriter").set(myClientId);
+          }
+        }
+      };
+
+      tokenDiv.appendChild(tokenBtn);
+      qCard.append(qInput, tokenDiv);
+
+      const hint = document.createElement("div");
+      hint.className = "section-hint";
+      hint.textContent = sec.hint;
+
+      // Opzioni
+      const optContainer = document.createElement("div");
+      optContainer.className = "options-container";
+
+      const optGrid = document.createElement("div");
+      optGrid.className = "options-grid";
+
+      const optButtons = [];
+      sec.options.forEach((optText, optIdx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "option-btn";
+        btn.textContent = `${String.fromCharCode(97 + optIdx)}. ${optText}`;
+
+        btn.onclick = () => {
+          if (answersRef && index === currentActiveStep) {
+            answersRef.child("responses").child(String(index)).child("selectedOption").set(optIdx);
+          }
+        };
+
+        optGrid.appendChild(btn);
+        optButtons.push(btn);
+      });
+
+      optContainer.appendChild(optGrid);
+
+      // Pulsante Insegnante
+      const actionDiv = document.createElement("div");
+      actionDiv.className = "teacher-action";
+      actionDiv.style.display = "none";
+
+      const actionBtn = document.createElement("button");
+      actionBtn.className = "btn-approve";
+      actionBtn.type = "button";
+      actionBtn.textContent = "🔓 Sblocca Blocco";
+      actionBtn.onclick = () => {
+        if (answersRef) {
+          if (currentActiveStep === index) {
+            answersRef.update({
+              activeStep: index + 1,
+              currentWriter: null
+            });
+          } else {
+            answersRef.update({
+              activeStep: index,
+              currentWriter: null
+            });
+          }
+        }
+      };
+
+      actionDiv.appendChild(actionBtn);
+      box.append(header, qCard, hint, optContainer, actionDiv);
+      form.appendChild(box);
+
+      sectionElements.push({
+        box, badge, qInput, optButtons, tokenDiv, tokenBtn, actionDiv, actionBtn
+      });
+    });
+
+    teacherToggle.addEventListener("change", (e) => {
+      isTeacher = e.target.checked;
+      resetButton.style.display = isTeacher ? "inline-block" : "none";
+      updateUIState();
+    });
+
+    let currentResponsesData = {};
+
+    function updateUIState() {
+      sectionElements.forEach((sec, i) => {
+        const { box, badge, qInput, optButtons, tokenDiv, tokenBtn, actionDiv, actionBtn } = sec;
+        const res = currentResponsesData[i] || {};
+
+        box.hidden = i !== viewedStep;
+        box.classList.remove("active", "locked", "approved");
+
+        if (i < currentActiveStep) {
+          // Blocco Approvato
+          box.classList.add("approved");
+          badge.className = "badge badge-approved";
+          badge.textContent = "Одобрено · Approvata";
+          qInput.disabled = true;
+          tokenDiv.style.display = "none";
+          actionDiv.style.display = "none";
+        } else if (i === currentActiveStep) {
+          // Blocco Attivo
+          box.classList.add("active");
+
+          if (!currentWriter) {
+            badge.className = "badge badge-active";
+            badge.textContent = "Открыто · In corso";
+            qInput.disabled = true;
+            qInput.placeholder = "Напишите здесь вопрос · Scrivi qui la domanda";
+
+            tokenDiv.style.display = "flex";
+            tokenBtn.textContent = "✋ Взять слово · Prendi la parola";
+            tokenBtn.className = "btn-token";
+            tokenBtn.disabled = false;
+          } else if (currentWriter === myClientId) {
+            badge.className = "badge badge-writing";
+            badge.textContent = "Вы пишете · Stai scrivendo";
+            qInput.disabled = false;
+            qInput.placeholder = "Напишите здесь вопрос · Scrivi qui la domanda";
+
+            tokenDiv.style.display = "flex";
+            tokenBtn.textContent = "✔ Передать слово · Lascia la parola";
+            tokenBtn.className = "btn-token release";
+            tokenBtn.disabled = false;
+          } else {
+            badge.className = "badge badge-writing";
+            badge.textContent = "Пишет одноклассник · Un compagno sta scrivendo";
+            qInput.disabled = true;
+            qInput.placeholder = "Пишет одноклассник · Un compagno sta scrivendo";
+
+            tokenDiv.style.display = "flex";
+            tokenBtn.textContent = "🔒 Пишет одноклассник · Un compagno sta scrivendo";
+            tokenBtn.className = "btn-token release";
+            tokenBtn.disabled = true;
+          }
+
+          if (isTeacher) {
+            actionDiv.style.display = "flex";
+            actionBtn.textContent = "✔️ Одобрить и открыть следующий · Approva e apri il successivo ➔";
+          } else {
+            actionDiv.style.display = "none";
+          }
+        } else {
+          // Blocco Bloccato
+          box.classList.add("locked");
+          badge.className = "badge badge-locked";
+          badge.textContent = "Закрыта · Bloccata";
+          qInput.disabled = true;
+          qInput.placeholder = "In attesa dell'insegnante · Ждём, пока учитель откроет блок...";
+          tokenDiv.style.display = "none";
+
+          if (isTeacher && i === currentActiveStep + 1) {
+            actionDiv.style.display = "flex";
+            actionBtn.textContent = i === 0
+              ? "🔓 Открыть первый блок · Sblocca il primo blocco"
+              : "🔓 Открыть этот блок · Sblocca questo blocco";
+          } else {
+            actionDiv.style.display = "none";
+          }
+        }
+
+        // Evidenzia opzioni
+        optButtons.forEach((b, idx) => {
+          const isSelected = res.selectedOption === idx;
+          b.disabled = i !== currentActiveStep;
+          b.classList.toggle("selected", isSelected);
+          b.classList.toggle("correct", isSelected && idx === sectionsData[i].correctOption);
+          b.classList.toggle("incorrect", isSelected && idx !== sectionsData[i].correctOption);
+        });
+      });
+
+      const lastAccessibleStep = Math.max(0, Math.min(currentActiveStep, sectionsData.length - 1));
+      previousSlideButton.disabled = viewedStep === 0;
+      nextSlideButton.disabled = viewedStep >= lastAccessibleStep;
+
+      const statusText = currentActiveStep >= sectionsData.length
+        ? "Esercizio completato · Упражнение завершено"
+        : viewedStep < currentActiveStep
+          ? "Approvata · Одобрено"
+          : currentActiveStep === viewedStep
+            ? "In corso · Открыто"
+            : "In attesa di apertura · Ожидает открытия";
+      slideProgress.textContent = `Scheda ${viewedStep + 1} di ${sectionsData.length} · ${statusText}`;
+    }
+
+    previousSlideButton.addEventListener("click", () => {
+      if (viewedStep > 0) {
+        viewedStep--;
+        updateUIState();
+      }
+    });
+
+    nextSlideButton.addEventListener("click", () => {
+      const lastAccessibleStep = Math.max(0, Math.min(currentActiveStep, sectionsData.length - 1));
+      if (viewedStep < lastAccessibleStep) {
+        viewedStep++;
+        updateUIState();
+      }
+    });
+
+    updateUIState();
+
+    if (window.firebase) {
+      try {
+        firebase.initializeApp(firebaseConfig);
+        answersRef = firebase.database().ref("esercizi/unita3-scelta-multipla-a");
+
+        answersRef.on("value", (snapshot) => {
+          const data = snapshot.val() || {};
+          const previousActiveStep = currentActiveStep;
+          currentResponsesData = data.responses || {};
+
+          currentActiveStep = (data.activeStep !== undefined) ? data.activeStep : -1;
+          currentWriter = data.currentWriter || null;
+
+          if (currentActiveStep !== previousActiveStep) {
+            viewedStep = Math.max(0, Math.min(currentActiveStep, sectionsData.length - 1));
+          }
+
+          sectionElements.forEach((sec, index) => {
+            const res = currentResponsesData[index] || {};
+            if (currentWriter !== myClientId) {
+              sec.qInput.value = res.formulatedQuestion || "";
+            }
+          });
+
+          updateUIState();
+
+          if (currentActiveStep !== previousActiveStep && sectionElements[currentActiveStep]) {
+            const scrollBehavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+            sectionElements[currentActiveStep].box.scrollIntoView({ behavior: scrollBehavior, block: "center" });
+          }
+        });
+      } catch (e) {
+        console.error("Errore Firebase:", e);
+      }
+    }
+
+    resetButton.addEventListener("click", () => {
+      if (confirm("Сбросить все ответы и снова заблокировать упражнение? · Vuoi azzerare tutte le risposte e bloccare nuovamente l'esercizio?")) {
+        answersRef.set({
+          activeStep: -1,
+          currentWriter: null,
+          responses: {}
+        });
+      }
+    });
+  </script>
+</body>
+</html>
