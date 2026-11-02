@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unità 3 — Inserisci le Domande Mancanti (Esercizio M)</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: 'Segoe UI', Inter, system-ui, -apple-system, sans-serif;
+      --primary: #477755;
+      --primary-light: #edf4ed;
+      --primary-dark: #2f5739;
+      --accent: #bd694d;
+      --bg-main: #f5f1e7;
+      --card-bg: #fffefa;
+      --text: #292d28;
+      --text-muted: #6b7069;
+      --success: #278253;
+      --success-bg: #e1f1e5;
+      --border: #e7e5dc;
+    }
+
+    * { box-sizing: border-box; }
+
+    :focus-visible {
+      outline: 3px solid rgba(189, 105, 77, .55);
+      outline-offset: 3px;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 16px;
+      background:
+        linear-gradient(rgba(250, 248, 241, .88), rgba(250, 248, 241, .88)),
+        url("img/sfondo.jpg") center / cover fixed,
+        radial-gradient(ellipse at 50% -12%, rgba(111, 151, 116, .18), transparent 42%),
+        var(--bg-main);
+      color: var(--text);
+    }
+
+    .container { width: min(100%, 880px); margin: 0 auto; }
+
+    .hero {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      margin: 8px 0 22px;
+      padding: 28px 20px 26px;
+      text-align: center;
+      border: 1px solid rgba(71, 119, 85, .13);
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255, 254, 250, .94), rgba(242, 247, 239, .91));
+      box-shadow: 0 12px 32px rgba(43, 69, 46, .07);
+    }
+    .eyebrow {
+      display: inline-block;
+      color: var(--primary-dark);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      background: #eaf1e8;
+      padding: 8px 15px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      box-shadow: inset 0 0 0 1px rgba(71, 119, 85, .11);
+    }
+    h1 {
+      margin: 4px 0;
+      font-size: clamp(1.9rem, 5vw, 2.65rem);
+      letter-spacing: -.04em;
+      color: var(--primary-dark);
+      line-height: 1.12;
+    }
+    .hero-subtitle {
+      margin: 8px 0 0;
+      color: var(--text-muted);
+      font-size: .98rem;
+    }
+
+    /* Box Istruzioni */
+    .instruction-box {
+      background: #fff;
+      border: 1px solid #d8e5d8;
+      border-left: 5px solid var(--accent);
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 6px 18px rgba(43, 69, 46, .04);
+    }
+    .instruction-title {
+      font-size: .85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .instruction-text {
+      font-size: .98rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    /* Top Controls */
+    .top-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding: 14px 20px;
+      border: 1px solid rgba(71, 119, 85, .13);
+      border-radius: 16px;
+      background: rgba(255, 254, 250, .96);
+      box-shadow: 0 8px 22px rgba(43, 69, 46, .055);
+    }
+    .teacher-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      justify-content: space-between;
+    }
+    .teacher-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .88rem;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+      user-select: none;
+    }
+    .teacher-toggle input { accent-color: var(--primary); }
+
+    .mode-select-box {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+    .mode-select-box.visible { display: flex; }
+    .mode-select-box select {
+      padding: 6px 10px;
+      border: 1.5px solid #d4e1d5;
+      border-radius: 8px;
+      font: inherit;
+      font-size: .85rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      background: #fff;
+    }
+
+    button.reset-btn {
+      padding: 6px 14px;
+      border: 1px solid #fca5a5;
+      border-radius: 10px;
+      background: #fff;
+      color: #dc2626;
+      font: inherit;
+      font-size: .8rem;
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 42px;
+    }
+    button.reset-btn:hover { background: #fef2f2; }
+
+    .card {
+      padding: clamp(20px, 4vw, 32px);
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      background: var(--card-bg);
+      box-shadow: 0 22px 60px rgba(43, 69, 46, .11);
+      margin-bottom: 32px;
+    }
+
+    /* Navigazione Verticale con Frecce */
+    .slide-navigation {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .slide-navigation button {
+      min-height: 42px;
+      padding: 8px 18px;
+      border: 1px solid #d8e5d8;
+      border-radius: 10px;
+      background: #fff;
+      color: var(--primary-dark);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .slide-navigation button:hover:not(:disabled) {
+      background: var(--primary-light);
+      border-color: var(--primary);
+    }
+    .slide-navigation button:disabled {
+      cursor: not-allowed;
+      opacity: .45;
+    }
+    .slide-progress {
+      color: var(--primary-dark);
+      font-size: .95rem;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    #token-mode-section { display: none; }
+    #token-mode-section.active-mode { display: block; }
+
+    #all-students-mode-section { display: none; }
+    #all-students-mode-section.active-mode { display: block; }
+    body.teacher-mode #student-form-card { display: none; }
+
+    .token-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      background: var(--primary-light);
+      border-radius: 14px;
+    }
+    .btn-token {
+      background: var(--primary-dark);
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: .85rem;
+      cursor: pointer;
+      min-height: 42px;
+    }
+    .btn-token.release { background: #bd694d; }
+    .btn-token.busy { background: #e8ebea; color: #5f6863; cursor: not-allowed; }
+
+    /* Layout Scheda con Testo a Sinistra e Immagine a Destra */
+    .slide-item {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 0 6px 18px rgba(43, 69, 46, .03);
+    }
+    .slide-item[hidden] { display: none; }
+
+    .dialogue-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      margin: 0 0 16px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--primary-light);
+    }
+
+    .slide-content-grid {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .dialogue-box {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 18px;
+      background: #faf9f5;
+      border-radius: 16px;
+      border: 1px solid #e8e6dc;
+    }
+
+    .dialogue-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    .dialogue-line.question {
+      color: var(--primary-dark);
+      font-weight: 700;
+    }
+    .dialogue-line.answer {
+      color: var(--text);
+      padding-left: 20px;
+      margin-bottom: 6px;
+    }
+
+    input.q-input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1.5px solid #bdc3c7;
+      border-radius: 8px;
+      font: inherit;
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+      background: #fff;
+      outline: none;
+      transition: all .2s ease;
+    }
+    input.q-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(71, 119, 85, .18);
+    }
+    input.q-input:disabled {
+      background: #f1f5f1;
+      color: #2f5739;
+    }
+    input.q-input.correct {
+      border-color: #278253;
+      background: #e1f1e5;
+      color: #17623c;
+    }
+    input.q-input.incorrect {
+      border-color: #dc2626;
+      background: #fde8e7;
+      color: #991b1b;
+    }
+
+    /* Immagine Personaggio a Destra */
+    .slide-img-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .slide-img {
+      width: 100%;
+      max-width: 280px;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 18px;
+      border: 1px solid #d0e2d2;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    .login-box {
+      margin-bottom: 20px;
+      padding: 16px;
+      background: var(--primary-light);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .login-box label {
+      font-weight: 700;
+      font-size: .9rem;
+      color: var(--primary-dark);
+      white-space: nowrap;
+    }
+    .login-box input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1.5px solid #d4e1d5;
+      border-radius: 10px;
+      font: inherit;
+      font-size: .95rem;
+      outline: none;
+      background: #fff;
+    }
+
+    .save-status {
+      margin: 0 0 18px;
+      padding: 11px 14px;
+      border: 1px solid #b7dfc1;
+      border-radius: 12px;
+      background: var(--success-bg);
+      color: #17623c;
+      font-size: .9rem;
+      font-weight: 700;
+    }
+    .save-status[hidden] { display: none; }
+
+    .answer-feedback {
+      margin: 16px 2px 0;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: .95rem;
+      font-weight: 700;
+    }
+    .answer-feedback.correct { background: var(--success-bg); color: var(--success); }
+    .answer-feedback.incorrect { background: #fde8e7; color: #dc2626; }
+    .answer-feedback[hidden] { display: none; }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(71, 119, 85, .3);
+      margin-top: 18px;
+    }
+
+    .results-section h2 {
+      font-size: 1.3rem;
+      color: var(--primary-dark);
+      margin-bottom: 16px;
+    }
+    .question-responses { margin-bottom: 12px; }
+    .question-responses details {
+      margin-bottom: 10px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      overflow: hidden;
+    }
+    .question-responses summary {
+      padding: 14px 16px;
+      color: var(--primary-dark);
+      font-weight: 800;
+      cursor: pointer;
+      background: var(--primary-light);
+    }
+    .answer-list { padding: 4px 16px 12px; }
+    .answer-row {
+      display: grid;
+      grid-template-columns: minmax(120px, .35fr) 1fr;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: .92rem;
+    }
+    .answer-row:last-child { border-bottom: 0; }
+    .answer-author { font-weight: 700; color: var(--primary-dark); }
+    .answer-text {
+      display: block;
+      padding: 8px 10px;
+      border-radius: 8px;
+      overflow-wrap: anywhere;
+      font-weight: 600;
+    }
+    .answer-text.review-approved { background: var(--success-bg); }
+    .answer-text.review-rejected { background: #fde8e7; }
+    .answer-text.auto-correct { background: var(--success-bg); }
+    .answer-text.auto-incorrect { background: #fde8e7; }
+    .answer-cell { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .answer-cell .answer-text { flex: 1; min-width: 0; }
+    .answer-review-controls { display: flex; flex-shrink: 0; gap: 2px; }
+    .answer-review-btn {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border: 0;
+      border-radius: 5px;
+      background: transparent;
+      font-size: 1.1rem;
+      font-weight: 800;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .answer-review-btn.approve { color: var(--success); }
+    .answer-review-btn.reject { color: #dc2626; }
+    .answer-review-btn:hover { background: #f1f3ef; }
+    .answer-review-btn[aria-pressed="true"] { background: #f1f3ef; }
+
+    @media (max-width: 720px) {
+      body { padding: 16px 8px; }
+      .slide-item { padding: 14px; }
+      .slide-navigation { flex-direction: column; gap: 8px; }
+      .slide-content-grid { grid-template-columns: 1fr; }
+      .slide-img { width: 100%; max-width: 240px; margin: 0 auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <header class="hero">
+      <span class="eyebrow">Unità 3 · Domande e Conversazione</span>
+      <h1>Inserisci le Domande Mancanti</h1>
+      <p class="hero-subtitle">Дополните диалог пропущенными вопросами!</p>
+    </header>
+
+    <div class="instruction-box">
+      <div class="instruction-title">💡 Задание · Esercizio M:</div>
+      <div class="instruction-text">
+        👉 <strong>Прочитайте ответы и напишите подходящие вопросы:</strong><br>
+        <small style="color: var(--text-muted);">Используйте клавиши <strong>↑ (Вверх)</strong> и <strong>↓ (Вниз)</strong> на клавиатуре для перехода между диалогами.</small>
+      </div>
+    </div>
+
+    <!-- Barra Controlli Superiore -->
+    <div id="status" class="top-controls">
+      <div class="teacher-controls">
+        <label class="teacher-toggle">
+          <input type="checkbox" id="teacher-mode">
+          Режим учителя · Modalità insegnante
+        </label>
+
+        <div class="mode-select-box" id="mode-selector-container">
+          <label for="work-mode">Режим работы:</label>
+          <select id="work-mode">
+            <option value="token">Uno alla volta · По одному</option>
+            <option value="all">Tutti insieme · Все вместе</option>
+          </select>
+        </div>
+
+        <button id="reset" class="reset-btn" type="button" style="display:none;">⚠️ Сбросить · Azzera</button>
+      </div>
+    </div>
+
+    <!-- MODALITÀ 1: UNO ALLA VOLTA -->
+    <section id="token-mode-section" class="card active-mode">
+      <div class="token-bar">
+        <span id="token-status-text" style="font-weight:700; color:var(--primary-dark);">Открыто для работы</span>
+        <button id="btn-take-token" class="btn-token" type="button">✋ Взять слово · Prendi la parola</button>
+      </div>
+
+      <nav class="slide-navigation" aria-label="Navigazione schede">
+        <button id="prev-token-slide" type="button">↑ Precedente</button>
+        <span id="progress-token-slide" class="slide-progress"></span>
+        <button id="next-token-slide" type="button">↓ Successiva</button>
+      </nav>
+
+      <div id="token-slides-container"></div>
+    </section>
+
+    <!-- MODALITÀ 2: TUTTI INSIEME -->
+    <section id="all-students-mode-section">
+      <div class="card" id="student-form-card">
+        <div class="login-box">
+          <label for="student-name-input">Ваше имя (Имя Фамилия):</label>
+          <input type="text" id="student-name-input" placeholder="Введите ваше имя...">
+        </div>
+
+        <p id="save-status" class="save-status" role="status" aria-live="polite" hidden></p>
+
+        <nav class="slide-navigation" aria-label="Navigazione schede">
+          <button id="prev-student-slide" type="button">↑ Precedente</button>
+          <span id="progress-student-slide" class="slide-progress"></span>
+          <button id="next-student-slide" type="button">↓ Successiva</button>
+        </nav>
+
+        <div id="student-slides-container"></div>
+
+        <button type="button" id="btn-submit-all" class="btn-submit">📤 Отправить решение · Invia la risposta</button>
+      </div>
+
+      <div class="results-section">
+        <h2>📋 Ответы студентов · Risposte degli studenti</h2>
+        <div id="responses-list">
+          <p style="color: var(--text-muted); font-size: .9rem;">Пока никто не отправил ответы...</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "INSERISCI_API_KEY",
+      authDomain: "esercizi-parlo-italiano.firebaseapp.com",
+      databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "esercizi-parlo-italiano",
+      appId: "INSERISCI_APP_ID"
+    };
+
+    // 6 Dialoghi dell'Esercizio M con risposte attese (più varianti valide) e immagini m_01.png...m_06.png
+    const dialogsData = [
+      {
+        id: "m1",
+        num: "1.",
+        title: "Dialogo 1 — Elena",
+        img: "img/m_01.png",
+        qa: [
+          { validQ: ["Come ti chiami?", "Come si chiama?"], ans: "Mi chiamo Elena." },
+          { validQ: ["Di dove sei?", "Di dov'è?"], ans: "Sono di Napoli." },
+          { validQ: ["Che lavoro fai?", "Che lavoro fa?", "Cosa fai?"], ans: "Sono studentessa." },
+          { validQ: ["Quanti anni hai?", "Quanti anni ha?"], ans: "Ho ventuno anni." }
+        ]
+      },
+      {
+        id: "m2",
+        num: "2.",
+        title: "Dialogo 2 — Stefano Rossi",
+        img: "img/m_02.png",
+        qa: [
+          { validQ: ["Come ti chiami?", "Come si chiama?"], ans: "Mi chiamo Stefano Rossi." },
+          { validQ: ["Che lavoro fai?", "Che lavoro fa?", "Cosa fai?"], ans: "Sono avvocato." },
+          { validQ: ["Di dove sei?", "Di dov'è?"], ans: "Sono di Milano." },
+          { validQ: ["Che lingue parli?", "Che lingue parla?", "Quali lingue parli?"], ans: "Parlo inglese e francese." }
+        ]
+      },
+      {
+        id: "m3",
+        num: "3.",
+        title: "Dialogo 3 — Alessio",
+        img: "img/m_03.png",
+        qa: [
+          { validQ: ["Come ti chiami?", "Come si chiama?"], ans: "Mi chiamo Alessio." },
+          { validQ: ["Quanti anni hai?", "Quanti anni ha?"], ans: "Ho ventisette anni." },
+          { validQ: ["Che lavoro fai?", "Che lavoro fa?", "Cosa fai?"], ans: "Sono cuoco." },
+          { validQ: ["Di dove sei?", "Di dov'è?"], ans: "Sono di Roma." },
+          { validQ: ["Com'è Roma?", "Come è Roma?"], ans: "Roma è bella, ma in estate è troppo calda." }
+        ]
+      },
+      {
+        id: "m4",
+        num: "4.",
+        title: "Dialogo 4 — Antonella Rossi",
+        img: "img/m_04.png",
+        qa: [
+          { validQ: ["Come ti chiami?", "Come si chiama?"], ans: "Mi chiamo Antonella Rossi." },
+          { validQ: ["Che lavoro fai?", "Che lavoro fa?", "Cosa fai?"], ans: "Sono insegnante." },
+          { validQ: ["Dove abiti?", "Dove abita?"], ans: "Abito a Firenze." },
+          { validQ: ["Quanti anni hai?", "Quanti anni ha?"], ans: "Ho trentotto anni." }
+        ]
+      },
+      {
+        id: "m5",
+        num: "5.",
+        title: "Dialogo 5 — Aisha",
+        img: "img/m_05.png",
+        qa: [
+          { validQ: ["Come ti chiami?", "Come si chiama?"], ans: "Mi chiamo Aisha." },
+          { validQ: ["Quanti anni hai?", "Quanti anni ha?"], ans: "Ho ventotto anni." },
+          { validQ: ["Che lavoro fai?", "Che lavoro fa?", "Cosa fai?"], ans: "Sono studentessa." },
+          { validQ: ["Di dove sei?", "Di dov'è?"], ans: "Sono di Almaty." },
+          { validQ: ["Com'è Almaty?", "Come è Almaty?"], ans: "Almaty è bellissima, ma è molto fredda d'inverno." }
+        ]
+      },
+      {
+        id: "m6",
+        num: "6.",
+        title: "Dialogo 6 — Vladimir Ivanov",
+        img: "img/m_06.png",
+        qa: [
+          { validQ: ["Come ti chiami?", "Come si chiama?"], ans: "Mi chiamo Vladimir Ivanov." },
+          { validQ: ["Che lavoro fai?", "Che lavoro fa?", "Cosa fai?"], ans: "Sono ingegnere informatico." },
+          { validQ: ["Quanti anni hai?", "Quanti anni ha?"], ans: "Ho trentanove anni." },
+          { validQ: ["Dove abiti?", "Dove abita?"], ans: "Abito a San Pietroburgo." }
+        ]
+      }
+    ];
+
+    function normalizeText(str) {
+      return String(str || "")
+        .toLocaleLowerCase("it")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^\p{L}\p{N}\s]/gu, "")
+        .trim();
+    }
+
+    function checkQuestion(userInput, validQuestions) {
+      const normInput = normalizeText(userInput);
+      return validQuestions.some(q => normalizeText(q) === normInput);
+    }
+
+    function createEmptyState() {
+      const state = {};
+      dialogsData.forEach(d => {
+        state[d.id] = new Array(d.qa.length).fill("");
+      });
+      return state;
+    }
+
+    let studentState = createEmptyState();
+    let studentSubmitted = false;
+    let tokenState = createEmptyState();
+    let activeTokenSlide = 0;
+    let activeStudentSlide = 0;
+
+    const myClientId = "user_" + Math.random().toString(36).substring(2, 9);
+    const teacherToggle = document.getElementById("teacher-mode");
+    const workModeSelect = document.getElementById("work-mode");
+    const modeSelectorContainer = document.getElementById("mode-selector-container");
+    const resetButton = document.getElementById("reset");
+
+    const tokenSection = document.getElementById("token-mode-section");
+    const allSection = document.getElementById("all-students-mode-section");
+    const studentNameInput = document.getElementById("student-name-input");
+    const saveStatus = document.getElementById("save-status");
+    const responsesList = document.getElementById("responses-list");
+
+    const btnTakeToken = document.getElementById("btn-take-token");
+    const tokenStatusText = document.getElementById("token-status-text");
+
+    if (localStorage.getItem("parlo_student_name")) {
+      studentNameInput.value = localStorage.getItem("parlo_student_name");
+    }
+
+    // Costruzione della slide
+    function buildSlideItem(dialog, isTokenMode, canEdit, currentState, onInputChange) {
+      const box = document.createElement("div");
+      box.className = "slide-item";
+
+      const title = document.createElement("div");
+      title.className = "dialogue-title";
+      title.textContent = `${dialog.num} ${dialog.title}`;
+
+      const gridBox = document.createElement("div");
+      gridBox.className = "slide-content-grid";
+
+      const dialogueBox = document.createElement("div");
+      dialogueBox.className = "dialogue-box";
+
+      const currentAnswers = currentState[dialog.id] || [];
+
+      dialog.qa.forEach((pair, idx) => {
+        // Riga Domanda
+        const lineQ = document.createElement("div");
+        lineQ.className = "dialogue-line question";
+        lineQ.innerHTML = `<span>—</span>`;
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.className = "q-input";
+        input.placeholder = "Scrivi la domanda qui...";
+        input.value = currentAnswers[idx] || "";
+        input.disabled = !canEdit;
+
+        if (!isTokenMode && studentSubmitted && currentAnswers[idx].trim()) {
+          const isOk = checkQuestion(currentAnswers[idx], pair.validQ);
+          input.classList.add(isOk ? "correct" : "incorrect");
+        }
+
+        input.addEventListener("input", (e) => {
+          onInputChange(idx, e.target.value);
+        });
+
+        lineQ.appendChild(input);
+
+        // Riga Risposta
+        const lineA = document.createElement("div");
+        lineA.className = "dialogue-line answer";
+        lineA.innerHTML = `<span>— ${pair.ans}</span>`;
+
+        dialogueBox.append(lineQ, lineA);
+      });
+
+      gridBox.appendChild(dialogueBox);
+
+      // Immagine Personaggio a destra
+      if (dialog.img) {
+        const imgContainer = document.createElement("div");
+        imgContainer.className = "slide-img-container";
+
+        const img = document.createElement("img");
+        img.src = dialog.img;
+        img.alt = `Illustrazione per ${dialog.title}`;
+        img.className = "slide-img";
+        img.onerror = () => imgContainer.remove();
+
+        imgContainer.appendChild(img);
+        gridBox.appendChild(imgContainer);
+      }
+
+      const feedback = document.createElement("p");
+      feedback.className = "answer-feedback";
+      feedback.setAttribute("role", "status");
+      feedback.hidden = true;
+
+      if (!isTokenMode && studentSubmitted) {
+        const userQs = currentState[dialog.id] || [];
+        const correctCount = dialog.qa.filter((pair, i) => checkQuestion(userQs[i], pair.validQ)).length;
+        const total = dialog.qa.length;
+
+        if (correctCount === total) {
+          feedback.textContent = `✓ Perfetto! Tutte le domande sono corrette (${correctCount}/${total}).`;
+          feedback.className = "answer-feedback correct";
+        } else {
+          feedback.textContent = `✕ Hai formulato correttamente ${correctCount} su ${total} domande. Controlla quelle evidenziate in rosso.`;
+          feedback.className = "answer-feedback incorrect";
+        }
+        feedback.hidden = false;
+      }
+
+      box.append(title, gridBox, feedback);
+      return box;
+    }
+
+    function setupNavigation(prevBtnId, nextBtnId, progressId, getCurrentSlide, setCurrentSlide, total) {
+      const prevBtn = document.getElementById(prevBtnId);
+      const nextBtn = document.getElementById(nextBtnId);
+      const progressSpan = document.getElementById(progressId);
+
+      function updateNav() {
+        const current = getCurrentSlide();
+        prevBtn.disabled = current === 0;
+        nextBtn.disabled = current === total - 1;
+        progressSpan.textContent = `Dialogo ${current + 1} di ${total}`;
+      }
+
+      prevBtn.onclick = () => {
+        if (getCurrentSlide() > 0) {
+          setCurrentSlide(getCurrentSlide() - 1);
+          updateNav();
+          renderStudentSlides();
+          renderTokenSlides();
+        }
+      };
+
+      nextBtn.onclick = () => {
+        if (getCurrentSlide() < total - 1) {
+          setCurrentSlide(getCurrentSlide() + 1);
+          updateNav();
+          renderStudentSlides();
+          renderTokenSlides();
+        }
+      };
+
+      updateNav();
+    }
+
+    // Supporto Tasti Freccia Su / Giù da tastiera
+    window.addEventListener("keydown", (e) => {
+      // Ignora se lo studente sta digitando in un campo input
+      if (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA") return;
+
+      if (currentWorkMode === "token") {
+        if (e.key === "ArrowUp" && activeTokenSlide > 0) {
+          activeTokenSlide--;
+          document.getElementById("prev-token-slide").click();
+        } else if (e.key === "ArrowDown" && activeTokenSlide < dialogsData.length - 1) {
+          activeTokenSlide++;
+          document.getElementById("next-token-slide").click();
+        }
+      } else {
+        if (e.key === "ArrowUp" && activeStudentSlide > 0) {
+          activeStudentSlide--;
+          document.getElementById("prev-student-slide").click();
+        } else if (e.key === "ArrowDown" && activeStudentSlide < dialogsData.length - 1) {
+          activeStudentSlide++;
+          document.getElementById("next-student-slide").click();
+        }
+      }
+    });
+
+    function renderStudentSlides() {
+      const container = document.getElementById("student-slides-container");
+      container.replaceChildren();
+
+      dialogsData.forEach((dialog, idx) => {
+        const box = buildSlideItem(dialog, false, true, studentState, (qIdx, val) => {
+          if (!studentState[dialog.id]) studentState[dialog.id] = [];
+          studentState[dialog.id][qIdx] = val;
+          studentSubmitted = false;
+          saveStatus.hidden = true;
+        });
+        box.hidden = idx !== activeStudentSlide;
+        container.appendChild(box);
+      });
+    }
+
+    function renderTokenSlides() {
+      const container = document.getElementById("token-slides-container");
+      const canEdit = currentWriter === myClientId;
+
+      if (canEdit && container.contains(document.activeElement)) return;
+
+      container.replaceChildren();
+
+      dialogsData.forEach((dialog, idx) => {
+        const box = buildSlideItem(dialog, true, canEdit, tokenState, (qIdx, val) => {
+          if (!tokenState[dialog.id]) tokenState[dialog.id] = [];
+          tokenState[dialog.id][qIdx] = val;
+          if (answersRef && currentWriter === myClientId) {
+            answersRef.child("tokenData").child("answers").set(tokenState);
+          }
+        });
+        box.hidden = idx !== activeTokenSlide;
+        container.appendChild(box);
+      });
+    }
+
+    let answersRef = null;
+    let isTeacher = false;
+    let currentWorkMode = "token";
+    let currentWriter = null;
+    let allResponses = {};
+
+    teacherToggle.addEventListener("change", (e) => {
+      isTeacher = e.target.checked;
+      document.body.classList.toggle("teacher-mode", isTeacher);
+      modeSelectorContainer.classList.toggle("visible", isTeacher);
+      resetButton.style.display = isTeacher ? "inline-block" : "none";
+      updateUIState();
+    });
+
+    workModeSelect.addEventListener("change", (e) => {
+      if (answersRef && isTeacher) {
+        answersRef.child("workMode").set(e.target.value);
+      }
+    });
+
+    btnTakeToken.onclick = () => {
+      if (answersRef) {
+        if (currentWriter === myClientId) {
+          answersRef.child("tokenData").child("currentWriter").set(null);
+        } else if (!currentWriter) {
+          answersRef.child("tokenData").child("currentWriter").set(myClientId);
+        }
+      }
+    };
+
+    if (window.firebase) {
+      try {
+        firebase.initializeApp(firebaseConfig);
+        answersRef = firebase.database().ref("esercizi/unita3-dialoghi-domande-m");
+
+        answersRef.on("value", (snapshot) => {
+          const data = snapshot.val() || {};
+          currentWorkMode = data.workMode || "token";
+          workModeSelect.value = currentWorkMode;
+
+          const tData = data.tokenData || {};
+          currentWriter = tData.currentWriter || null;
+          if (tData.answers) {
+            tokenState = tData.answers;
+          }
+
+          allResponses = data.allStudentsData || {};
+          updateUIState();
+        });
+      } catch (e) {
+        console.error("Errore Firebase:", e);
+      }
+    }
+
+    document.getElementById("btn-submit-all").addEventListener("click", async () => {
+      const name = studentNameInput.value.trim();
+      if (!name) {
+        alert("Пожалуйста, введите ваше имя! · Inserisci il tuo nome!");
+        studentNameInput.focus();
+        return;
+      }
+      if (!answersRef) {
+        alert("Нет соединения с базой данных. · Connessione non disponibile.");
+        return;
+      }
+
+      localStorage.setItem("parlo_student_name", name);
+      const studentId = name.replace(/[.#$\/\[\]]/g, "_");
+      const studentRef = answersRef.child("allStudentsData").child("students").child(studentId);
+
+      try {
+        await studentRef.update({
+          name,
+          answers: studentState,
+          timestamp: Date.now()
+        });
+
+        studentSubmitted = true;
+        renderStudentSlides();
+        saveStatus.textContent = "✅ Ответ отправлен учителю! · Risposta inviata all’insegnante!";
+        saveStatus.hidden = false;
+      } catch (err) {
+        alert("Ошибка при отправке · Errore durante l'invio.");
+      }
+    });
+
+    function updateUIState() {
+      if (currentWorkMode === "token") {
+        tokenSection.classList.add("active-mode");
+        allSection.classList.remove("active-mode");
+
+        if (!currentWriter) {
+          tokenStatusText.textContent = "Открыто · In corso";
+          btnTakeToken.textContent = "✋ Взять слово · Prendi la parola";
+          btnTakeToken.className = "btn-token";
+          btnTakeToken.disabled = false;
+        } else if (currentWriter === myClientId) {
+          tokenStatusText.textContent = "Вы редактируете · Stai modificando";
+          btnTakeToken.textContent = "✔ Передать слово · Lascia la parola";
+          btnTakeToken.className = "btn-token release";
+          btnTakeToken.disabled = false;
+        } else {
+          tokenStatusText.textContent = "🔒 Пишет одноклассник · Compagno scrive";
+          btnTakeToken.textContent = "🔒 Пишет одноклассник · Compagno scrive";
+          btnTakeToken.className = "btn-token busy";
+          btnTakeToken.disabled = true;
+        }
+
+        renderTokenSlides();
+      } else {
+        tokenSection.classList.remove("active-mode");
+        allSection.classList.add("active-mode");
+        renderStudentSlides();
+        renderResponsesAllMode();
+      }
+    }
+
+    function renderResponsesAllMode() {
+      responsesList.replaceChildren();
+      const studentsData = allResponses.students || {};
+      const studentEntries = Object.entries(studentsData);
+
+      if (studentEntries.length === 0) {
+        const emptyMessage = document.createElement("p");
+        emptyMessage.style.color = "var(--text-muted)";
+        emptyMessage.style.fontSize = ".9rem";
+        emptyMessage.textContent = "Пока никто не отправил ответы...";
+        responsesList.appendChild(emptyMessage);
+        return;
+      }
+
+      const groupedAnswers = document.createElement("div");
+      groupedAnswers.className = "question-responses";
+
+      dialogsData.forEach((dialog, index) => {
+        const details = document.createElement("details");
+        if (index === 0) details.open = true;
+
+        const summary = document.createElement("summary");
+        summary.textContent = `${dialog.num} ${dialog.title}`;
+        details.appendChild(summary);
+
+        const answerList = document.createElement("div");
+        answerList.className = "answer-list";
+
+        studentEntries.forEach(([studentId, sData]) => {
+          const row = document.createElement("div");
+          row.className = "answer-row";
+
+          const author = document.createElement("span");
+          author.className = "answer-author";
+          author.textContent = sData.name || "Studente";
+
+          const userAnswers = sData.answers?.[dialog.id] || [];
+          const formattedAnswers = Array.isArray(userAnswers)
+            ? userAnswers.map((a, i) => a.trim() ? `${i + 1}) ${a}` : `${i + 1}) —`).join(" | ")
+            : "—";
+
+          const isFullyCorrect = dialog.qa.every((pair, i) => checkQuestion(userAnswers[i], pair.validQ));
+
+          const answer = document.createElement("span");
+          answer.className = "answer-text";
+          answer.textContent = formattedAnswers;
+
+          const reviewStatus = sData.reviews?.[dialog.id];
+          if (reviewStatus === "approved") {
+            answer.classList.add("review-approved");
+          } else if (reviewStatus === "rejected") {
+            answer.classList.add("review-rejected");
+          } else if (formattedAnswers !== "—") {
+            answer.classList.add(isFullyCorrect ? "auto-correct" : "auto-incorrect");
+          }
+
+          const answerCell = document.createElement("div");
+          answerCell.className = "answer-cell";
+          answerCell.appendChild(answer);
+
+          if (isTeacher && formattedAnswers !== "—") {
+            const controls = document.createElement("div");
+            controls.className = "answer-review-controls";
+
+            const approveButton = document.createElement("button");
+            approveButton.type = "button";
+            approveButton.className = "answer-review-btn approve";
+            approveButton.textContent = "✓";
+            approveButton.setAttribute("aria-label", `Approva la risposta di ${sData.name || "Studente"}`);
+            approveButton.setAttribute("aria-pressed", String(reviewStatus === "approved"));
+            approveButton.onclick = () => {
+              const nextValue = reviewStatus === "approved" ? null : "approved";
+              answersRef.child("allStudentsData").child("students").child(studentId).child("reviews").child(dialog.id).set(nextValue);
+            };
+
+            const rejectButton = document.createElement("button");
+            rejectButton.type = "button";
+            rejectButton.className = "answer-review-btn reject";
+            rejectButton.textContent = "✕";
+            rejectButton.setAttribute("aria-label", `Non approvare la risposta di ${sData.name || "Studente"}`);
+            rejectButton.setAttribute("aria-pressed", String(reviewStatus === "rejected"));
+            rejectButton.onclick = () => {
+              const nextValue = reviewStatus === "rejected" ? null : "rejected";
+              answersRef.child("allStudentsData").child("students").child(studentId).child("reviews").child(dialog.id).set(nextValue);
+            };
+
+            controls.append(approveButton, rejectButton);
+            answerCell.appendChild(controls);
+          }
+
+          row.append(author, answerCell);
+          answerList.appendChild(row);
+        });
+
+        details.appendChild(answerList);
+        groupedAnswers.appendChild(details);
+      });
+
+      responsesList.appendChild(groupedAnswers);
+    }
+
+    resetButton.addEventListener("click", () => {
+      if (confirm("Сбросить все ответы? · Azzera tutte le risposte?")) {
+        answersRef.set({
+          workMode: currentWorkMode,
+          tokenData: { currentWriter: null, answers: createEmptyState() },
+          allStudentsData: {}
+        });
+      }
+    });
+
+    setupNavigation("prev-token-slide", "next-token-slide", "progress-token-slide", () => activeTokenSlide, (val) => activeTokenSlide = val, dialogsData.length);
+    setupNavigation("prev-student-slide", "next-student-slide", "progress-student-slide", () => activeStudentSlide, (val) => activeStudentSlide = val, dialogsData.length);
+
+    renderStudentSlides();
+    renderTokenSlides();
+  </script>
+</body>
+</html>
