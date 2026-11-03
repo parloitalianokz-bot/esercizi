@@ -702,7 +702,8 @@
     let studentQuestionState = {};
     let studentSubmitted = false;
     let tokenState = createEmptyState();
-    let tokenQuestionState = {};
+    let tokenQuestionState = Object.fromEntries(questionsData.map(item => [item.id, ""]));
+    const tokenQuestionSaveTimers = new Map();
     let activeTokenSlide = 0;
     let activeStudentSlide = 0;
 
@@ -752,12 +753,10 @@
         questionInput.value = tokenQuestionState[item.id] || "";
         questionInput.disabled = !canEdit;
         questionInput.addEventListener("input", () => {
-          tokenQuestionState[item.id] = questionInput.value;
+          scheduleTokenQuestionSave(item.id, questionInput.value);
         });
         questionInput.addEventListener("blur", () => {
-          if (answersRef && currentWriter === myClientId) {
-            answersRef.child("tokenData").child("questionFormulations").child(item.id).set(questionInput.value);
-          }
+          flushTokenQuestionSave(item.id);
         });
 
         box.append(questionLabel, questionInput);
@@ -848,6 +847,7 @@
 
       prevBtn.onclick = () => {
         if (getCurrentSlide() > 0) {
+          if (prevBtnId === "prev-token-slide") flushTokenQuestionSaves();
           setCurrentSlide(getCurrentSlide() - 1);
           updateNav();
           renderStudentSlides();
@@ -857,6 +857,7 @@
 
       nextBtn.onclick = () => {
         if (getCurrentSlide() < total - 1) {
+          if (nextBtnId === "next-token-slide") flushTokenQuestionSaves();
           setCurrentSlide(getCurrentSlide() + 1);
           updateNav();
           renderStudentSlides();
@@ -930,6 +931,33 @@
     let currentWriter = null;
     let allResponses = {};
 
+    function saveTokenQuestionFormulation(questionId) {
+      if (answersRef && currentWriter === myClientId) {
+        answersRef.child("tokenData").child("questionFormulations").child(questionId).set(tokenQuestionState[questionId]);
+      }
+    }
+
+    function scheduleTokenQuestionSave(questionId, value) {
+      tokenQuestionState[questionId] = value;
+      clearTimeout(tokenQuestionSaveTimers.get(questionId));
+      tokenQuestionSaveTimers.set(questionId, setTimeout(() => {
+        tokenQuestionSaveTimers.delete(questionId);
+        saveTokenQuestionFormulation(questionId);
+      }, 350));
+    }
+
+    function flushTokenQuestionSave(questionId) {
+      const timer = tokenQuestionSaveTimers.get(questionId);
+      if (timer === undefined) return;
+      clearTimeout(timer);
+      tokenQuestionSaveTimers.delete(questionId);
+      saveTokenQuestionFormulation(questionId);
+    }
+
+    function flushTokenQuestionSaves() {
+      Array.from(tokenQuestionSaveTimers.keys()).forEach(flushTokenQuestionSave);
+    }
+
     teacherToggle.addEventListener("change", (e) => {
       isTeacher = e.target.checked;
       document.body.classList.toggle("teacher-mode", isTeacher);
@@ -947,6 +975,7 @@
     btnTakeToken.onclick = () => {
       if (answersRef) {
         if (currentWriter === myClientId) {
+          flushTokenQuestionSaves();
           answersRef.child("tokenData").child("currentWriter").set(null);
         } else if (!currentWriter) {
           answersRef.child("tokenData").child("currentWriter").set(myClientId);
@@ -969,7 +998,11 @@
           if (tData.answers) {
             tokenState = tData.answers;
           }
-          tokenQuestionState = tData.questionFormulations || {};
+          const formulations = tData.questionFormulations || {};
+          tokenQuestionState = Object.fromEntries(questionsData.map(item => [
+            item.id,
+            typeof formulations[item.id] === "string" ? formulations[item.id] : ""
+          ]));
 
           allResponses = data.allStudentsData || {};
           updateUIState();
@@ -1034,7 +1067,9 @@
           btnTakeToken.disabled = true;
         }
 
-        renderTokenSlides();
+        const editingTokenQuestion = document.activeElement?.classList.contains("formulated-question-input")
+          && currentWriter === myClientId;
+        if (!editingTokenQuestion) renderTokenSlides();
       } else {
         tokenSection.classList.remove("active-mode");
         allSection.classList.add("active-mode");
