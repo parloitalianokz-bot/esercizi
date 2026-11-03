@@ -33,14 +33,41 @@
       margin: 0;
       padding: 32px 16px;
       background:
-        linear-gradient(rgba(250, 248, 241, .88), rgba(250, 248, 241, .88)),
-        url("img/sfondo.jpg") center / cover fixed,
+        linear-gradient(rgba(250, 248, 241, .78), rgba(250, 248, 241, .78)),
+        url("img/sfondo-funerale-augusto.jpg") center calc(50% - var(--background-offset, 0px)) / cover fixed,
         radial-gradient(ellipse at 50% -12%, rgba(111, 151, 116, .18), transparent 42%),
         var(--bg-main);
       color: var(--text);
     }
 
     .container { width: min(100%, 880px); margin: 0 auto; }
+
+    .home-navigation {
+      display: flex;
+      justify-content: flex-start;
+      margin: 0 0 12px;
+    }
+    .home-navigation a,
+    .exercise-navigation a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 42px;
+      padding: 8px 16px;
+      border: 1px solid #d8e5d8;
+      border-radius: 10px;
+      background: rgba(255, 254, 250, .94);
+      color: var(--primary-dark);
+      font-weight: 700;
+      text-decoration: none;
+      transition: background .2s, border-color .2s, transform .2s;
+    }
+    .home-navigation a:hover,
+    .exercise-navigation a:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+    .exercise-navigation { display: flex; justify-content: flex-end; margin: 0 0 24px; }
 
     .hero {
       position: relative;
@@ -352,6 +379,10 @@
 <body>
 
   <main class="container">
+    <nav class="home-navigation" aria-label="Navigazione principale">
+      <a href="index.html">← Torna all’inizio</a>
+    </nav>
+
     <header class="hero">
       <span class="eyebrow">Unità 46 · Produzione Orale</span>
       <h1>Пересказ текста</h1>
@@ -387,7 +418,7 @@
       </div>
 
       <div class="token-bar">
-        <span id="token-status-text" style="font-weight:700; color:var(--primary-dark);">Открыто для работы</span>
+        <span id="token-status-text" style="font-weight:700; color:var(--primary-dark);"></span>
         <button id="btn-take-token" class="btn-token" type="button">✋ Взять слово · Prendi la parola</button>
       </div>
 
@@ -416,9 +447,9 @@
       </div>
     </section>
 
-    <p style="margin: 0 0 24px; text-align: center;">
-      <a href="es_e.html" style="display: inline-block; padding: 12px 20px; border-radius: 12px; background: var(--primary-dark); color: #fff; font-weight: 700; text-decoration: none;">Vai all’esercizio E →</a>
-    </p>
+    <nav class="exercise-navigation" aria-label="Prossimo esercizio">
+      <a href="es_e.html">Vai all’esercizio E →</a>
+    </nav>
   </main>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -591,7 +622,7 @@
 
           // Gestione UI Token
           if (!currentWriter) {
-            tokenStatusText.textContent = "Открыто · In corso";
+            tokenStatusText.textContent = "";
             btnTakeToken.textContent = "✋ Взять слово · Prendi la parola";
             btnTakeToken.className = "btn-token";
             btnTakeToken.disabled = false;
@@ -718,6 +749,22 @@
         });
       }
     });
+
+    let backgroundUpdatePending = false;
+    function updateBackgroundParallax() {
+      if (backgroundUpdatePending) return;
+      backgroundUpdatePending = true;
+      requestAnimationFrame(() => {
+        const offset = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? 0
+          : Math.min(window.scrollY * 0.12, 180);
+        document.body.style.setProperty("--background-offset", `${offset}px`);
+        backgroundUpdatePending = false;
+      });
+    }
+
+    window.addEventListener("scroll", updateBackgroundParallax, { passive: true });
+    updateBackgroundParallax();
   </script>
 </body>
 </html>
