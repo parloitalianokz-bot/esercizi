@@ -33,14 +33,37 @@
       margin: 0;
       padding: 32px 16px;
       background:
-        linear-gradient(rgba(250, 248, 241, .88), rgba(250, 248, 241, .88)),
-        url("img/sfondo.jpg") center / cover fixed,
+        linear-gradient(rgba(250, 248, 241, .78), rgba(250, 248, 241, .78)),
+        url("img/sfondo-funerale-augusto.jpg") center calc(50% - var(--background-offset, 0px)) / cover fixed,
         radial-gradient(ellipse at 50% -12%, rgba(111, 151, 116, .18), transparent 42%),
         var(--bg-main);
       color: var(--text);
     }
 
     .container { width: min(100%, 880px); margin: 0 auto; }
+
+    .home-navigation {
+      display: flex;
+      justify-content: flex-start;
+      margin: 0 0 12px;
+    }
+    .home-navigation a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 42px;
+      padding: 8px 16px;
+      border: 1px solid #d8e5d8;
+      border-radius: 10px;
+      background: rgba(255, 254, 250, .94);
+      color: var(--primary-dark);
+      font-weight: 700;
+      text-decoration: none;
+      transition: background .2s, border-color .2s;
+    }
+    .home-navigation a:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+    }
 
     .hero {
       position: relative;
@@ -215,11 +238,12 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      margin-bottom: 20px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid var(--border);
+      margin-top: 20px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
     }
-    .slide-navigation button {
+    .slide-navigation button,
+    .slide-navigation a {
       min-height: 42px;
       padding: 8px 18px;
       border: 1px solid #d8e5d8;
@@ -228,10 +252,14 @@
       color: var(--primary-dark);
       font: inherit;
       font-weight: 700;
+      text-decoration: none;
       cursor: pointer;
       transition: all .2s;
     }
-    .slide-navigation button:hover:not(:disabled) {
+    .slide-navigation a { display: inline-flex; align-items: center; }
+    .slide-navigation a[hidden] { display: none; }
+    .slide-navigation button:hover:not(:disabled),
+    .slide-navigation a:hover {
       background: var(--primary-light);
       border-color: var(--primary);
     }
@@ -420,7 +448,7 @@
     .exercise-navigation {
       display: flex;
       justify-content: flex-end;
-      margin: 0 0 24px;
+      margin: 8px 0 0;
     }
     .exercise-navigation a {
       display: inline-flex;
@@ -515,32 +543,21 @@
 <body>
 
   <main class="container">
+    <nav class="home-navigation" aria-label="Navigazione principale">
+      <a href="index.html">← Torna all’inizio</a>
+    </nav>
+
     <header class="hero">
       <span class="eyebrow">Unità 46 · Lettura e Comprensione</span>
       <h1>Il funerale dello zio Augusto</h1>
       <p class="hero-subtitle">Leggete il testo e scegliete la risposta corretta!</p>
     </header>
 
-    <!-- Testo del Racconto -->
-    <details class="reading-box">
-      <summary><h2>📖 Il funerale dello zio Augusto</h2></summary>
-      <p>Quando è mancato il povero zio Augusto, al suo funerale sono venuti tutti i parenti, persino quelli che abitano in altre città. È proprio vero che le famiglie si riuniscono al completo solo per due occasioni: i matrimoni e i funerali.</p>
-      <p>Sono arrivate anche la zia Berta da Bergamo, la zia Gemma da Genova e la zia Camilla da Canicattì. La più giovane di loro ha ottantanove anni. Naturalmente è venuta anche la zia Albina; ma per lei è stato più facile perché abita nella nostra città, proprio a due passi dal cimitero.</p>
-      <p>Le zie erano molto allegre al funerale. Non si vedevano dal funerale dello zio Gustavo e erano contente di rivedersi dopo tanto tempo. Dopo la cerimonia, siccome io avevo la macchina, gli altri mi hanno chiesto di accompagnarle. “Ma anche Carlo è in macchina!”, ho protestato io. “Carlo è andato a prenderle ieri; oggi devi riportarle a casa tu”.<br>
-      La zia Camilla doveva prendere l’aereo per la Sicilia, quindi dovevo portarla all’aeroporto; la zia Gemma e la zia Berta invece dovevano tornare in treno, così dovevo portarle alla stazione. La zia Albina, in teoria, poteva tornare anche a piedi, ma siccome era stanca mi ha chiesto di accompagnarla a casa.</p>
-      <p>Le zie sono salite in macchina e hanno continuato la loro conversazione. “Povero Augusto! Povero ragazzo! Era così giovane!”. “Eh sì! Aveva solo ottantadue anni!”. “Ma io non ho ancora capito bene”, ha detto la zia Camilla dopo una pausa; “chi è morto?”.</p>
-      <p>Purtroppo c’è stato qualche problemino con il viaggio di ritorno delle zie. Tanto per cominciare, non sapevo chi accompagnare per prima. Pensavo di portare prima la zia Albina, che abita lì vicino, ma le altre dicevano: “No, no! Prima me, prima noi! Perdo l’aereo! Perdiamo il treno! Facciamo tardi!”.</p>
-      <p>Poi siamo arrivati alla stazione. “Devo fare il biglietto”, ha detto la zia Gemma. “Ma come, zia, non hai fatto il biglietto di andata e ritorno?”. “No di certo! Alla mia età è meglio non fare progetti a lungo termine. Hai visto cosa è successo al povero Augusto? Mi raccomando, voglio il posto vicino al finestrino!". “Anch’io voglio il posto vicino al finestrino", ha detto subito la zia Camilla. “Ma zia, ancora non siamo all’aeroporto! Siamo alla stazione!”.</p>
-      <p>Ho comprato i biglietti e glieli ho portati. “Devi cambiare treno a Bologna”, ho detto alla zia Berta, che è un po’ sorda. “Dove? In Polonia?”. “A Bologna zia! A Bologna, quale Polonia!!”. “Va bene, va bene, ci sento. Non c’è bisogno di gridare”.<br>
-      I due treni, quello per Genova e quello per Bologna, partivano quasi contemporaneamente; e così mi sono confuso e ho messo la zia Berta sul treno per Genova, e la zia Gemma sul treno per Bologna. Le valigie, invece, le ho messe sui treni giusti: quella della zia Gemma è andata a Genova con la zia Berta, e quella della zia Berta è andata a Bologna con la zia Gemma. Che casino! Ancora adesso non ci capisco niente.</p>
-      <p>Poi siamo andati all’aeroporto: per un pelo non abbiamo perso l’aereo. Adesso restava solo da accompagnare a casa la zia Albina, che dormiva tranquilla in macchina. Ma quando sono rientrato in città, ecco l’ultima sorpresa: in macchina non c’era la zia Albina, ma la zia Camilla (senza la valigia, naturalmente, che a quell’ora volava verso la Sicilia). Quando si è svegliata si è guardata intorno, e ha detto: “Ma insomma, quando comincia questo funerale?”</p>
-    </details>
-
     <div class="instruction-box">
       <div class="instruction-title">💡 Задание · Esercizio A:</div>
       <div class="instruction-text">
         👉 <strong>Выберите правильный вариант ответа:</strong><br>
-        <small style="color: var(--text-muted);">Используйте стрелки на экране или клавиши <strong>← / →</strong> (или ↑ / ↓) на клавиатуре для перехода между вопросами.</small>
+
       </div>
     </div>
 
@@ -561,23 +578,25 @@
         </div>
 
         <button id="reset" class="reset-btn" type="button" style="display:none;">⚠️ Сбросить · Azzera</button>
+        <button id="teacher-release-token" class="btn-token" type="button" style="display:none;">🔓 Libera il token</button>
       </div>
     </div>
 
     <!-- MODALITÀ 1: UNO ALLA VOLTA -->
     <section id="token-mode-section" class="card active-mode">
       <div class="token-bar">
-        <span id="token-status-text" style="font-weight:700; color:var(--primary-dark);">Открыто для работы</span>
+        <span id="token-status-text" style="font-weight:700; color:var(--primary-dark);"></span>
         <button id="btn-take-token" class="btn-token" type="button">✋ Взять слово · Prendi la parola</button>
       </div>
+
+      <div id="token-slides-container"></div>
 
       <nav class="slide-navigation" aria-label="Navigazione schede">
         <button id="prev-token-slide" type="button">← Precedente</button>
         <span id="progress-token-slide" class="slide-progress"></span>
         <button id="next-token-slide" type="button">Successiva →</button>
+        <a id="next-token-exercise" href="es_b.html" hidden>Vai all’esercizio B →</a>
       </nav>
-
-      <div id="token-slides-container"></div>
     </section>
 
     <!-- MODALITÀ 2: TUTTI INSIEME -->
@@ -590,13 +609,14 @@
 
         <p id="save-status" class="save-status" role="status" aria-live="polite" hidden></p>
 
+        <div id="student-slides-container"></div>
+
         <nav class="slide-navigation" aria-label="Navigazione schede">
           <button id="prev-student-slide" type="button">← Precedente</button>
           <span id="progress-student-slide" class="slide-progress"></span>
           <button id="next-student-slide" type="button">Successiva →</button>
+          <a id="next-student-exercise" href="es_b.html" hidden>Vai all’esercizio B →</a>
         </nav>
-
-        <div id="student-slides-container"></div>
 
         <button type="button" id="btn-submit-all" class="btn-submit">📤 Отправить решение · Invia la risposta</button>
       </div>
@@ -609,9 +629,6 @@
       </div>
     </section>
 
-    <nav class="exercise-navigation" aria-label="Navigazione esercizi">
-      <a href="es_b.html">Vai all’esercizio B <span aria-hidden="true">→</span></a>
-    </nav>
   </main>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -736,6 +753,7 @@
     const workModeSelect = document.getElementById("work-mode");
     const modeSelectorContainer = document.getElementById("mode-selector-container");
     const resetButton = document.getElementById("reset");
+    const teacherReleaseTokenButton = document.getElementById("teacher-release-token");
 
     const tokenSection = document.getElementById("token-mode-section");
     const allSection = document.getElementById("all-students-mode-section");
@@ -796,12 +814,8 @@
           btn.classList.add("selected");
         }
 
-        if (!isTokenMode && studentSubmitted && selectedIdx !== null) {
-          if (optIdx === item.correct) {
-            btn.classList.add("correct");
-          } else if (selectedIdx === optIdx) {
-            btn.classList.add("incorrect");
-          }
+        if (selectedIdx !== null && selectedIdx === optIdx) {
+          btn.classList.add(selectedIdx === item.correct ? "correct" : "incorrect");
         }
 
         btn.textContent = `${String.fromCharCode(97 + optIdx)}) ${optText}`;
@@ -842,7 +856,7 @@
       feedback.setAttribute("role", "status");
       feedback.hidden = true;
 
-      if (!isTokenMode && studentSubmitted) {
+      if (!isTokenMode && selectedIdx !== null) {
         if (selectedIdx === item.correct) {
           feedback.textContent = "✓ Corretto!";
           feedback.className = "answer-feedback correct";
@@ -854,6 +868,7 @@
       }
 
       box.appendChild(feedback);
+
       return box;
     }
 
@@ -862,10 +877,16 @@
       const nextBtn = document.getElementById(nextBtnId);
       const progressSpan = document.getElementById(progressId);
 
+      const nextExerciseLink = document.getElementById(
+        nextBtnId === "next-token-slide" ? "next-token-exercise" : "next-student-exercise"
+      );
+
       function updateNav() {
         const current = getCurrentSlide();
+        const isLastSlide = current === total - 1;
         prevBtn.disabled = current === 0;
-        nextBtn.disabled = current === total - 1;
+        nextBtn.hidden = isLastSlide;
+        nextExerciseLink.hidden = !isLastSlide;
         progressSpan.textContent = `Domanda ${current + 1} di ${total}`;
       }
 
@@ -954,6 +975,7 @@
     let currentWorkMode = "token";
     let currentWriter = null;
     let allResponses = {};
+    let lastResetId = null;
 
     function saveTokenQuestionFormulation(questionId) {
       if (answersRef && currentWriter === myClientId) {
@@ -987,6 +1009,7 @@
       document.body.classList.toggle("teacher-mode", isTeacher);
       modeSelectorContainer.classList.toggle("visible", isTeacher);
       resetButton.style.display = isTeacher ? "inline-block" : "none";
+      teacherReleaseTokenButton.style.display = isTeacher && currentWorkMode === "token" ? "inline-block" : "none";
       updateUIState();
     });
 
@@ -1007,6 +1030,12 @@
       }
     };
 
+    teacherReleaseTokenButton.addEventListener("click", () => {
+      if (isTeacher && currentWorkMode === "token" && answersRef) {
+        answersRef.child("tokenData").child("currentWriter").set(null);
+      }
+    });
+
     if (window.firebase) {
       try {
         firebase.initializeApp(firebaseConfig);
@@ -1014,14 +1043,20 @@
 
         answersRef.on("value", (snapshot) => {
           const data = snapshot.val() || {};
+          const resetId = data.resetId || null;
+          if (resetId && resetId !== lastResetId) {
+            studentState = createEmptyState();
+            studentQuestionState = {};
+            studentSubmitted = false;
+            saveStatus.hidden = true;
+          }
+          lastResetId = resetId;
           currentWorkMode = data.workMode || "token";
           workModeSelect.value = currentWorkMode;
 
           const tData = data.tokenData || {};
           currentWriter = tData.currentWriter || null;
-          if (tData.answers) {
-            tokenState = tData.answers;
-          }
+          tokenState = tData.answers || createEmptyState();
           const formulations = tData.questionFormulations || {};
           tokenQuestionState = Object.fromEntries(questionsData.map(item => [
             item.id,
@@ -1070,12 +1105,14 @@
     });
 
     function updateUIState() {
+      teacherReleaseTokenButton.style.display = isTeacher && currentWorkMode === "token" ? "inline-block" : "none";
+
       if (currentWorkMode === "token") {
         tokenSection.classList.add("active-mode");
         allSection.classList.remove("active-mode");
 
         if (!currentWriter) {
-          tokenStatusText.textContent = "Открыто · In corso";
+          tokenStatusText.textContent = "";
           btnTakeToken.textContent = "✋ Взять слово · Prendi la parola";
           btnTakeToken.className = "btn-token";
           btnTakeToken.disabled = false;
@@ -1213,8 +1250,13 @@
     resetButton.addEventListener("click", () => {
       if (confirm("Сбросить все ответы? · Azzera tutte le risposte?")) {
         answersRef.set({
+          resetId: `${Date.now()}_${myClientId}`,
           workMode: currentWorkMode,
-          tokenData: { currentWriter: null, answers: createEmptyState() },
+          tokenData: {
+            currentWriter: null,
+            answers: createEmptyState(),
+            questionFormulations: Object.fromEntries(questionsData.map(item => [item.id, ""]))
+          },
           allStudentsData: {}
         });
       }
@@ -1225,6 +1267,22 @@
 
     renderStudentSlides();
     renderTokenSlides();
+
+    let backgroundUpdatePending = false;
+    function updateBackgroundParallax() {
+      if (backgroundUpdatePending) return;
+      backgroundUpdatePending = true;
+      requestAnimationFrame(() => {
+        const offset = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? 0
+          : Math.min(window.scrollY * 0.12, 180);
+        document.body.style.setProperty("--background-offset", `${offset}px`);
+        backgroundUpdatePending = false;
+      });
+    }
+
+    window.addEventListener("scroll", updateBackgroundParallax, { passive: true });
+    updateBackgroundParallax();
   </script>
 </body>
 </html>

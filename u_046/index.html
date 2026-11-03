@@ -25,6 +25,8 @@
       padding: 32px 16px;
       color: var(--text);
       background:
+        linear-gradient(rgba(250, 248, 241, .78), rgba(250, 248, 241, .78)),
+        url("img/sfondo-funerale-augusto.jpg") center calc(50% - var(--background-offset, 0px)) / cover fixed,
         radial-gradient(ellipse at 50% 0, rgba(255, 255, 255, .72), transparent 55%),
         #e9e3d6;
     }
@@ -411,6 +413,22 @@
     previousParagraphButton.addEventListener("click", () => showSlide(currentSlide - 1));
     nextParagraphButton.addEventListener("click", () => showSlide(currentSlide + 1));
     showSlide(0);
+
+    let backgroundUpdatePending = false;
+    function updateBackgroundParallax() {
+      if (backgroundUpdatePending) return;
+      backgroundUpdatePending = true;
+      requestAnimationFrame(() => {
+        const offset = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? 0
+          : Math.min(window.scrollY * 0.12, 180);
+        document.body.style.setProperty("--background-offset", `${offset}px`);
+        backgroundUpdatePending = false;
+      });
+    }
+
+    window.addEventListener("scroll", updateBackgroundParallax, { passive: true });
+    updateBackgroundParallax();
 
     document.addEventListener("keydown", (event) => {
       if (event.altKey || event.ctrlKey || event.metaKey) return;
