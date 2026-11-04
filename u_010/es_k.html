@@ -370,8 +370,10 @@
       font-weight: 700;
       cursor: pointer;
     }
-    .btn-arrow:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-light); }
+    .btn-arrow:hover:not(:disabled), .btn-arrow-link:hover { border-color: var(--primary); background: var(--primary-light); }
     .btn-arrow:disabled { opacity: .45; cursor: not-allowed; }
+    .btn-arrow-link { display: inline-flex; align-items: center; text-decoration: none; }
+    .btn-arrow-link[hidden] { display: none; }
 
     @media (max-width: 600px) {
       body { padding: 16px 8px; }
@@ -661,7 +663,13 @@
         }
       };
 
-      footer.append(prevBtn, nextBtn);
+      const nextExerciseLink = document.createElement("a");
+      nextExerciseLink.className = "btn-arrow btn-arrow-link";
+      nextExerciseLink.href = "es_l.html";
+      nextExerciseLink.textContent = "Esercizio L →";
+      nextExerciseLink.hidden = true;
+
+      footer.append(prevBtn, nextBtn, nextExerciseLink);
       box.append(header, imgFrame, pairDiv, footer);
       container.appendChild(box);
 
@@ -734,13 +742,16 @@
         const tokenRowA = box.querySelector(".btn-token-a").parentElement;
         const tokenBtnQ = box.querySelector(".btn-token-q");
         const tokenBtnA = box.querySelector(".btn-token-a");
-        const prevBtn = box.querySelectorAll(".btn-arrow")[0];
-        const nextBtn = box.querySelectorAll(".btn-arrow")[1];
+        const arrowButtons = box.querySelectorAll(".card-footer button.btn-arrow");
+        const prevBtn = arrowButtons[0];
+        const nextBtn = arrowButtons[1];
+        const nextExerciseLink = box.querySelector(".btn-arrow-link");
 
         box.classList.toggle("current-view", i === currentlyViewedTab);
         tabBtn.classList.toggle("active-tab", i === currentlyViewedTab);
         prevBtn.disabled = i === 0;
-        nextBtn.disabled = i === foodItems.length - 1;
+        nextBtn.hidden = i === foodItems.length - 1;
+        nextExerciseLink.hidden = i !== foodItems.length - 1;
 
         const cardWriters = writersData[i] || {};
         const qWriter = cardWriters.q || null;
