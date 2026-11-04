@@ -353,6 +353,7 @@
         <button id="prev-token-slide" type="button">← Precedente</button>
         <span id="progress-token-slide" class="slide-progress" aria-live="polite"></span>
         <button id="next-token-slide" type="button">Successiva →</button>
+        <a id="token-exercise-link" href="es_f.html" hidden>Vai all’esercizio F →</a>
       </nav>
     </section>
 
@@ -368,6 +369,7 @@
           <button id="prev-student-slide" type="button">← Precedente</button>
           <span id="progress-student-slide" class="slide-progress" aria-live="polite"></span>
           <button id="next-student-slide" type="button">Successiva →</button>
+          <a id="student-exercise-link" href="es_f.html" hidden>Vai all’esercizio F →</a>
         </nav>
         <button type="button" id="btn-submit-all" class="btn-submit">📤 Отправить решение · Invia le risposte</button>
       </div>
@@ -527,7 +529,10 @@
       const index = isTokenMode ? activeTokenSlide : activeStudentSlide;
       const prefix = isTokenMode ? "token" : "student";
       document.getElementById(`prev-${prefix}-slide`).disabled = index === 0;
-      document.getElementById(`next-${prefix}-slide`).disabled = index === questionsData.length - 1;
+      const isLastSlide = index === questionsData.length - 1;
+      document.getElementById(`next-${prefix}-slide`).hidden = isLastSlide;
+      document.getElementById(`next-${prefix}-slide`).disabled = isLastSlide;
+      document.getElementById(`${prefix}-exercise-link`).hidden = !isLastSlide;
       document.getElementById(`progress-${prefix}-slide`).textContent = `Colore ${index + 1} di ${questionsData.length}`;
     }
 
