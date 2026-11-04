@@ -310,7 +310,10 @@
       const index = mode === "token" ? activeTokenSlide : activeStudentSlide;
       const prefix = mode === "token" ? "token" : "student";
       document.getElementById(`prev-${prefix}-slide`).disabled = index === 0;
-      document.getElementById(`next-${prefix}-slide`).disabled = index === foodItems.length - 1;
+      const nextButton = document.getElementById(`next-${prefix}-slide`);
+      const isLastSlide = index === foodItems.length - 1;
+      nextButton.disabled = false;
+      nextButton.textContent = isLastSlide ? "Vai all’esercizio K →" : "Successiva →";
       document.getElementById(`progress-${prefix}-slide`).textContent = `Alimento ${index + 1} di ${foodItems.length}`;
     }
 
@@ -324,9 +327,15 @@
       }
     }
     document.getElementById("prev-token-slide").onclick = () => navigate("token", -1);
-    document.getElementById("next-token-slide").onclick = () => navigate("token", 1);
+    document.getElementById("next-token-slide").onclick = () => {
+      if (activeTokenSlide === foodItems.length - 1) window.location.href = "es_k.html";
+      else navigate("token", 1);
+    };
     document.getElementById("prev-student-slide").onclick = () => navigate("student", -1);
-    document.getElementById("next-student-slide").onclick = () => navigate("student", 1);
+    document.getElementById("next-student-slide").onclick = () => {
+      if (activeStudentSlide === foodItems.length - 1) window.location.href = "es_k.html";
+      else navigate("student", 1);
+    };
 
     document.addEventListener("keydown", event => {
       if (["INPUT", "TEXTAREA", "SELECT", "BUTTON", "A"].includes(document.activeElement.tagName)) return;
