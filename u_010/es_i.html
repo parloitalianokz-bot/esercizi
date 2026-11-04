@@ -3,416 +3,181 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Unità 10 — Riordina i dialoghi</title>
+  <title>Unità 10 — Riordina i dialoghi (Esercizio I)</title>
   <style>
     :root {
       color-scheme: light;
       font-family: 'Segoe UI', Inter, system-ui, -apple-system, sans-serif;
-      --primary: #6556bd;
-      --primary-light: #f0edff;
-      --primary-dark: #4c3e99;
-      --accent: #ffb703;
-      --bg-main: #f7f6fb;
-      --card-bg: #ffffff;
-      --text: #24213a;
-      --text-muted: #68667a;
-      --success: #20a16b;
-      --success-bg: #d9f4e8;
-      --border: #ebe9f2;
+      --primary: #477755;
+      --primary-light: #edf4ed;
+      --primary-dark: #2f5739;
+      --accent: #bd694d;
+      --bg-main: #f5f1e7;
+      --card-bg: #fffefa;
+      --text: #292d28;
+      --text-muted: #6b7069;
+      --success: #278253;
+      --success-bg: #e1f1e5;
+      --border: #e7e5dc;
     }
-
     * { box-sizing: border-box; }
-
+    :focus-visible { outline: 3px solid rgba(189, 105, 77, .55); outline-offset: 3px; }
     body {
-      min-height: 100vh;
-      margin: 0;
-      padding: 32px 16px;
-      background:
-        radial-gradient(ellipse at 50% -12%, rgba(155, 142, 240, .24), transparent 42%),
-        var(--bg-main);
-      color: var(--text);
+      min-height: 100vh; margin: 0; padding: 32px 16px; color: var(--text);
+      background: linear-gradient(rgba(250,248,241,.78),rgba(250,248,241,.78)),
+        url("img/sfondo.jpg") center / cover fixed,
+        radial-gradient(ellipse at 50% -12%,rgba(111,151,116,.18),transparent 42%), var(--bg-main);
     }
-
-    .container { width: min(100%, 720px); margin: 0 auto; }
-
-    .hero { margin: 8px 0 24px; text-align: center; }
+    .container { width: min(100%, 880px); margin: 0 auto; }
+    .home-navigation { display: flex; margin: 0 0 12px; }
+    .home-navigation a {
+      display: inline-flex; align-items: center; min-height: 42px; padding: 8px 16px;
+      border: 1px solid #d8e5d8; border-radius: 10px; background: rgba(255,254,250,.94);
+      color: var(--primary-dark); font-weight: 700; text-decoration: none;
+    }
+    .home-navigation a:hover { background: var(--primary-light); border-color: var(--primary); }
+    .hero {
+      margin: 8px 0 22px; padding: 28px 20px 26px; text-align: center;
+      border: 1px solid rgba(71,119,85,.13); border-radius: 24px;
+      background: linear-gradient(135deg,rgba(255,254,250,.94),rgba(242,247,239,.91));
+      box-shadow: 0 12px 32px rgba(43,69,46,.07);
+    }
     .eyebrow {
-      display: inline-block;
-      color: var(--primary);
-      font-size: .8rem;
-      font-weight: 800;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      background: var(--primary-light);
-      padding: 7px 14px;
-      border-radius: 20px;
-      margin-bottom: 8px;
-      box-shadow: inset 0 0 0 1px rgba(101, 86, 189, .08);
+      display: inline-block; margin-bottom: 10px; padding: 8px 15px; border-radius: 20px;
+      background: #eaf1e8; color: var(--primary-dark); font-size: .78rem; font-weight: 800;
+      letter-spacing: .09em; text-transform: uppercase;
     }
-    h1 {
-      margin: 4px 0;
-      font-size: clamp(1.8rem, 4vw, 2.4rem);
-      letter-spacing: -.03em;
-      color: var(--primary-dark);
-      line-height: 1.15;
+    h1 { margin: 4px 0; color: var(--primary-dark); font-size: clamp(1.9rem,5vw,2.65rem); letter-spacing: -.04em; line-height: 1.12; }
+    .hero-subtitle { margin: 8px 0 0; color: var(--text-muted); font-size: .98rem; }
+    .instruction-box, .top-controls {
+      margin-bottom: 24px; padding: 16px 20px; border: 1px solid #d8e5d8;
+      border-radius: 16px; background: #fff; box-shadow: 0 6px 18px rgba(43,69,46,.04);
     }
-    .hero-subtitle {
-      width: fit-content;
-      max-width: 100%;
-      margin: 12px auto 0;
-      padding: 10px 16px;
-      border: 1px solid #ded8f7;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, .8);
-      color: var(--primary-dark);
-      font-size: 1rem;
-      font-weight: 700;
-      line-height: 1.45;
-      box-shadow: 0 4px 14px rgba(50, 38, 94, .05);
-    }
-
-    /* Barra controlli superiore (Insegnante & Reset) */
-    .top-controls {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 20px;
-      padding: 12px 18px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: var(--card-bg);
-      box-shadow: 0 6px 18px rgba(50, 38, 94, .04);
-    }
-    .teacher-controls {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .teacher-toggle {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: .88rem;
-      color: var(--text);
-      cursor: pointer;
-      font-weight: 600;
-      user-select: none;
-    }
+    .instruction-box { border-left: 5px solid var(--accent); }
+    .instruction-title { margin-bottom: 6px; color: var(--accent); font-size: .85rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+    .instruction-text { font-size: .98rem; line-height: 1.5; }
+    .top-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; background: rgba(255,254,250,.96); }
+    .teacher-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; width: 100%; }
+    .teacher-toggle { display: flex; align-items: center; gap: 8px; font-size: .88rem; font-weight: 600; cursor: pointer; }
     .teacher-toggle input { accent-color: var(--primary); }
-    
-    button.reset-btn {
-      padding: 6px 12px;
-      border: 1px solid #fca5a5;
-      border-radius: 10px;
-      background: #fff;
-      color: #dc2626;
-      font: inherit;
-      font-size: .8rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: none;
-    }
+    .mode-select-box { display: none; align-items: center; gap: 8px; color: var(--primary-dark); font-size: .88rem; font-weight: 700; }
+    .mode-select-box.visible { display: flex; }
+    .mode-select-box select { padding: 6px 10px; border: 1.5px solid #d4e1d5; border-radius: 8px; color: var(--primary-dark); background: #fff; font: inherit; font-size: .85rem; }
+    button.reset-btn { min-height: 42px; padding: 6px 14px; border: 1px solid #fca5a5; border-radius: 10px; background: #fff; color: #dc2626; font: inherit; font-size: .8rem; font-weight: 700; cursor: pointer; }
     button.reset-btn:hover { background: #fef2f2; }
-
-    /* Paginatore a Schede in alto (A, B, C) */
-    .tabs-bar {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-    .tab-btn {
-      flex: 1;
-      height: 42px;
-      padding: 0 12px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: var(--card-bg);
-      color: var(--text-muted);
-      font-weight: 800;
-      font-size: .95rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: all .15s ease;
-    }
-    .tab-btn:hover { border-color: #bfaee6; color: var(--primary); }
-    .tab-icon { font-size: 1.05rem; }
-    .tab-btn.active-tab {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-      box-shadow: 0 4px 12px rgba(101, 86, 189, .25);
-    }
-    .tab-btn.locked-tab {
-      opacity: .6;
-      background: #f4f3f9;
-      cursor: not-allowed;
-    }
-    .tab-btn.approved-tab,
-    .tab-btn.correct-tab {
-      background: var(--success-bg);
-      color: #047857;
-      border-color: #a7f3d0;
-    }
-    .tab-btn.correct-tab { opacity: 1; }
-
-    /* Card del Dialogo Corrente */
-    .card {
-      padding: clamp(20px, 4vw, 32px);
-      border: 1px solid var(--border);
-      border-radius: 26px;
-      background: var(--card-bg);
-      box-shadow: 0 20px 55px rgba(50, 38, 94, .08);
-    }
-
-    .dialogue-box {
-      display: none;
-    }
-    .dialogue-box.current-view {
-      display: block;
-      animation: fadeIn .25s ease-in-out;
-    }
-    .dialogue-box.current-view .dialogue-header {
-      margin: -8px -8px 20px;
-      padding: 13px 16px;
-      border: 1px solid #ded8f7;
-      border-radius: 14px;
-      background: linear-gradient(110deg, var(--primary-light), #fff 85%);
-    }
-    .dialogue-box.current-view .dialogue-title {
-      font-size: 1.18rem;
-    }
-    .dialogue-box.current-view .dialogue-icon {
-      width: 40px;
-      height: 40px;
-      font-size: 1.35rem;
-    }
-    .dialogue-box.current-view .badge-active {
-      box-shadow: 0 0 0 3px rgba(225, 29, 72, .1);
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .dialogue-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-    .dialogue-heading {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      min-width: 0;
-    }
-    .dialogue-icon {
-      width: 36px;
-      height: 36px;
-      display: grid;
-      place-items: center;
-      flex-shrink: 0;
-      border-radius: 11px;
-      background: rgba(255, 255, 255, .85);
-      box-shadow: 0 2px 8px rgba(50, 38, 94, .08);
-      font-size: 1.2rem;
-    }
-    .dialogue-title {
-      font-weight: 800;
-      font-size: 1.1rem;
-      color: var(--primary-dark);
-    }
-    .badge {
-      font-size: .75rem;
-      font-weight: 700;
-      padding: 5px 10px;
-      border-radius: 8px;
-      text-transform: uppercase;
-      letter-spacing: .015em;
-    }
-    .badge-locked { background: #e5e7eb; color: #6b7280; }
-    .badge-active { background: #ffe4e6; color: #e11d48; }
-    .badge-approved { background: var(--success-bg); color: #047857; }
-
-    /* Lista delle battute ordinabili */
-    .lines-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 24px;
-    }
-
-    .line-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      border: 1.5px solid var(--border);
-      border-radius: 14px;
-      background: #fff;
-      transition: all .2s ease;
-    }
-    .line-item.fixed-first {
-      background: #f8f7fc;
-      border-color: #dcd6f7;
-    }
-    .line-item.correct-line {
-      background: var(--success-bg);
-      border-color: #a7f3d0;
-    }
-    .line-item.correct-line .line-number {
-      background: #b8efd5;
-      color: #047857;
-    }
-    .line-item.just-moved {
-      animation: lineMoved .35s ease-out;
-    }
-    @keyframes lineMoved {
-      0% { background: #f0edff; border-color: #c4b9f0; transform: translateX(5px); }
-      100% { background: #fff; border-color: var(--border); transform: translateX(0); }
-    }
-    .order-feedback {
-      display: none;
-      margin: -8px 0 16px;
-      padding: 10px 14px;
-      border: 1px solid #a7f3d0;
-      border-radius: 12px;
-      background: var(--success-bg);
-      color: #047857;
-      font-size: .92rem;
-      font-weight: 800;
-    }
-    .order-feedback.is-visible { display: block; }
-    .line-number {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      background: var(--primary-light);
-      color: var(--primary);
-      font-weight: 800;
-      font-size: .9rem;
-      display: grid;
-      place-items: center;
-      flex-shrink: 0;
-    }
-    .line-text {
-      flex: 1;
-      font-size: .98rem;
-      font-weight: 600;
-      color: var(--text);
-      line-height: 1.4;
-    }
-
-    .move-btn-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .btn-move {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      border: 1px solid #d9d3ed;
-      background: #f0edff;
-      color: var(--primary-dark);
-      font-weight: 800;
-      font-size: .85rem;
-      cursor: pointer;
-      display: grid;
-      place-items: center;
-      line-height: 1;
-      transition: background 0.15s;
-    }
-    .btn-move:hover:not(:disabled) { background: #e2daf9; }
-    .btn-move:disabled { opacity: .3; cursor: not-allowed; }
-
-    /* Footer con Approvazione Docente */
-    .card-footer {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 12px;
-      border-top: 1px solid var(--border);
-      padding-top: 18px;
-    }
-
-    .btn-approve {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: .9rem;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(101, 86, 189, 0.2);
-    }
-    .btn-approve:hover { background: var(--primary-dark); }
-
-    @media (max-width: 520px) {
+    .btn-token { min-height: 42px; padding: 8px 14px; border: 0; border-radius: 8px; background: var(--primary-dark); color: #fff; font-size: .85rem; font-weight: 700; cursor: pointer; }
+    .btn-token.release { background: var(--accent); }
+    .btn-token.busy { background: #e8ebea; color: #5f6863; cursor: not-allowed; }
+    .card { margin-bottom: 32px; padding: clamp(20px,4vw,32px); border: 1px solid var(--border); border-radius: 26px; background: var(--card-bg); box-shadow: 0 22px 60px rgba(43,69,46,.11); }
+    #token-mode-section, #all-students-mode-section { display: none; }
+    #token-mode-section.active-mode, #all-students-mode-section.active-mode { display: block; }
+    body.teacher-mode #student-form-card { display: none; }
+    .token-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; padding: 14px 18px; border-radius: 14px; background: var(--primary-light); }
+    .slide-item { display: flex; flex-direction: column; gap: 16px; padding: 20px; border: 1px solid var(--border); border-radius: 20px; background: #fff; box-shadow: 0 6px 18px rgba(43,69,46,.03); }
+    .slide-item[hidden] { display: none; }
+    .dialogue-heading { display: flex; align-items: center; gap: 10px; color: var(--primary-dark); font-size: 1.1rem; font-weight: 800; }
+    .dialogue-icon { font-size: 1.35rem; }
+    .lines-list { display: flex; flex-direction: column; gap: 9px; }
+    .line-item { display: flex; align-items: center; gap: 12px; padding: 11px 12px; border: 1.5px solid var(--border); border-radius: 12px; background: #fffefa; }
+    .line-item.fixed-first { background: var(--primary-light); border-color: #d4e1d5; }
+    .line-item.correct-line { background: var(--success-bg); border-color: #b7dfc1; }
+    .line-number { display: grid; width: 32px; height: 32px; flex: 0 0 32px; place-items: center; border-radius: 9px; background: #eaf1e8; color: var(--primary-dark); font-size: .9rem; font-weight: 800; }
+    .correct-line .line-number { background: #b7dfc1; color: #17623c; }
+    .line-text { flex: 1; font-size: .96rem; font-weight: 600; line-height: 1.45; }
+    .move-btn-group { display: flex; flex-direction: row; gap: 4px; }
+    .btn-move { display: grid; width: 32px; height: 30px; place-items: center; border: 1px solid #d4e1d5; border-radius: 8px; background: var(--primary-light); color: var(--primary-dark); font-weight: 800; cursor: pointer; }
+    .btn-move:hover:not(:disabled) { background: #dfeade; }
+    .btn-move:disabled { cursor: not-allowed; opacity: .35; }
+    .answer-feedback { margin: 0; padding: 10px 14px; border-radius: 10px; font-size: .92rem; font-weight: 700; }
+    .answer-feedback.correct { background: var(--success-bg); color: var(--success); }
+    .answer-feedback.incorrect { background: #fde8e7; color: #dc2626; }
+    .answer-feedback[hidden] { display: none; }
+    .login-box { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 16px; border-radius: 14px; background: var(--primary-light); }
+    .login-box label { color: var(--primary-dark); font-size: .9rem; font-weight: 700; white-space: nowrap; }
+    .login-box input { flex: 1; min-width: 0; padding: 10px 14px; border: 1.5px solid #d4e1d5; border-radius: 10px; background: #fff; font: inherit; }
+    .save-status { margin: 0 0 18px; padding: 11px 14px; border: 1px solid #b7dfc1; border-radius: 12px; background: var(--success-bg); color: #17623c; font-size: .9rem; font-weight: 700; }
+    .save-status[hidden] { display: none; }
+    .btn-submit { width: 100%; margin-top: 18px; padding: 14px; border: 0; border-radius: 14px; background: var(--primary); color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 14px rgba(71,119,85,.3); }
+    .slide-navigation { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--border); }
+    .slide-navigation button { min-height: 42px; padding: 8px 18px; border: 1px solid #d8e5d8; border-radius: 10px; background: #fff; color: var(--primary-dark); font: inherit; font-weight: 700; cursor: pointer; }
+    .slide-navigation button:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-light); }
+    .slide-navigation button:disabled { cursor: not-allowed; opacity: .45; }
+    .slide-progress { color: var(--primary-dark); font-size: .95rem; font-weight: 800; text-align: center; }
+    .results-section h2 { margin-bottom: 16px; color: var(--primary-dark); font-size: 1.3rem; }
+    .dialogue-responses details { margin-bottom: 10px; overflow: hidden; border: 1px solid var(--border); border-radius: 12px; background: #fff; }
+    .dialogue-responses summary { padding: 14px 16px; background: var(--primary-light); color: var(--primary-dark); font-weight: 800; cursor: pointer; }
+    .answer-list { padding: 4px 16px 12px; }
+    .answer-row { display: grid; grid-template-columns: minmax(120px,.35fr) 1fr; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: .92rem; }
+    .answer-row:last-child { border-bottom: 0; }
+    .answer-author { color: var(--primary-dark); font-weight: 700; }
+    .answer-text { display: block; padding: 8px 10px; border-radius: 8px; overflow-wrap: anywhere; font-weight: 600; }
+    .answer-text.correct { background: var(--success-bg); }
+    .answer-text.incorrect { background: #fde8e7; }
+    @media (max-width: 600px) {
       body { padding: 16px 8px; }
-      .hero { margin: 4px 0 18px; }
-      .hero-subtitle { padding: 9px 12px; font-size: .92rem; }
-      .top-controls {
-        gap: 8px;
-        margin-bottom: 14px;
-        padding: 10px 12px;
-      }
-      .teacher-controls { gap: 8px; }
-      .teacher-toggle { gap: 6px; font-size: .8rem; }
-      button.reset-btn { padding: 6px 9px; font-size: .75rem; }
-      .tabs-bar { gap: 6px; margin-bottom: 14px; }
-      .tab-btn { height: 40px; padding: 0 8px; font-size: .86rem; }
-      .card { padding: 18px 14px; border-radius: 20px; }
-      .dialogue-box.current-view .dialogue-header {
-        margin: -4px -4px 18px;
-        padding: 11px 12px;
-      }
-      .dialogue-box.current-view .dialogue-title { font-size: 1.05rem; }
-      .card-footer { justify-content: stretch; }
-      .btn-approve { width: 100%; text-align: center; }
+      .slide-item { padding: 14px; }
+      .slide-navigation { flex-direction: column; gap: 8px; }
+      .slide-navigation button { width: 100%; }
+      .login-box { align-items: stretch; flex-direction: column; }
+      .login-box label { white-space: normal; }
+      .answer-row { grid-template-columns: 1fr; gap: 4px; }
+      .line-item { gap: 8px; padding: 9px; }
+      .line-text { font-size: .9rem; }
+      .token-bar { align-items: stretch; flex-direction: column; }
     }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        scroll-behavior: auto !important;
-        transition-duration: .01ms !important;
-        animation-duration: .01ms !important;
-      }
-    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
   </style>
 </head>
 <body>
-
   <main class="container">
+    <nav class="home-navigation" aria-label="Navigazione principale"><a href="index.html">← Torna all’inizio</a></nav>
     <header class="hero">
       <span class="eyebrow">Unità 10 · Диалоги</span>
       <h1>Расставьте реплики в диалогах</h1>
-      <p class="hero-subtitle">Metti in ordine le battute dei tre dialoghi</p>
+      <p class="hero-subtitle">Metti in ordine le battute dei tre dialoghi.</p>
     </header>
-
-    <!-- Barra Controlli Superiore -->
+    <div class="instruction-box">
+      <div class="instruction-title">💡 Задание · Esercizio I</div>
+      <div class="instruction-text">👉 <strong>Расположите реплики в правильном порядке:</strong> usa le frecce per riordinare le battute di ogni dialogo.</div>
+    </div>
     <div class="top-controls">
       <div class="teacher-controls">
-        <label class="teacher-toggle">
-          <input type="checkbox" id="teacher-mode">
-          Режим учителя · Modalità insegnante
-        </label>
+        <label class="teacher-toggle"><input type="checkbox" id="teacher-mode"> Режим учителя · Modalità insegnante</label>
+        <div class="mode-select-box" id="mode-selector-container">
+          <label for="work-mode">Режим работы:</label>
+          <select id="work-mode"><option value="token">Uno alla volta · По одному</option><option value="all">Tutti insieme · Все вместе</option></select>
+        </div>
+        <button id="reset" class="reset-btn" type="button" hidden>⚠️ Сбросить · Azzera</button>
+        <button id="teacher-release-token" class="btn-token" type="button" hidden>🔓 Libera il token</button>
       </div>
-      <button id="reset" class="reset-btn" type="button">⚠️ Сбросить · Azzera</button>
     </div>
 
-    <!-- Paginatore a Schede in alto (A, B, C) -->
-    <div id="tabs-bar" class="tabs-bar"></div>
+    <section id="token-mode-section" class="card active-mode">
+      <div class="token-bar">
+        <span id="token-status-text" style="font-weight:700;color:var(--primary-dark);"></span>
+        <button id="btn-take-token" class="btn-token" type="button">✋ Взять слово · Prendi la parola</button>
+      </div>
+      <div id="token-slides-container"></div>
+      <nav class="slide-navigation" aria-label="Navigazione dialoghi">
+        <button id="prev-token-slide" type="button">← Precedente</button>
+        <span id="progress-token-slide" class="slide-progress" aria-live="polite"></span>
+        <button id="next-token-slide" type="button">Successiva →</button>
+      </nav>
+    </section>
 
-    <!-- Card del Dialogo Corrente -->
-    <section class="card">
-      <div id="dialogues-container"></div>
+    <section id="all-students-mode-section">
+      <div class="card" id="student-form-card">
+        <div class="login-box"><label for="student-name-input">Ваше имя (Имя Фамилия) · Nome e cognome:</label><input type="text" id="student-name-input" placeholder="Inserisci il tuo nome e cognome"></div>
+        <p id="save-status" class="save-status" role="status" aria-live="polite" hidden></p>
+        <div id="student-slides-container"></div>
+        <nav class="slide-navigation" aria-label="Navigazione dialoghi">
+          <button id="prev-student-slide" type="button">← Precedente</button>
+          <span id="progress-student-slide" class="slide-progress" aria-live="polite"></span>
+          <button id="next-student-slide" type="button">Successiva →</button>
+        </nav>
+        <button type="button" id="btn-submit-all" class="btn-submit">📤 Отправить решение · Invia le risposte</button>
+      </div>
+      <div class="results-section"><h2>📋 Ответы студентов · Risposte degli studenti</h2><div id="responses-list"></div></div>
     </section>
   </main>
 
@@ -429,9 +194,7 @@
 
     const dialoguesData = [
       {
-        id: "A",
-        icon: "👜",
-        title: "Диалог A",
+        id: "A", icon: "👜", title: "Диалог A",
         firstLine: "— Scusi, quanto costa questa borsa?",
         movableLines: [
           "— Anche questa costa 75 euro.",
@@ -443,9 +206,7 @@
         correctOrder: [3, 4, 0, 1, 2]
       },
       {
-        id: "B",
-        icon: "🧥",
-        title: "Диалог B",
+        id: "B", icon: "🧥", title: "Диалог B",
         firstLine: "— Buongiorno, avete una giacca sportiva di lana?",
         movableLines: [
           "— 280 euro.",
@@ -459,9 +220,7 @@
         correctOrder: [3, 5, 2, 4, 0, 6, 1]
       },
       {
-        id: "C",
-        icon: "🧣",
-        title: "Диалог C",
+        id: "C", icon: "🧣", title: "Диалог C",
         firstLine: "— Buongiorno, cerco un cappotto nero o blu.",
         movableLines: [
           "— No, purtroppo non abbiamo pellicce.",
@@ -476,265 +235,316 @@
       }
     ];
 
-    const container = document.getElementById("dialogues-container");
-    const tabsBar = document.getElementById("tabs-bar");
-    const teacherToggle = document.getElementById("teacher-mode");
-    const resetButton = document.getElementById("reset");
-
+    const defaultOrder = dialogue => dialogue.movableLines.map((_, index) => index);
+    const createEmptyState = () => Object.fromEntries(dialoguesData.map(dialogue => [dialogue.id, defaultOrder(dialogue)]));
+    let studentState = createEmptyState();
+    let tokenState = createEmptyState();
+    let activeTokenSlide = 0;
+    let activeStudentSlide = 0;
     let answersRef = null;
-    let currentActiveStep = 0;       // Scheda attualmente aperta
-    let currentlyViewedTab = 0;      // Scheda visualizzata a schermo
     let isTeacher = false;
-    let currentOrders = {};          // Ordine salvato su Firebase
-    let recentMove = null;
-    let recentMoveTimer = null;
+    let currentWorkMode = "token";
+    let currentWriter = null;
+    let allResponses = {};
+    let lastResetId = null;
+    const myClientId = "user_" + Math.random().toString(36).substring(2, 9);
 
-    const dialogueBoxes = [];
-    const tabButtons = [];
-    const badges = [];
-    const orderFeedbacks = [];
+    const teacherToggle = document.getElementById("teacher-mode");
+    const workModeSelect = document.getElementById("work-mode");
+    const modeSelectorContainer = document.getElementById("mode-selector-container");
+    const resetButton = document.getElementById("reset");
+    const teacherReleaseTokenButton = document.getElementById("teacher-release-token");
+    const tokenSection = document.getElementById("token-mode-section");
+    const allSection = document.getElementById("all-students-mode-section");
+    const studentNameInput = document.getElementById("student-name-input");
+    const saveStatus = document.getElementById("save-status");
+    const responsesList = document.getElementById("responses-list");
+    const btnTakeToken = document.getElementById("btn-take-token");
+    const tokenStatusText = document.getElementById("token-status-text");
 
-    function isDialogueCorrect(dIdx) {
-      const dialogue = dialoguesData[dIdx];
-      const order = currentOrders[dIdx] || dialogue.movableLines.map((_, index) => index);
-      return order.length === dialogue.correctOrder.length &&
-        order.every((lineIndex, position) => lineIndex === dialogue.correctOrder[position]);
+    studentNameInput.value = localStorage.getItem("parlo_student_name") || "";
+
+    function isCorrect(dialogue, order) {
+      return Array.isArray(order) && order.length === dialogue.correctOrder.length &&
+        order.every((lineIndex, index) => lineIndex === dialogue.correctOrder[index]);
     }
 
-    // Generazione delle 3 schede
-    dialoguesData.forEach((d, dIdx) => {
-      // 1. Tab in alto
-      const tabBtn = document.createElement("button");
-      tabBtn.className = "tab-btn locked-tab";
-      const tabIcon = document.createElement("span");
-      tabIcon.className = "tab-icon";
-      tabIcon.textContent = d.icon;
-      const tabLabel = document.createElement("span");
-      tabLabel.textContent = `Диалог ${d.id}`;
-      tabBtn.append(tabIcon, tabLabel);
-      tabBtn.type = "button";
-      tabBtn.onclick = () => {
-        if (isTeacher || dIdx <= currentActiveStep) {
-          currentlyViewedTab = dIdx;
-          updateUIState();
-        }
-      };
-      tabsBar.appendChild(tabBtn);
-      tabButtons.push(tabBtn);
-
-      // 2. Box del Dialogo
+    function buildSlide(dialogue, isTokenMode, state, canEdit, onMove) {
       const box = document.createElement("div");
-      box.className = "dialogue-box";
-      if (dIdx === 0) box.classList.add("current-view");
-
-      const header = document.createElement("div");
-      header.className = "dialogue-header";
-
+      box.className = "slide-item";
       const heading = document.createElement("div");
       heading.className = "dialogue-heading";
+      const icon = document.createElement("span");
+      icon.className = "dialogue-icon";
+      icon.textContent = dialogue.icon;
+      const title = document.createElement("span");
+      title.textContent = dialogue.title;
+      heading.append(icon, title);
 
-      const dialogueIcon = document.createElement("span");
-      dialogueIcon.className = "dialogue-icon";
-      dialogueIcon.textContent = d.icon;
+      const list = document.createElement("div");
+      list.className = "lines-list";
+      const order = Array.isArray(state[dialogue.id]) ? state[dialogue.id] : defaultOrder(dialogue);
+      const correct = isCorrect(dialogue, order);
+      const first = document.createElement("div");
+      first.className = `line-item fixed-first${correct ? " correct-line" : ""}`;
+      const firstNumber = document.createElement("span");
+      firstNumber.className = "line-number";
+      firstNumber.textContent = "1";
+      const firstText = document.createElement("span");
+      firstText.className = "line-text";
+      firstText.textContent = dialogue.firstLine;
+      first.append(firstNumber, firstText);
+      list.appendChild(first);
 
-      const title = document.createElement("div");
-      title.className = "dialogue-title";
-      title.textContent = d.title;
-      heading.append(dialogueIcon, title);
-
-      const badge = document.createElement("span");
-      badge.className = "badge badge-locked";
-      badge.textContent = "Закрыта · Bloccata";
-
-      header.append(heading, badge);
-
-      const orderFeedback = document.createElement("div");
-      orderFeedback.className = "order-feedback";
-      orderFeedback.setAttribute("aria-live", "polite");
-      orderFeedback.textContent = "✅ Dialogo corretto! Ordine completato.";
-
-      const listDiv = document.createElement("div");
-      listDiv.className = "lines-list";
-      listDiv.id = `lines-list-${dIdx}`;
-
-      // Footer con il pulsante Approva del docente
-      const footer = document.createElement("div");
-      footer.className = "card-footer";
-
-      const approveBtn = document.createElement("button");
-      approveBtn.className = "btn-approve";
-      approveBtn.type = "button";
-      approveBtn.textContent = "✔️ Approva e sblocca il successivo ➔";
-      approveBtn.onclick = () => {
-        if (answersRef) {
-          const nextStep = Math.min(dialoguesData.length - 1, currentActiveStep + 1);
-          answersRef.update({
-            activeStep: nextStep
-          });
-          currentlyViewedTab = nextStep;
-        }
-      };
-
-      footer.appendChild(approveBtn);
-      box.append(header, orderFeedback, listDiv, footer);
-      container.appendChild(box);
-
-      dialogueBoxes.push(box);
-      badges.push(badge);
-      orderFeedbacks.push(orderFeedback);
-    });
-
-    teacherToggle.addEventListener("change", (e) => {
-      isTeacher = e.target.checked;
-      resetButton.style.display = isTeacher ? "inline-block" : "none";
-      updateUIState();
-    });
-
-    // Spostamento fluido delle battute
-    function moveLine(dIdx, lineIndex, direction) {
-      if (!answersRef || isDialogueCorrect(dIdx) || (currentlyViewedTab !== dIdx && !isTeacher)) return;
-
-      const d = dialoguesData[dIdx];
-      let order = currentOrders[dIdx] ? [...currentOrders[dIdx]] : [...Array(d.movableLines.length).keys()];
-      
-      const targetIndex = lineIndex + direction;
-      if (targetIndex < 0 || targetIndex >= order.length) return;
-
-      const temp = order[lineIndex];
-      order[lineIndex] = order[targetIndex];
-      order[targetIndex] = temp;
-
-      recentMove = { dialogueIndex: dIdx, position: targetIndex };
-      clearTimeout(recentMoveTimer);
-      recentMoveTimer = setTimeout(() => { recentMove = null; }, 700);
-      answersRef.child("orders").child(String(dIdx)).set(order);
-    }
-
-    // Renderizza le battute
-    function renderLines(dIdx) {
-      const listDiv = document.getElementById(`lines-list-${dIdx}`);
-      listDiv.innerHTML = "";
-      const d = dialoguesData[dIdx];
-
-      const isCorrect = isDialogueCorrect(dIdx);
-
-      // Battuta [1] fissa
-      const firstItem = document.createElement("div");
-      firstItem.className = "line-item fixed-first";
-      if (isCorrect) firstItem.classList.add("correct-line");
-      firstItem.innerHTML = `
-        <div class="line-number">1</div>
-        <div class="line-text">${d.firstLine}</div>
-      `;
-      listDiv.appendChild(firstItem);
-
-      // Battute mobili
-      const order = currentOrders[dIdx] || [...Array(d.movableLines.length).keys()];
-      const canMove = !isCorrect && (currentlyViewedTab === dIdx && (dIdx <= currentActiveStep || isTeacher));
-
-      order.forEach((lineIdx, positionIdx) => {
+      order.forEach((lineIndex, position) => {
         const item = document.createElement("div");
-        item.className = "line-item";
-        if (isCorrect) item.classList.add("correct-line");
-        if (!isCorrect && recentMove && recentMove.dialogueIndex === dIdx && recentMove.position === positionIdx) {
-          item.classList.add("just-moved");
-        }
-
-        const numDiv = document.createElement("div");
-        numDiv.className = "line-number";
-        numDiv.textContent = positionIdx + 2;
-
-        const textDiv = document.createElement("div");
-        textDiv.className = "line-text";
-        textDiv.textContent = d.movableLines[lineIdx];
-
-        const btnGroup = document.createElement("div");
-        btnGroup.className = "move-btn-group";
-
-        const upBtn = document.createElement("button");
-        upBtn.className = "btn-move";
-        upBtn.type = "button";
-        upBtn.textContent = "▲";
-        upBtn.disabled = !canMove || positionIdx === 0;
-        upBtn.onclick = () => moveLine(dIdx, positionIdx, -1);
-
-        const downBtn = document.createElement("button");
-        downBtn.className = "btn-move";
-        downBtn.type = "button";
-        downBtn.textContent = "▼";
-        downBtn.disabled = !canMove || positionIdx === order.length - 1;
-        downBtn.onclick = () => moveLine(dIdx, positionIdx, 1);
-
-        btnGroup.append(upBtn, downBtn);
-        item.append(numDiv, textDiv, btnGroup);
-        listDiv.appendChild(item);
+        item.className = `line-item${correct ? " correct-line" : ""}`;
+        const number = document.createElement("span");
+        number.className = "line-number";
+        number.textContent = String(position + 2);
+        const text = document.createElement("span");
+        text.className = "line-text";
+        text.textContent = dialogue.movableLines[lineIndex] || "";
+        const controls = document.createElement("div");
+        controls.className = "move-btn-group";
+        const up = document.createElement("button");
+        up.className = "btn-move";
+        up.type = "button";
+        up.textContent = "▲";
+        up.setAttribute("aria-label", `Sposta la battuta ${position + 2} in alto`);
+        up.disabled = !canEdit || position === 0 || correct;
+        up.addEventListener("click", () => onMove(dialogue, position, -1));
+        const down = document.createElement("button");
+        down.className = "btn-move";
+        down.type = "button";
+        down.textContent = "▼";
+        down.setAttribute("aria-label", `Sposta la battuta ${position + 2} in basso`);
+        down.disabled = !canEdit || position === order.length - 1 || correct;
+        down.addEventListener("click", () => onMove(dialogue, position, 1));
+        controls.append(up, down);
+        item.append(number, text, controls);
+        list.appendChild(item);
       });
+
+      const feedback = document.createElement("p");
+      feedback.className = `answer-feedback ${correct ? "correct" : "incorrect"}`;
+      feedback.textContent = correct ? "✓ Dialogo corretto! Ordine completato." : "Riordina le battute con le frecce.";
+      box.append(heading, list, feedback);
+      return box;
     }
+
+    function moveLine(dialogue, position, direction, isTokenMode) {
+      const state = isTokenMode ? tokenState : studentState;
+      const order = [...(state[dialogue.id] || defaultOrder(dialogue))];
+      const target = position + direction;
+      if (target < 0 || target >= order.length || isCorrect(dialogue, order)) return;
+      [order[position], order[target]] = [order[target], order[position]];
+      state[dialogue.id] = order;
+      if (isTokenMode && answersRef && currentWriter === myClientId) {
+        answersRef.child("tokenData").child("orders").child(dialogue.id).set(order);
+      } else if (!isTokenMode) {
+        saveStatus.hidden = true;
+      }
+      renderSlides(isTokenMode ? "token" : "student");
+    }
+
+    function renderSlides(mode) {
+      const isTokenMode = mode === "token";
+      const container = document.getElementById(`${mode}-slides-container`);
+      const index = isTokenMode ? activeTokenSlide : activeStudentSlide;
+      const state = isTokenMode ? tokenState : studentState;
+      container.replaceChildren();
+      dialoguesData.forEach((dialogue, slideIndex) => {
+        const slide = buildSlide(dialogue, isTokenMode, state,
+          isTokenMode ? currentWriter === myClientId : !isTeacher,
+          (item, position, direction) => moveLine(item, position, direction, isTokenMode));
+        slide.hidden = slideIndex !== index;
+        container.appendChild(slide);
+      });
+      updateNavigation(mode);
+    }
+
+    function updateNavigation(mode) {
+      const index = mode === "token" ? activeTokenSlide : activeStudentSlide;
+      const prefix = mode === "token" ? "token" : "student";
+      document.getElementById(`prev-${prefix}-slide`).disabled = index === 0;
+      const nextButton = document.getElementById(`next-${prefix}-slide`);
+      const isLastSlide = index === dialoguesData.length - 1;
+      nextButton.disabled = false;
+      nextButton.textContent = isLastSlide ? "Vai all’esercizio J →" : "Successiva →";
+      document.getElementById(`progress-${prefix}-slide`).textContent = `Dialogo ${index + 1} di ${dialoguesData.length}`;
+    }
+
+    function navigate(mode, direction) {
+      if (mode === "token") {
+        activeTokenSlide = Math.max(0, Math.min(dialoguesData.length - 1, activeTokenSlide + direction));
+        renderSlides("token");
+      } else {
+        activeStudentSlide = Math.max(0, Math.min(dialoguesData.length - 1, activeStudentSlide + direction));
+        renderSlides("student");
+      }
+    }
+    document.getElementById("prev-token-slide").onclick = () => navigate("token", -1);
+    document.getElementById("next-token-slide").onclick = () => {
+      if (activeTokenSlide === dialoguesData.length - 1) window.location.href = "es_j.html";
+      else navigate("token", 1);
+    };
+    document.getElementById("prev-student-slide").onclick = () => navigate("student", -1);
+    document.getElementById("next-student-slide").onclick = () => {
+      if (activeStudentSlide === dialoguesData.length - 1) window.location.href = "es_j.html";
+      else navigate("student", 1);
+    };
+
+    document.addEventListener("keydown", event => {
+      if (["INPUT", "TEXTAREA", "SELECT", "BUTTON", "A"].includes(document.activeElement.tagName)) return;
+      const direction = ["ArrowRight", "ArrowDown"].includes(event.key) ? 1 : ["ArrowLeft", "ArrowUp"].includes(event.key) ? -1 : 0;
+      if (!direction) return;
+      event.preventDefault();
+      navigate(currentWorkMode, direction);
+    });
 
     function updateUIState() {
-      dialogueBoxes.forEach((box, i) => {
-        const badge = badges[i];
-        const tabBtn = tabButtons[i];
-        const approveBtn = box.querySelector(".btn-approve");
-
-        if (i === currentlyViewedTab) {
-          box.classList.add("current-view");
+      teacherReleaseTokenButton.hidden = !(isTeacher && currentWorkMode === "token");
+      tokenSection.classList.toggle("active-mode", currentWorkMode === "token");
+      allSection.classList.toggle("active-mode", currentWorkMode === "all");
+      if (currentWorkMode === "token") {
+        if (!currentWriter) {
+          tokenStatusText.textContent = "";
+          btnTakeToken.textContent = "✋ Взять слово · Prendi la parola";
+          btnTakeToken.className = "btn-token";
+          btnTakeToken.disabled = false;
+        } else if (currentWriter === myClientId) {
+          tokenStatusText.textContent = "Вы редактируете · Stai riordinando";
+          btnTakeToken.textContent = "✔ Передать слово · Lascia la parola";
+          btnTakeToken.className = "btn-token release";
+          btnTakeToken.disabled = false;
         } else {
-          box.classList.remove("current-view");
+          tokenStatusText.textContent = "🔒 Пишет одноклассник · Un compagno sta lavorando";
+          btnTakeToken.textContent = "🔒 Пишет одноклассник · Compagno al lavoro";
+          btnTakeToken.className = "btn-token busy";
+          btnTakeToken.disabled = true;
         }
+        renderSlides("token");
+      } else {
+        renderSlides("student");
+        renderResponsesAllMode();
+      }
+    }
 
-        tabBtn.className = "tab-btn";
-        if (isDialogueCorrect(i)) tabBtn.classList.add("correct-tab");
-        if (i === currentlyViewedTab) tabBtn.classList.add("active-tab");
-        else if (i < currentActiveStep) tabBtn.classList.add("approved-tab");
-        else if (i > currentActiveStep && !isTeacher) tabBtn.classList.add("locked-tab");
+    teacherToggle.addEventListener("change", event => {
+      isTeacher = event.target.checked;
+      document.body.classList.toggle("teacher-mode", isTeacher);
+      modeSelectorContainer.classList.toggle("visible", isTeacher);
+      resetButton.hidden = !isTeacher;
+      updateUIState();
+    });
+    workModeSelect.addEventListener("change", event => {
+      if (answersRef && isTeacher) answersRef.child("workMode").set(event.target.value);
+    });
+    btnTakeToken.addEventListener("click", () => {
+      if (!answersRef) return;
+      if (currentWriter === myClientId) answersRef.child("tokenData").child("currentWriter").set(null);
+      else if (!currentWriter) answersRef.child("tokenData").child("currentWriter").set(myClientId);
+    });
+    teacherReleaseTokenButton.addEventListener("click", () => {
+      if (isTeacher && currentWorkMode === "token" && answersRef) answersRef.child("tokenData").child("currentWriter").set(null);
+    });
 
-        orderFeedbacks[i].classList.toggle("is-visible", isDialogueCorrect(i));
-
-        if (i < currentActiveStep) {
-          badge.className = "badge badge-approved";
-          badge.textContent = "Одобрено · Approvato";
-          approveBtn.style.display = isTeacher ? "inline-block" : "none";
-        } else if (i === currentActiveStep) {
-          badge.className = "badge badge-active";
-          badge.textContent = "Открыто · In corso";
-          approveBtn.style.display = isTeacher ? "inline-block" : "none";
-        } else {
-          badge.className = "badge badge-locked";
-          badge.textContent = "Закрыта · Bloccata";
-          approveBtn.style.display = isTeacher ? "inline-block" : "none";
-        }
-
-        renderLines(i);
+    function renderResponsesAllMode() {
+      responsesList.replaceChildren();
+      const entries = Object.entries(allResponses.students || {});
+      if (!entries.length) {
+        const empty = document.createElement("p");
+        empty.style.color = "var(--text-muted)";
+        empty.textContent = "Пока никто не отправил ответы...";
+        responsesList.appendChild(empty);
+        return;
+      }
+      const grouped = document.createElement("div");
+      grouped.className = "dialogue-responses";
+      dialoguesData.forEach((dialogue, dialogueIndex) => {
+        const details = document.createElement("details");
+        if (dialogueIndex === 0) details.open = true;
+        const summary = document.createElement("summary");
+        summary.textContent = dialogue.title;
+        const list = document.createElement("div");
+        list.className = "answer-list";
+        entries.forEach(([, student]) => {
+          const row = document.createElement("div");
+          row.className = "answer-row";
+          const author = document.createElement("span");
+          author.className = "answer-author";
+          author.textContent = student.name || "Studente";
+          const order = student.answers?.[dialogue.id] || [];
+          const answer = document.createElement("span");
+          answer.className = `answer-text ${isCorrect(dialogue, order) ? "correct" : "incorrect"}`;
+          answer.textContent = [dialogue.firstLine, ...order.map(index => dialogue.movableLines[index] || "")].join(" ");
+          row.append(author, answer);
+          list.appendChild(row);
+        });
+        details.append(summary, list);
+        grouped.appendChild(details);
       });
+      responsesList.appendChild(grouped);
     }
 
     if (window.firebase) {
       try {
         firebase.initializeApp(firebaseConfig);
         answersRef = firebase.database().ref("esercizi/unita10-riordina-dialoghi");
-
-        answersRef.on("value", (snapshot) => {
+        answersRef.on("value", snapshot => {
           const data = snapshot.val() || {};
-          currentActiveStep = (data.activeStep !== undefined) ? data.activeStep : 0;
-          currentOrders = data.orders || {};
-
+          if (data.resetId && data.resetId !== lastResetId) {
+            studentState = createEmptyState();
+            saveStatus.hidden = true;
+          }
+          lastResetId = data.resetId || null;
+          currentWorkMode = data.workMode || "token";
+          workModeSelect.value = currentWorkMode;
+          const token = data.tokenData || {};
+          currentWriter = token.currentWriter || null;
+          tokenState = { ...createEmptyState(), ...(token.orders || {}) };
+          allResponses = data.allStudentsData || {};
           updateUIState();
         });
-      } catch (e) {
-        console.error("Errore Firebase:", e);
-      }
+      } catch (error) { console.error("Errore Firebase:", error); }
     }
 
-    resetButton.addEventListener("click", () => {
-      if (confirm("Сбросить все диалоги? · Vuoi azzerare l'esercizio?")) {
-        answersRef.set({
-          activeStep: 0,
-          orders: {}
-        });
-        currentlyViewedTab = 0;
+    document.getElementById("btn-submit-all").addEventListener("click", async () => {
+      const name = studentNameInput.value.trim();
+      if (!name) {
+        alert("Пожалуйста, введите ваше имя! · Inserisci il tuo nome e cognome!");
+        studentNameInput.focus();
+        return;
       }
+      if (!answersRef) {
+        alert("Нет соединения с базой данных. · Connessione non disponibile.");
+        return;
+      }
+      localStorage.setItem("parlo_student_name", name);
+      const studentId = name.replace(/[.#$\/\[\]]/g, "_");
+      try {
+        await answersRef.child("allStudentsData").child("students").child(studentId).update({
+          name, answers: studentState, timestamp: Date.now()
+        });
+        saveStatus.textContent = "✅ Risposte inviate all’insegnante!";
+        saveStatus.hidden = false;
+      } catch (error) { alert("Errore durante l'invio delle risposte."); }
     });
+
+    resetButton.addEventListener("click", () => {
+      if (!answersRef || !confirm("Сбросить все ответы? · Azzera tutte le risposte?")) return;
+      answersRef.set({
+        resetId: `${Date.now()}_${myClientId}`,
+        workMode: currentWorkMode,
+        tokenData: { currentWriter: null, orders: createEmptyState() },
+        allStudentsData: {}
+      });
+    });
+
+    renderSlides("student");
+    renderSlides("token");
+    updateUIState();
   </script>
 </body>
 </html>
