@@ -23,7 +23,11 @@
       margin: 0;
       padding: 32px 16px;
       color: var(--text);
-      background: radial-gradient(ellipse at 50% 0, rgba(255,255,255,.8), transparent 55%), #e9e3d6;
+      background:
+        linear-gradient(rgba(250, 248, 241, .78), rgba(250, 248, 241, .78)),
+        url("img/sfondo.jpeg") center / cover fixed,
+        radial-gradient(ellipse at 50% 0, rgba(255,255,255,.8), transparent 55%),
+        #e9e3d6;
     }
     main { width: min(100%, 880px); margin: 0 auto; }
     .top-exercises { display: flex; justify-content: flex-start; margin: 0 0 14px; }
@@ -53,6 +57,15 @@
       border: 0;
     }
     header { margin: 20px 0 24px; text-align: center; }
+    .banner {
+      aspect-ratio: 4 / 1;
+      overflow: hidden;
+      margin: 0 0 22px;
+      border: 1px solid rgba(71, 119, 85, .15);
+      border-radius: 26px;
+      background: url("img/banner.jpeg") center / cover no-repeat;
+      box-shadow: 0 14px 36px rgba(43, 69, 46, .09);
+    }
     .eyebrow {
       display: inline-block;
       margin-bottom: 10px;
@@ -211,6 +224,7 @@
         <option value="es_p.html">Esercizio P</option>
       </select>
     </nav>
+    <div class="banner" role="img" aria-label="Immagine introduttiva del racconto Il grande scrittore"></div>
     <header>
       <span class="eyebrow">Lettura · Unità 13</span>
       <h1>Il grande scrittore</h1>
