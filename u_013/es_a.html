@@ -25,6 +25,7 @@
     body {
       min-height: 100vh; margin: 0; padding: 32px 16px; color: var(--text);
       background: linear-gradient(rgba(250,248,241,.78),rgba(250,248,241,.78)),
+        url("img/sfondo.jpeg") center / cover fixed,
         radial-gradient(ellipse at 50% -12%,rgba(111,151,116,.18),transparent 42%), var(--bg-main);
     }
     .container { width: min(100%, 880px); margin: 0 auto; }
@@ -84,6 +85,10 @@
     .login-box { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 16px; border-radius: 14px; background: var(--primary-light); }
     .login-box label { color: var(--primary-dark); font-size: .9rem; font-weight: 700; white-space: nowrap; }
     .login-box input { flex: 1; min-width: 0; padding: 10px 14px; border: 1.5px solid #d4e1d5; border-radius: 10px; background: #fff; font: inherit; }
+    .formulated-question-label { color: var(--primary-dark); font-size: .92rem; font-weight: 700; }
+    .formulated-question-input { width: 100%; min-height: 74px; padding: 10px 12px; border: 1.5px solid #d4e1d5; border-radius: 10px; font: inherit; font-size: .95rem; resize: vertical; }
+    .formulated-question-input:disabled { background: #f2f5f1; color: #475569; }
+    .formulated-question { display: block; margin-bottom: 6px; color: var(--text-muted); font-weight: 600; }
     .save-status, .answer-feedback { padding: 10px 14px; border-radius: 10px; font-size: .95rem; font-weight: 700; }
     .save-status { margin: 0 0 18px; border: 1px solid #b7dfc1; background: var(--success-bg); color: #17623c; }
     .save-status[hidden], .answer-feedback[hidden] { display: none; }
@@ -127,11 +132,11 @@
     <header class="hero">
       <span class="eyebrow">Unità 13 · Lettura e comprensione</span>
       <h1>Il grande scrittore</h1>
-      <p class="hero-subtitle">Scegliete la risposta corretta.</p>
+      <p class="hero-subtitle">Scegliete la risposta corretta e formulate una domanda per il vostro compagno.</p>
     </header>
     <div class="instruction-box">
       <div class="instruction-title">💡 Задание · Esercizio A</div>
-      <div class="instruction-text"><strong>Выберите правильный вариант:</strong></div>
+      <div class="instruction-text"><strong>Выберите правильный вариант ответа и сформулируйте вопрос:</strong></div>
     </div>
     <div class="top-controls">
       <div class="teacher-controls">
@@ -191,7 +196,10 @@
 
     const createEmptyState = () => Object.fromEntries(questionsData.map(item => [item.id, null]));
     let studentState = createEmptyState();
+    let studentQuestionState = {};
     let tokenState = createEmptyState();
+    let tokenQuestionState = Object.fromEntries(questionsData.map(item => [item.id, ""]));
+    const tokenQuestionSaveTimers = new Map();
     let activeTokenSlide = 0;
     let activeStudentSlide = 0;
     let answersRef = null;
@@ -236,7 +244,27 @@
         button.addEventListener("click", () => selectOption(index));
         options.appendChild(button);
       });
-      box.append(title, options);
+      const formulationLabel = document.createElement("label");
+      formulationLabel.className = "formulated-question-label";
+      formulationLabel.htmlFor = `${tokenMode ? "token-" : ""}formulated-question-${item.id}`;
+      formulationLabel.textContent = "✍️ Formula una domanda corrispondente:";
+      const formulationInput = document.createElement("textarea");
+      formulationInput.id = formulationLabel.htmlFor;
+      formulationInput.className = "formulated-question-input";
+      formulationInput.rows = 2;
+      formulationInput.placeholder = "Scrivi qui la domanda...";
+      formulationInput.value = tokenMode ? (tokenQuestionState[item.id] || "") : (studentQuestionState[item.id] || "");
+      formulationInput.disabled = tokenMode && currentWriter !== myClientId;
+      formulationInput.addEventListener("input", () => {
+        if (tokenMode) scheduleTokenQuestionSave(item.id, formulationInput.value);
+        else {
+          studentQuestionState[item.id] = formulationInput.value;
+          saveStatus.hidden = true;
+        }
+      });
+      if (tokenMode) formulationInput.addEventListener("blur", () => flushTokenQuestionSave(item.id));
+      box.append(formulationLabel, formulationInput, title, options);
+
       if (selected !== null && selected !== undefined) {
         const feedback = document.createElement("p");
         feedback.className = `answer-feedback ${selected === item.correct ? "correct" : "incorrect"}`;
@@ -267,13 +295,40 @@
       questionsData.forEach((item, index) => {
         const card = buildSlideItem(item, true, tokenState, option => {
           tokenState[item.id] = option;
-          if (answersRef) answersRef.child("tokenData/answers").set(tokenState);
+          if (answersRef && currentWriter === myClientId) answersRef.child("tokenData/answers").set(tokenState);
           renderTokenSlides();
         });
         card.hidden = index !== activeTokenSlide;
         container.appendChild(card);
       });
       updateProgress("token");
+    }
+
+    function saveTokenQuestionFormulation(questionId) {
+      if (answersRef && currentWriter === myClientId) {
+        answersRef.child("tokenData/questionFormulations").child(questionId).set(tokenQuestionState[questionId]);
+      }
+    }
+
+    function scheduleTokenQuestionSave(questionId, value) {
+      tokenQuestionState[questionId] = value;
+      clearTimeout(tokenQuestionSaveTimers.get(questionId));
+      tokenQuestionSaveTimers.set(questionId, setTimeout(() => {
+        tokenQuestionSaveTimers.delete(questionId);
+        saveTokenQuestionFormulation(questionId);
+      }, 350));
+    }
+
+    function flushTokenQuestionSave(questionId) {
+      const timer = tokenQuestionSaveTimers.get(questionId);
+      if (timer === undefined) return;
+      clearTimeout(timer);
+      tokenQuestionSaveTimers.delete(questionId);
+      saveTokenQuestionFormulation(questionId);
+    }
+
+    function flushTokenQuestionSaves() {
+      Array.from(tokenQuestionSaveTimers.keys()).forEach(flushTokenQuestionSave);
     }
 
     function updateProgress(mode) {
@@ -288,6 +343,7 @@
     function navigate(mode, direction) {
       if (mode === "token") {
         activeTokenSlide = Math.max(0, Math.min(questionsData.length - 1, activeTokenSlide + direction));
+        if (direction !== 0) flushTokenQuestionSaves();
         renderTokenSlides();
       } else {
         activeStudentSlide = Math.max(0, Math.min(questionsData.length - 1, activeStudentSlide + direction));
@@ -319,8 +375,10 @@
     });
     btnTakeToken.addEventListener("click", () => {
       if (!answersRef) return;
-      if (currentWriter === myClientId) answersRef.child("tokenData/currentWriter").set(null);
-      else if (!currentWriter) answersRef.child("tokenData/currentWriter").set(myClientId);
+      if (currentWriter === myClientId) {
+        flushTokenQuestionSaves();
+        answersRef.child("tokenData/currentWriter").set(null);
+      } else if (!currentWriter) answersRef.child("tokenData/currentWriter").set(myClientId);
     });
     teacherReleaseTokenButton.addEventListener("click", () => {
       if (isTeacher && currentWorkMode === "token" && answersRef) answersRef.child("tokenData/currentWriter").set(null);
@@ -347,7 +405,9 @@
           btnTakeToken.className = "btn-token busy";
           btnTakeToken.disabled = true;
         }
-        renderTokenSlides();
+        const editingTokenQuestion = document.activeElement?.classList.contains("formulated-question-input")
+          && currentWriter === myClientId;
+        if (!editingTokenQuestion) renderTokenSlides();
       } else {
         renderStudentSlides();
         renderResponsesAllMode();
@@ -382,7 +442,14 @@
           const selected = student.answers?.[item.id];
           const answer = document.createElement("span");
           answer.className = `answer-text ${selected == null ? "" : selected === item.correct ? "correct" : "incorrect"}`;
-          answer.textContent = selected == null ? "—" : item.options[selected];
+          const formulation = student.questionFormulations?.[item.id]?.trim();
+          if (formulation) {
+            const formulationText = document.createElement("span");
+            formulationText.className = "formulated-question";
+            formulationText.textContent = `Domanda: ${formulation}`;
+            answer.appendChild(formulationText);
+          }
+          answer.appendChild(document.createTextNode(selected == null ? "—" : item.options[selected]));
           row.append(author, answer);
           list.appendChild(row);
         });
@@ -400,6 +467,7 @@
           const data = snapshot.val() || {};
           if (data.resetId && data.resetId !== lastResetId) {
             studentState = createEmptyState();
+            studentQuestionState = {};
             saveStatus.hidden = true;
           }
           lastResetId = data.resetId || null;
@@ -408,6 +476,11 @@
           const token = data.tokenData || {};
           currentWriter = token.currentWriter || null;
           tokenState = token.answers || createEmptyState();
+          const formulations = token.questionFormulations || {};
+          tokenQuestionState = Object.fromEntries(questionsData.map(item => [
+            item.id,
+            typeof formulations[item.id] === "string" ? formulations[item.id] : ""
+          ]));
           allResponses = data.allStudentsData || {};
           updateUIState();
         });
@@ -429,7 +502,10 @@
       const studentId = name.replace(/[.#$\/\[\]]/g, "_");
       try {
         await answersRef.child("allStudentsData/students").child(studentId).update({
-          name, answers: studentState, timestamp: Date.now()
+          name,
+          answers: studentState,
+          questionFormulations: studentQuestionState,
+          timestamp: Date.now()
         });
         saveStatus.textContent = "✅ Risposte inviate all’insegnante!";
         saveStatus.hidden = false;
@@ -441,7 +517,11 @@
       answersRef.set({
         resetId: `${Date.now()}_${myClientId}`,
         workMode: currentWorkMode,
-        tokenData: { currentWriter: null, answers: createEmptyState() },
+        tokenData: {
+          currentWriter: null,
+          answers: createEmptyState(),
+          questionFormulations: Object.fromEntries(questionsData.map(item => [item.id, ""]))
+        },
         allStudentsData: {}
       });
     });
