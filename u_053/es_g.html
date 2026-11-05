@@ -86,9 +86,10 @@
     .btn-submit { width: 100%; margin-top: 16px; padding: 14px; border: 0; border-radius: 14px; background: var(--primary); color: #fff; font: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 14px rgba(71,119,85,.3); }
     .btn-submit:hover { background: var(--primary-dark); }
     .slide-navigation { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
-    .slide-navigation button { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 8px 18px; border: 1px solid #d8e5d8; border-radius: 10px; background: #fff; color: var(--primary-dark); font: inherit; font-weight: 700; cursor: pointer; }
-    .slide-navigation button:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-light); }
+    .slide-navigation button, .slide-navigation a { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 8px 18px; border: 1px solid #d8e5d8; border-radius: 10px; background: #fff; color: var(--primary-dark); font: inherit; font-weight: 700; cursor: pointer; text-decoration: none; }
+    .slide-navigation button:hover:not(:disabled), .slide-navigation a:hover { border-color: var(--primary); background: var(--primary-light); }
     .slide-navigation button:disabled { cursor: not-allowed; opacity: .45; }
+    .slide-navigation [hidden] { display: none; }
     .slide-progress { color: var(--primary-dark); font-size: .95rem; font-weight: 800; text-align: center; }
     .results-section { margin-top: 24px; }
     .results-section h2 { margin-bottom: 16px; color: var(--primary-dark); font-size: 1.25rem; }
@@ -112,7 +113,7 @@
       body { padding: 16px 8px; }
       .slide-item { padding: 14px; }
       .slide-navigation { flex-direction: column; gap: 8px; }
-      .slide-navigation button { width: 100%; }
+      .slide-navigation button, .slide-navigation a { width: 100%; }
       .login-box { align-items: stretch; flex-direction: column; }
       .answer-row { grid-template-columns: 1fr; gap: 4px; }
       .teacher-controls { align-items: stretch; flex-direction: column; }
@@ -173,6 +174,7 @@
         <button id="prev-token-slide" type="button">← Precedente</button>
         <span id="progress-token-slide" class="slide-progress" aria-live="polite"></span>
         <button id="next-token-slide" type="button">Successiva →</button>
+        <a id="token-next-exercise-link" href="es_h.html" hidden>Vai all’esercizio H →</a>
       </nav>
     </section>
 
@@ -186,6 +188,7 @@
         <button id="prev-all-slide" type="button">← Precedente</button>
         <span id="progress-all-slide" class="slide-progress" aria-live="polite"></span>
         <button id="next-all-slide" type="button">Successiva →</button>
+        <a id="all-next-exercise-link" href="es_h.html" hidden>Vai all’esercizio H →</a>
       </nav>
       <div class="student-entry">
         <button id="submit-answer" class="btn-submit" type="button">📤 Отправить ответ · Invia questa risposta</button>
@@ -273,6 +276,8 @@
     const previousAllButton = document.getElementById("prev-all-slide");
     const nextAllButton = document.getElementById("next-all-slide");
     const submitAnswerButton = document.getElementById("submit-answer");
+    const tokenNextExerciseLink = document.getElementById("token-next-exercise-link");
+    const allNextExerciseLink = document.getElementById("all-next-exercise-link");
 
     studentNameInput.value = localStorage.getItem("parlo_student_name") || "";
 
@@ -307,7 +312,9 @@
       previousTokenButton.disabled = activeTokenSlide === 0;
       const isLast = activeTokenSlide === questions.length - 1;
       nextTokenButton.disabled = isLast;
-      nextTokenButton.textContent = isLast ? "Fine esercizio" : "Successiva →";
+      nextTokenButton.hidden = isLast;
+      tokenNextExerciseLink.hidden = !isLast;
+      nextTokenButton.textContent = "Successiva →";
       document.getElementById("progress-token-slide").textContent = `Frase ${activeTokenSlide + 1} di ${questions.length}`;
     }
 
@@ -322,7 +329,9 @@
       previousAllButton.disabled = activeAllSlide === 0;
       const isLast = activeAllSlide === questions.length - 1;
       nextAllButton.disabled = isLast;
-      nextAllButton.textContent = isLast ? "Fine esercizio" : "Successiva →";
+      nextAllButton.hidden = isLast;
+      allNextExerciseLink.hidden = !isLast;
+      nextAllButton.textContent = "Successiva →";
       document.getElementById("progress-all-slide").textContent = `Frase ${activeAllSlide + 1} di ${questions.length}`;
       submitAnswerButton.disabled = isTeacher;
     }
