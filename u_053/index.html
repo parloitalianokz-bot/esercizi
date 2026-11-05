@@ -25,13 +25,23 @@
       margin: 0;
       padding: 32px 16px;
       color: var(--text);
-      background:
-        linear-gradient(rgba(250, 248, 241, .78), rgba(250, 248, 241, .78)),
-        radial-gradient(ellipse at 50% 0, rgba(255, 255, 255, .72), transparent 55%),
-        #e9e3d6;
+      background: #e9e3d6;
     }
 
-    main { width: min(100%, 880px); margin: 0 auto; }
+    body::before {
+      content: "";
+      position: fixed;
+      z-index: 0;
+      inset: -6px;
+      pointer-events: none;
+      background:
+        linear-gradient(rgba(250, 248, 241, .78), rgba(250, 248, 241, .78)),
+        url("img/sfondo.jpeg") center calc(50% - var(--background-offset, 0px)) / cover no-repeat,
+        radial-gradient(ellipse at 50% 0, rgba(255, 255, 255, .72), transparent 55%);
+      filter: blur(3px);
+    }
+
+    main { position: relative; z-index: 1; width: min(100%, 880px); margin: 0 auto; }
     .page-heading { margin: 8px 0 14px; text-align: center; }
 
     .top-exercises { display: flex; justify-content: flex-start; margin: 0 0 14px; }
@@ -57,7 +67,7 @@
     .banner {
       aspect-ratio: 4 / 1; position: relative; overflow: hidden; margin: 0 0 22px;
       border: 1px solid rgba(71, 119, 85, .15); border-radius: 26px;
-      background: linear-gradient(120deg, #384b38, #c18459 52%, #e9c995);
+      background: url("img/banner.jpeg") center / cover no-repeat;
       box-shadow: 0 14px 36px rgba(43, 69, 46, .12);
     }
     .banner::after {
@@ -252,6 +262,22 @@
     previousParagraphButton.addEventListener("click", () => showSlide(currentSlide - 1));
     nextParagraphButton.addEventListener("click", () => showSlide(currentSlide + 1));
     showSlide(0);
+
+    let backgroundUpdatePending = false;
+    function updateBackgroundParallax() {
+      if (backgroundUpdatePending) return;
+      backgroundUpdatePending = true;
+      requestAnimationFrame(() => {
+        const offset = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? 0
+          : Math.min(window.scrollY * 0.12, 180);
+        document.body.style.setProperty("--background-offset", `${offset}px`);
+        backgroundUpdatePending = false;
+      });
+    }
+
+    window.addEventListener("scroll", updateBackgroundParallax, { passive: true });
+    updateBackgroundParallax();
 
     document.getElementById("exercise-menu").addEventListener("change", (event) => {
       if (event.target.value) window.location.href = event.target.value;
