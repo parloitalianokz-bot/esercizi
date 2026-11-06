@@ -271,9 +271,6 @@
         const heading = document.createElement("h3");
         heading.className = "paragraph-heading";
         heading.textContent = `Paragrafo ${index + 1} di ${paragraphs.length}`;
-        const source = document.createElement("p");
-        source.className = "source-text";
-        source.textContent = text;
         const label = document.createElement("label");
         label.className = "answer-label";
         label.htmlFor = `${mode}-answer-${index}`;
@@ -283,7 +280,7 @@
         input.className = "rewrite-input";
         input.placeholder = index === 0 ? "Si chiama Riccardo Ricchi. È uno scrittore..." : "Riscrivi qui questo paragrafo alla terza persona...";
         input.setAttribute("aria-label", `Riscrittura del paragrafo ${index + 1} alla terza persona`);
-        input.value = answers[index] || "";
+        input.value = answers[index] || text;
         input.disabled = mode === "token" ? isTeacher || currentWriter !== myClientId : isTeacher;
         input.addEventListener("input", () => {
           answers[index] = input.value;
@@ -295,7 +292,7 @@
             saveStatus.hidden = true;
           }
         });
-        slide.append(heading, source, label, input);
+        slide.append(heading, label, input);
         track.appendChild(slide);
       });
       updateNavigation(mode);
