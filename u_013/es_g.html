@@ -150,7 +150,6 @@
         <button id="next-slide" type="button">Successiva →</button>
         <a id="next-exercise" href="es_h.html" hidden>Vai all’esercizio H →</a>
       </nav>
-      <button id="submit-answers" class="submit-btn student-only" type="button" hidden>📤 Invia le risposte</button>
       <p id="save-status" class="save-status" role="status" aria-live="polite" hidden></p>
     </section>
     <section class="card teacher-panel" id="teacher-panel" aria-label="Risposte degli studenti">
@@ -205,7 +204,6 @@
     const previousButton = document.getElementById("previous-slide");
     const nextButton = document.getElementById("next-slide");
     const nextExercise = document.getElementById("next-exercise");
-    const submitButton = document.getElementById("submit-answers");
     const saveStatus = document.getElementById("save-status");
     const responsesList = document.getElementById("responses-list");
     const teacherPanel = document.getElementById("teacher-panel");
@@ -218,9 +216,64 @@
       const normalized = normalize(value);
       return normalized === questions[index].answer || normalized === normalize(questions[index].text.replace("______", questions[index].answer));
     }
+    function saveAnswer(index, value) {
+      if (!answersRef) return;
+      if (workMode === "token") {
+        if (currentWriter !== clientId) return;
+        const answer = value.trim();
+        if (answer) tokenAnswers[index] = { answer, correct: isCorrect(index, answer) };
+        else delete tokenAnswers[index];
+        answersRef.child("tokenData").child("answers").child(String(index))
+          .set(answer ? tokenAnswers[index] : null);
+        return;
+      }
+
+      const name = nameInput.value.trim();
+      if (!name) {
+        saveStatus.textContent = "Inserisci il nome e cognome per salvare automaticamente le risposte.";
+        saveStatus.hidden = false;
+        return;
+      }
+      localStorage.setItem("parlo_student_name", name);
+      const studentId = name.replace(/[.#$\/\[\]]/g, "_");
+      const answer = value.trim();
+      const updates = {
+        name,
+        timestamp: Date.now(),
+        [`answers/${index}`]: answer ? { answer, correct: isCorrect(index, answer) } : null
+      };
+      answersRef.child("allStudentsData").child("students").child(studentId).update(updates)
+        .then(() => {
+          saveStatus.textContent = "✅ Risposta salvata automaticamente.";
+          saveStatus.hidden = false;
+        })
+        .catch(() => {
+          saveStatus.textContent = "Errore durante il salvataggio della risposta.";
+          saveStatus.hidden = false;
+        });
+    }
+    function saveAllAnswers() {
+      const name = nameInput.value.trim();
+      if (!answersRef || workMode !== "all" || !name) return;
+      const studentId = name.replace(/[.#$\/\[\]]/g, "_");
+      const updates = { name, timestamp: Date.now() };
+      studentAnswers.forEach((answer, index) => {
+        if (answer.trim()) updates[`answers/${index}`] = { answer: answer.trim(), correct: isCorrect(index, answer) };
+      });
+      answersRef.child("allStudentsData").child("students").child(studentId).update(updates)
+        .then(() => {
+          saveStatus.textContent = "✅ Risposte salvate automaticamente.";
+          saveStatus.hidden = false;
+        })
+        .catch(() => {
+          saveStatus.textContent = "Errore durante il salvataggio delle risposte.";
+          saveStatus.hidden = false;
+        });
+    }
     function updateAnswer(index, value) {
       studentAnswers[index] = value;
-      if (workMode === "token") tokenAnswers[index] = { ...(tokenAnswers[index] || {}), answer: value, correct: isCorrect(index, value), name: nameInput.value.trim() };
+      if (workMode === "token") tokenAnswers[index] = { ...(tokenAnswers[index] || {}), answer: value, correct: isCorrect(index, value) };
+      saveAnswer(index, value);
       const feedback = slidesContainer.querySelector(`[data-feedback="${index}"]`);
       if (!feedback) return;
       if (!value.trim()) {
@@ -230,11 +283,15 @@
         feedback.textContent = "✅ Corretto!";
         feedback.className = "answer-feedback correct";
       } else {
-        feedback.textContent = "❌ Non ancora: controlla la forma del verbo.";
+        feedback.textContent = "";
         feedback.className = "answer-feedback incorrect";
       }
       updateProgress();
     }
+    nameInput.addEventListener("input", () => {
+      localStorage.setItem("parlo_student_name", nameInput.value.trim());
+      if (studentAnswers.some(answer => answer.trim())) saveAllAnswers();
+    });
     function renderSlides() {
       progress.replaceChildren();
       slidesContainer.replaceChildren();
@@ -268,9 +325,6 @@
         feedback.dataset.feedback = index;
         input.addEventListener("input", () => {
           updateAnswer(index, input.value);
-          if (workMode === "token" && currentWriter === clientId && answersRef) {
-            answersRef.child("tokenData").child("answers").child(index).update({ answer: input.value, correct: isCorrect(index, input.value), name: nameInput.value.trim() });
-          }
         });
         slide.append(number, prompt, input, feedback);
         slidesContainer.appendChild(slide);
@@ -295,7 +349,7 @@
           input.disabled = isTeacher || (workMode === "token" && currentWriter !== clientId);
           const feedback = slide.querySelector(".answer-feedback");
           if (currentAnswer) {
-            feedback.textContent = isCorrect(slideIndex, currentAnswer) ? "✅ Corretto!" : "❌ Non ancora: controlla la forma del verbo.";
+            feedback.textContent = isCorrect(slideIndex, currentAnswer) ? "✅ Corretto!" : "";
             feedback.className = `answer-feedback ${isCorrect(slideIndex, currentAnswer) ? "correct" : "incorrect"}`;
           } else {
             feedback.textContent = "";
@@ -316,9 +370,8 @@
       modeSelector.hidden = !isTeacher;
       document.getElementById("reset-answers").hidden = !isTeacher;
       document.getElementById("release-token").hidden = !(isTeacher && workMode === "token" && currentWriter);
-      teacherPanel.hidden = !isTeacher;
+      teacherPanel.hidden = !isTeacher || !isAllMode;
       studentLoginBox.hidden = isTeacher || !isAllMode;
-      submitButton.hidden = isTeacher || !isAllMode;
       document.getElementById("token-bar").hidden = isTeacher || isAllMode;
       if (isTeacher) {
         tokenStatus.textContent = currentWriter ? `Scheda in uso: ${currentWriterName()}` : "Nessuna scheda in uso.";
@@ -357,7 +410,7 @@
       if (!groups.length) {
         const empty = document.createElement("p");
         empty.style.color = "var(--text-muted)";
-        empty.textContent = "Nessuna risposta inviata.";
+        empty.textContent = "Nessuna risposta salvata.";
         responsesList.appendChild(empty);
         return;
       }
@@ -434,25 +487,6 @@
     document.getElementById("release-token").addEventListener("click", () => {
       if (isTeacher && answersRef && confirm("Liberare la scheda per gli altri studenti?")) answersRef.child("tokenData").child("currentWriter").set(null);
     });
-    submitButton.addEventListener("click", async () => {
-      const name = nameInput.value.trim();
-      if (!name) { alert("Inserisci il tuo nome e cognome."); nameInput.focus(); return; }
-      if (!answersRef) { alert("Connessione al database non disponibile."); return; }
-      if (!studentAnswers.some(answer => answer.trim())) { alert("Completa almeno una risposta prima di inviare."); return; }
-      const studentId = name.replace(/[.#$\/\[\]]/g, "_");
-      localStorage.setItem("parlo_student_name", name);
-      try {
-        const updates = { name, timestamp: Date.now() };
-        studentAnswers.forEach((answer, index) => {
-          if (answer.trim()) updates[`answers/${index}`] = { answer: answer.trim(), correct: isCorrect(index, answer) };
-        });
-        await answersRef.child("allStudentsData").child("students").child(studentId).update(updates);
-        saveStatus.textContent = "✅ Risposte inviate! La correzione automatica è visibile sulle schede.";
-        saveStatus.hidden = false;
-      } catch (error) {
-        alert("Errore durante l’invio delle risposte.");
-      }
-    });
     document.getElementById("reset-answers").addEventListener("click", () => {
       if (!isTeacher || !answersRef || !confirm("Azzera tutte le risposte dell’esercizio?")) return;
       answersRef.set({ resetId: `${Date.now()}_${clientId}`, workMode, tokenData: { currentWriter: null, writerName: "", answers: {} }, allStudentsData: {} });
@@ -466,6 +500,7 @@
           const data = snapshot.val() || {};
           if (data.resetId && data.resetId !== lastResetId) {
             studentAnswers = Array(questions.length).fill("");
+            tokenAnswers = {};
             saveStatus.hidden = true;
           }
           lastResetId = data.resetId || null;
