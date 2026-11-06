@@ -76,6 +76,12 @@
     .btn-token.busy { background: #e8ebea; color: #5f6863; cursor: not-allowed; }
     .work-card { display: flex; flex-direction: column; gap: 16px; }
     .work-title { margin: 0; color: var(--primary-dark); font-size: 1.1rem; font-weight: 800; }
+    .italian-character-toolbar { display: flex; flex-wrap: wrap; gap: 6px; }
+    .italian-character-toolbar button {
+      min-width: 38px; min-height: 38px; padding: 6px 10px; border: 1px solid #d8e5d8;
+      border-radius: 8px; background: #fffefa; color: var(--primary-dark); font: inherit; font-weight: 700; cursor: pointer;
+    }
+    .italian-character-toolbar button:hover { background: var(--primary-light); border-color: var(--primary); }
     .paragraph-track {
       display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth;
       overscroll-behavior-x: contain; scrollbar-width: thin; scrollbar-color: #b9cdbb transparent;
@@ -87,6 +93,8 @@
     }
     .paragraph-heading { margin: 0; color: var(--primary-dark); font-size: 1rem; font-weight: 800; }
     .source-text { margin: 0; padding: 18px; border: 1px solid #e8e6dc; border-radius: 14px; background: #faf9f5; color: var(--text); font-family: Georgia, 'Times New Roman', serif; font-size: 1.05rem; line-height: 2.2; }
+    .last-paragraph-image { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 14px; }
+    .last-paragraph-image[hidden] { display: none; }
     input.verb-input {
       display: inline-block; width: 125px; max-width: 100%; min-height: 38px; padding: 4px 8px; margin: 2px 4px;
       border: 1.5px solid #d4e1d5; border-radius: 8px; background: #fff; color: var(--primary-dark);
@@ -188,7 +196,17 @@
       </div>
       <div class="work-card">
         <h2 class="work-title">Testo da completare</h2>
+        <div class="italian-character-toolbar" id="token-character-toolbar" role="group" aria-label="Caratteri accentati italiani">
+          <button type="button" data-character="à">à</button>
+          <button type="button" data-character="è">è</button>
+          <button type="button" data-character="ì">ì</button>
+          <button type="button" data-character="ò">ò</button>
+          <button type="button" data-character="ù">ù</button>
+          <button type="button" data-character="È">È</button>
+        </div>
         <div class="paragraph-track" id="token-paragraph-track" aria-label="Schede del testo"></div>
+          <img class="last-paragraph-image" src="img/bea.jpeg" alt="Beatrice scrive il romanzo" hidden>
+
       </div>
       <nav class="slide-navigation" aria-label="Navigazione paragrafi">
         <button id="prev-token-paragraph" type="button">← Precedente</button>
@@ -207,7 +225,16 @@
         <p id="save-status" class="save-status" role="status" aria-live="polite" hidden></p>
         <div class="work-card">
           <h2 class="work-title">Testo da completare</h2>
+          <div class="italian-character-toolbar" id="student-character-toolbar" role="group" aria-label="Caratteri accentati italiani">
+            <button type="button" data-character="à">à</button>
+            <button type="button" data-character="è">è</button>
+            <button type="button" data-character="ì">ì</button>
+            <button type="button" data-character="ò">ò</button>
+            <button type="button" data-character="ù">ù</button>
+            <button type="button" data-character="È">È</button>
+          </div>
           <div class="paragraph-track" id="student-paragraph-track" aria-label="Schede del testo"></div>
+          <img class="last-paragraph-image" src="img/bea.jpeg" alt="Beatrice scrive il romanzo" hidden>
         </div>
         <nav class="slide-navigation" aria-label="Navigazione paragrafi">
           <button id="prev-student-paragraph" type="button">← Precedente</button>
@@ -253,7 +280,7 @@
         keys: ["arriva", "cucina", "fa", "pulisce", "posso", "cucino", "faccio", "faccio"]
       },
       {
-        text: "/{{0}} tutto Beatrice, la donna di servizio. Io sono un grande scrittore e {{1}} scrivere un grande romanzo. {{2}} tutta la mattina, fino a mezzogiorno. A mezzogiorno Beatrice {{3}} da me e {{4}}: “Signor Ricchi, non {{5}} mangiare? Il pranzo è pronto!”.",
+        text: "{{0}} tutto Beatrice, la donna di servizio. Io sono un grande scrittore e {{1}} scrivere un grande romanzo. {{2}} tutta la mattina, fino a mezzogiorno. A mezzogiorno Beatrice {{3}} da me e {{4}}: “Signor Ricchi, non {{5}} mangiare? Il pranzo è pronto!”.",
         verbs: ["fare", "dovere", "scrivere", "venire", "dire", "volere"],
         keys: ["fa", "devo", "scrivo", "viene", "dice", "vuole"]
       },
@@ -320,6 +347,32 @@
     let activeStudentParagraph = 0;
     studentNameInput.value = localStorage.getItem("parlo_student_name") || "";
 
+    function setupCharacterToolbar(toolbarId, track) {
+      const toolbar = document.getElementById(toolbarId);
+      let focusedInput = null;
+
+      track.addEventListener("focusin", event => {
+        if (event.target.matches("input[type='text']")) focusedInput = event.target;
+      });
+
+      toolbar.addEventListener("mousedown", event => {
+        if (event.target.closest("button")) event.preventDefault();
+      });
+      toolbar.addEventListener("click", event => {
+        const button = event.target.closest("button[data-character]");
+        if (!button || !focusedInput || focusedInput.disabled) return;
+
+        const start = focusedInput.selectionStart ?? focusedInput.value.length;
+        const end = focusedInput.selectionEnd ?? start;
+        focusedInput.setRangeText(button.dataset.character, start, end, "end");
+        focusedInput.dispatchEvent(new Event("input", { bubbles: true }));
+        focusedInput.focus();
+      });
+    }
+
+    setupCharacterToolbar("token-character-toolbar", tokenTrack);
+    setupCharacterToolbar("student-character-toolbar", studentTrack);
+
     function renderParagraphCards(track, answers, mode) {
       track.replaceChildren();
       paragraphs.forEach((item, paragraphIndex) => {
@@ -372,6 +425,8 @@
       document.getElementById(`next-${prefix}-paragraph`).hidden = active === paragraphs.length - 1;
       document.getElementById(`next-${prefix}-exercise`).hidden = active !== paragraphs.length - 1;
       document.getElementById(`${prefix}-paragraph-progress`).textContent = `Paragrafo ${active + 1} di ${paragraphs.length}`;
+      const image = document.querySelector(`#${prefix}-paragraph-track + .last-paragraph-image`);
+      if (image) image.hidden = active !== paragraphs.length - 1;
     }
 
     function showParagraph(mode, index) {

@@ -556,5 +556,67 @@
     renderParagraphCards(studentTrack, studentAnswers, "student");
     updateUIState();
   </script>
+  <script>
+    (() => {
+      const characters = ["à", "è", "ì", "ò", "ù", "È"];
+      const selector = "textarea, input[type='text']:not(#student-name-input)";
+
+      function addCharacterButtons(field) {
+        if (field.dataset.italianCharacters === "true") return;
+        field.dataset.italianCharacters = "true";
+
+        const toolbar = document.createElement("div");
+        toolbar.className = "italian-character-toolbar";
+        toolbar.setAttribute("role", "group");
+        toolbar.setAttribute("aria-label", "Caratteri accentati italiani");
+        Object.assign(toolbar.style, { display: "flex", flexWrap: "wrap", gap: "6px", margin: "0 0 8px" });
+
+        characters.forEach(character => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.textContent = character;
+          button.title = `Inserisci ${character}`;
+          button.setAttribute("aria-label", `Inserisci il carattere ${character}`);
+          Object.assign(button.style, {
+            minWidth: "38px", minHeight: "38px", padding: "6px 10px",
+            border: "1px solid #d8e5d8", borderRadius: "8px", background: "#fffefa",
+            color: "#2f5739", font: "inherit", fontWeight: "700", cursor: "pointer"
+          });
+          button.addEventListener("mousedown", event => event.preventDefault());
+          button.addEventListener("click", () => {
+            if (field.disabled || field.readOnly) return;
+            const start = field.selectionStart ?? field.value.length;
+            const end = field.selectionEnd ?? start;
+            field.setRangeText(character, start, end, "end");
+            field.dispatchEvent(new Event("input", { bubbles: true }));
+            field.focus();
+          });
+          toolbar.appendChild(button);
+        });
+
+        field.before(toolbar);
+        const updateDisabledState = () => {
+          toolbar.hidden = field.disabled || field.readOnly;
+          toolbar.querySelectorAll("button").forEach(button => {
+            button.disabled = field.disabled || field.readOnly;
+          });
+        };
+        updateDisabledState();
+        new MutationObserver(updateDisabledState).observe(field, { attributes: true, attributeFilter: ["disabled", "readonly"] });
+      }
+
+      function scan(root = document) {
+        if (root.matches?.(selector)) addCharacterButtons(root);
+        root.querySelectorAll?.(selector).forEach(addCharacterButtons);
+      }
+
+      scan();
+      new MutationObserver(records => {
+        records.forEach(record => record.addedNodes.forEach(node => {
+          if (node.nodeType === Node.ELEMENT_NODE) scan(node);
+        }));
+      }).observe(document.body, { childList: true, subtree: true });
+    })();
+  </script>
 </body>
 </html>

@@ -151,7 +151,10 @@
     </div>
 
     <section id="token-mode-section" class="card active-mode">
-      <div class="token-bar"><span id="token-status-text" style="font-weight:700;color:var(--primary-dark);"></span><button id="btn-take-token" class="btn-token" type="button">✋ Prendi la parola</button></div>
+      <div class="token-bar">
+        <span id="token-status-text" style="font-weight:700;color:var(--primary-dark);"></span>
+        <button id="btn-take-token" class="btn-token" type="button">✋ Prendi la parola</button>
+      </div>
       <div id="token-slides-container"></div>
       <nav class="slide-navigation" aria-label="Navigazione schede">
         <button id="prev-token-slide" type="button">← Precedente</button><span id="progress-token-slide" class="slide-progress"></span>
@@ -215,13 +218,13 @@
     const modeSelectorContainer = document.getElementById("mode-selector-container");
     const resetButton = document.getElementById("reset");
     const teacherReleaseTokenButton = document.getElementById("teacher-release-token");
+    const btnTakeToken = document.getElementById("btn-take-token");
+    const tokenStatusText = document.getElementById("token-status-text");
     const tokenSection = document.getElementById("token-mode-section");
     const allSection = document.getElementById("all-students-mode-section");
     const studentNameInput = document.getElementById("student-name-input");
     const saveStatus = document.getElementById("save-status");
     const responsesList = document.getElementById("responses-list");
-    const btnTakeToken = document.getElementById("btn-take-token");
-    const tokenStatusText = document.getElementById("token-status-text");
 
     studentNameInput.value = localStorage.getItem("parlo_student_name") || "";
 
@@ -234,6 +237,7 @@
       const options = document.createElement("div");
       options.className = "options-group";
       const selected = state[item.id];
+      const questionLocked = tokenMode && currentWriter !== myClientId;
 
       item.options.forEach((text, index) => {
         const button = document.createElement("button");
@@ -254,7 +258,7 @@
       formulationInput.rows = 2;
       formulationInput.placeholder = "Scrivi qui la domanda...";
       formulationInput.value = tokenMode ? (tokenQuestionState[item.id] || "") : (studentQuestionState[item.id] || "");
-      formulationInput.disabled = tokenMode && currentWriter !== myClientId;
+      formulationInput.disabled = questionLocked;
       formulationInput.addEventListener("input", () => {
         if (tokenMode) scheduleTokenQuestionSave(item.id, formulationInput.value);
         else {
@@ -295,7 +299,7 @@
       questionsData.forEach((item, index) => {
         const card = buildSlideItem(item, true, tokenState, option => {
           tokenState[item.id] = option;
-          if (answersRef && currentWriter === myClientId) answersRef.child("tokenData/answers").set(tokenState);
+          if (answersRef) answersRef.child("tokenData/answers").child(item.id).set(option);
           renderTokenSlides();
         });
         card.hidden = index !== activeTokenSlide;
@@ -373,39 +377,49 @@
     workModeSelect.addEventListener("change", event => {
       if (answersRef && isTeacher) answersRef.child("workMode").set(event.target.value);
     });
+
     btnTakeToken.addEventListener("click", () => {
-      if (!answersRef) return;
+      if (!answersRef || currentWorkMode !== "token") return;
       if (currentWriter === myClientId) {
         flushTokenQuestionSaves();
         answersRef.child("tokenData/currentWriter").set(null);
-      } else if (!currentWriter) answersRef.child("tokenData/currentWriter").set(myClientId);
+      } else if (!currentWriter) {
+        answersRef.child("tokenData/currentWriter").set(myClientId);
+      }
     });
+
     teacherReleaseTokenButton.addEventListener("click", () => {
-      if (isTeacher && currentWorkMode === "token" && answersRef) answersRef.child("tokenData/currentWriter").set(null);
+      if (isTeacher && currentWorkMode === "token" && answersRef) {
+        answersRef.child("tokenData/currentWriter").set(null);
+      }
     });
 
     function updateUIState() {
-      teacherReleaseTokenButton.hidden = !(isTeacher && currentWorkMode === "token");
-      tokenSection.classList.toggle("active-mode", currentWorkMode === "token");
-      allSection.classList.toggle("active-mode", currentWorkMode === "all");
-      if (currentWorkMode === "token") {
+      const tokenMode = currentWorkMode === "token";
+      tokenSection.classList.toggle("active-mode", tokenMode);
+      allSection.classList.toggle("active-mode", !tokenMode);
+      teacherReleaseTokenButton.hidden = !isTeacher || !tokenMode;
+
+      if (tokenMode) {
         if (!currentWriter) {
           tokenStatusText.textContent = "";
-          btnTakeToken.textContent = "✋ Взять слово · Prendi la parola";
+          btnTakeToken.textContent = "✋ Prendi la parola";
           btnTakeToken.className = "btn-token";
           btnTakeToken.disabled = false;
         } else if (currentWriter === myClientId) {
-          tokenStatusText.textContent = "Вы редактируете · Stai modificando";
-          btnTakeToken.textContent = "✔ Передать слово · Lascia la parola";
+          tokenStatusText.textContent = "Stai formulando la domanda";
+          btnTakeToken.textContent = "✔ Lascia la parola";
           btnTakeToken.className = "btn-token release";
           btnTakeToken.disabled = false;
         } else {
-          tokenStatusText.textContent = "🔒 Пишет одноклассник · Compagno scrive";
-          btnTakeToken.textContent = "🔒 Пишет одноклассник · Compagno scrive";
+          tokenStatusText.textContent = "🔒 Un compagno sta formulando la domanda";
+          btnTakeToken.textContent = "🔒 Token occupato";
           btnTakeToken.className = "btn-token busy";
           btnTakeToken.disabled = true;
         }
+
         const editingTokenQuestion = document.activeElement?.classList.contains("formulated-question-input")
+          && document.getElementById("token-slides-container").contains(document.activeElement)
           && currentWriter === myClientId;
         if (!editingTokenQuestion) renderTokenSlides();
       } else {
